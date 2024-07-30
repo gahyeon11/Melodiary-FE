@@ -5,7 +5,6 @@ import bg from '../assets/images/bg.png';
 const Landing = () => {
   return(
     <LandingWrapper>
-      <LandingHeader />
       <LandingContainer>
         <TextContainer>
           <h1>
@@ -25,6 +24,7 @@ const Landing = () => {
 
 export default Landing;
 const LandingWrapper = styled.div`
+  height: 100vh;
   background-image: url(${bg});
   background-size: 100% 100%; 
   back
@@ -35,10 +35,10 @@ const LandingContainer = styled.main`
   display: flex;
   flex-direction: row;
   align-items: center;
+  height: 100vh;
   justify-content: flex-start; 
-  height: 80vh;
+  height:92vh;
   padding-left: 5%; 
- 
   color: #000;
   h1 {
     font-size: 64px;
@@ -52,6 +52,8 @@ const LandingContainer = styled.main`
     font-family: ${({theme}) => theme.fontFamily.kor}
     text-align: left;
     margin-bottom: 1em;
+    line-height: 170%;
+    color: ${({theme}) => theme.color.gray777};
   }
 
   button {
@@ -60,13 +62,16 @@ const LandingContainer = styled.main`
     cursor: pointer;
     border: none;
     background-color: ${({theme}) => theme.color.coolblue};
-    color: white;
+    color: ${({theme}) => theme.color.white};
     border-radius: 5px;
+    cursor: pointer;
   }
     
 `
 const TextContainer = styled.div`
-  text-align: left; /* 텍스트를 왼쪽 정렬 */
+  text-align: left; 
+  
+
 `;
 const Highlight = styled.span`
   display: inline-block;
