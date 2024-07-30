@@ -62,7 +62,7 @@ const NotificationBody = styled.div`
 const NotificationItem = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: start;
+  align-items: flex-start;
   padding: 12px 16px;
   border-bottom: 1px solid ${({ theme }) => theme.color.grayDF};
   &:last-child {
@@ -71,10 +71,12 @@ const NotificationItem = styled.div`
 `;
 
 const NotificationContent = styled.div`
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   p {
     margin: 0;
+    text-align: left;
   }
 `;
 
