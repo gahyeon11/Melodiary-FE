@@ -8,7 +8,9 @@ const LandingHeader = () => (
     <Logo><img src={logo} alt="logo"/></Logo>
     <RightSection>
         <LoginButton>Login</LoginButton>
-        <FiGithub className='github'/>
+        <a href="https://github.com/MeloDiary" target="_blank" rel="noopener noreferrer">
+            <FiGithub className='github' />
+        </a>
     </RightSection>
   </HeaderContainer>
 );
