@@ -10,12 +10,11 @@ import {
   BiSolidChevronDown,
   BiSearch,
 } from "react-icons/bi";
+import { CiLogout } from "react-icons/ci";
 import NotificationDropdown from "./NotificationDropdown";
 import profileImage from "../../assets/img/cat.jpg"; //api 연결 전 가상 프로필입니다! 필요하다면 사진 업로드 하겠습니다.
 
-
 function Header() {
-
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] =
     useState(false);
@@ -52,7 +51,8 @@ function Header() {
     };
   }, []);
 
-  const notifications = [   //알림 api 연결 전 더미데이터 입니다. 
+  const notifications = [
+    //알림 api 연결 전 더미데이터 입니다.
     {
       id: 1,
       message: "00님이 회원님이 회원님에게 친구 요청했습니다.",
@@ -86,9 +86,11 @@ function Header() {
           <SearchInput type="text" placeholder="Search mate" />
         </SearchContainer>
         <ButtonContainer>
-        <Button size="medium" schema="primary">
-          <BiEdit size={20} /> Create Diary
-        </Button>
+          <Link to="/writeDiary">
+            <Button size="medium" schema="primary">
+              <BiEdit size={20} /> Create Diary
+            </Button>
+          </Link>
         </ButtonContainer>
         <Icons>
           <IconButton>
@@ -104,7 +106,7 @@ function Header() {
             )}
           </IconButton>
           {/* 유저 API 연결 전 상태입니다.  */}
-          <Profile ref={profileDropdownRef}>   
+          <Profile ref={profileDropdownRef}>
             <Link to="/mypage">
               <img src={profileImage} alt="profile" />
             </Link>
@@ -115,7 +117,10 @@ function Header() {
             {isProfileDropdownOpen && (
               <Dropdown>
                 {/* 로그아웃 기능 연결 전 상태입니다.  */}
-                <DropdownItem>LOGOUT</DropdownItem>  
+                <DropdownItem>
+                  <CiLogout size={20} />
+                  LOGOUT
+                </DropdownItem>
               </Dropdown>
             )}
           </Profile>
@@ -225,7 +230,6 @@ const Dropdown = styled.div`
   top: 100%;
   right: 0;
   display: flex;
-  flex-direction: column;
   background: ${({ theme }) => theme.color.white};
   border: 1px solid ${({ theme }) => theme.color.grayDF};
   border-radius: 4px;
@@ -234,11 +238,19 @@ const Dropdown = styled.div`
 `;
 
 const DropdownItem = styled.div`
+  display: flex;
+  align-items: center;
   padding: 8px 16px;
   cursor: pointer;
   &:hover {
     background: ${({ theme }) => theme.color.grayLight};
   }
+  span {
+    margin-left: 8px;
+  }
+  svg {
+      color: ${({ theme }) => theme.color.grayblack};
+    }
 `;
 
 export default Header;
