@@ -1,23 +1,32 @@
 import styled from 'styled-components';
 import Header from '../header/Header';
 import Sidebar from '../sidebar/Sidebar';
+import { useState } from 'react';
 
 interface Props {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: Props) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+
   return (
     <LayoutWrapper>
       <Header />
-      <MainLayout>
-        <Sidebar />
-        <MainContent>
+      {isLoggedIn ? (
+        <MainLayout>
+          <Sidebar />
+          <main>
+            {children}
+          </main>
+        </MainLayout>
+      ) : (
+        <main>
           {children}
-        </MainContent>
-      </MainLayout>
+        </main>
+      )}
     </LayoutWrapper>
-  )
+  );
 };
 
 export default Layout;
@@ -35,9 +44,4 @@ const MainLayout = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   width: 100%;
-`;
-
-const MainContent = styled.main`
-  flex: 1;
-  padding: 16px;
 `;
