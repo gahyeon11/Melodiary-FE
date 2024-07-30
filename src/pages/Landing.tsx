@@ -1,10 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
-import LandingHeader from '../components/header/LandingHeader';
+import { motion } from 'framer-motion';
 import bg from '../assets/images/bg.png';
+import { useNavigate } from 'react-router-dom';
 const Landing = () => {
+  const navigate = useNavigate();
+  const [isJoinOpen, setIsJoinOpen] = useState(false);
+  const openJoinPage = () => {
+    setIsJoinOpen(true);
+    setTimeout(() => navigate('/join'), 500);
+  };
   return(
-    <LandingWrapper>
+    <LandingWrapper
+    initial={{ y: 0 }}
+    animate={isJoinOpen ? { y: '-100%' } : { y: 0 }}
+    transition={{ duration: 0.5 }}
+    >
       <LandingContainer>
         <TextContainer>
           <h1>
@@ -15,7 +26,7 @@ const Landing = () => {
             매일 일기를 작성하며 그날의 기분을 음악과 이미지로 표현하고,<br />
             친구와 일기 및 음악 목록을 공유할 수 있습니다.
           </p>
-          <button>Write your own diary</button>
+          <button onClick={openJoinPage} >Write your own diary</button>
         </TextContainer>
       </LandingContainer>
     </LandingWrapper> 
@@ -23,11 +34,10 @@ const Landing = () => {
 };
 
 export default Landing;
-const LandingWrapper = styled.div`
+const LandingWrapper = styled(motion.div)`
   height: 100vh;
   background-image: url(${bg});
   background-size: 100% 100%; 
-  back
   background-repeat: no-repeat; 
   background-attachment: fixed; 
 `;

@@ -1,15 +1,20 @@
 import styled from 'styled-components';
-
+import { motion } from 'framer-motion';
 const Join = () => {
   return (
-    <JoinWrapper>
+    <JoinWrapper
+        initial={{ y: '90%' }}
+        animate={{ y: 0 }}
+        exit={{ y: '100%' }}
+        transition={{ duration: 0.5 }}
+    >
       <h1>Join</h1>
     </JoinWrapper>
   )
 };
 
-const JoinWrapper = styled.div`
-
+const JoinWrapper = styled(motion.div)`
+ margin:100px;
 `;
 
 export default Join;

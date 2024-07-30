@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import logo from '../../assets/logo/logo.png';
 import { FiGithub } from "react-icons/fi";
 
-
 const LandingHeader = () => {
   return(
     <HeaderContainer>
