@@ -62,9 +62,11 @@ const SidebarLink = styled(Link)<{ active: boolean }>`
   border-radius: 14px;
   color: ${({ theme, active }) => (active ? theme.color.primary : theme.color.gray777)};
   font-size: 28px;
+  transition: all 0.15s ease-in-out;
 
   &:hover {
     color: ${({ theme }) => theme.color.primary};
+    transition: all 0.15s ease-in-out;
   }
 `;
 
