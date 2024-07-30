@@ -32,7 +32,7 @@ export type TitleSize = "title1" | "title2" | "title3" | "title4";
 export type TextSize = "text1" | "text2" | "text3";
 export type FontFamily = "en" | "kor";
 export type ButtonSize = "short" | "medium" | "long";
-export type ButtonSchema = "primary" | "white" | "grey";
+export type ButtonSchema = "primary" | "white" | "gray";
 
 export interface Theme {
   color: Record<Color, string>;
@@ -177,8 +177,8 @@ export const theme: Theme = {
       color: "#006AD7",
       backgroundColor: "white",
     },
-    grey: {
-      color: "black",
+    gray: {
+      color: "#222222",
       backgroundColor: "#EEEEEE",
     },
   },
