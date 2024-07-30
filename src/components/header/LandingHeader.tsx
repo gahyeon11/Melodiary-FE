@@ -2,13 +2,21 @@ import React from 'react';
 import styled from 'styled-components';
 import logo from '../../assets/logo/logo.png';
 import { FiGithub } from "react-icons/fi";
+import { useNavigate } from 'react-router-dom';
 
 const LandingHeader = () => {
+  const navigate = useNavigate();
+  const onClickLoginBtn = ()=> {
+    navigate('/login')
+  }
+  const onClickLogo = () => {
+    navigate('/')
+  }
   return(
     <HeaderContainer>
-          <Logo><img src={logo} alt="logo"/></Logo>
+          <Logo onClick={onClickLogo}><img src={logo} alt="logo"/></Logo>
           <RightSection>
-              <LoginButton > Login</LoginButton>
+              <LoginButton onClick={onClickLoginBtn}> Login</LoginButton>
               <a href="https://github.com/MeloDiary" target="_blank" rel="noopener noreferrer">
                   <FiGithub className='github' />
               </a>

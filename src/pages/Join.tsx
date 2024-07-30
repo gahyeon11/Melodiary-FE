@@ -6,7 +6,7 @@ const Join = () => {
         initial={{ y: '90%' }}
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
-        transition={{ duration: 0.5 }}
+        
     >
       <h1>Join</h1>
     </JoinWrapper>
