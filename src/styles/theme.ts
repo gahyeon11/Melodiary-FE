@@ -1,9 +1,38 @@
-export type Color = "primary" | "primary10" | "primaryHover" | "lightblue"| "lightblue30" | "lightblue10" | "greenblue" | "coolblue" | "lightcoolblue" | "lightcoolblue30" | "black" | "grayblack" | "gray777" | "gray999" | "grayDF" | "grayEEE" | "white";
-export type DiaryColor = "default" | "orange" | "beige" | "yellow" | "green" | "mint" | "blue" | "coolblue" | "purple" | "pink" | "gray";
+export type Color =
+  | "primary"
+  | "primary10"
+  | "primaryHover"
+  | "lightblue"
+  | "lightblue30"
+  | "lightblue10"
+  | "greenblue"
+  | "coolblue"
+  | "lightcoolblue"
+  | "lightcoolblue30"
+  | "black"
+  | "grayblack"
+  | "gray777"
+  | "gray999"
+  | "grayDF"
+  | "grayEEE"
+  | "white";
+export type DiaryColor =
+  | "default"
+  | "orange"
+  | "beige"
+  | "yellow"
+  | "green"
+  | "mint"
+  | "blue"
+  | "coolblue"
+  | "purple"
+  | "pink"
+  | "gray";
 export type TitleSize = "title1" | "title2" | "title3" | "title4";
 export type TextSize = "text1" | "text2" | "text3";
 export type FontFamily = "en" | "kor";
-
+export type ButtonSize = "short" | "medium" | "long";
+export type ButtonSchema = "primary" | "white" | "gray";
 
 export interface Theme {
   color: Record<Color, string>;
@@ -21,6 +50,20 @@ export interface Theme {
   };
   fontFamily: {
     [key in FontFamily]: string;
+  };
+  button: {
+    [key in ButtonSize]: {
+      padding: string;
+      fontSize: string;
+      fontWeight: string;
+      borderRadius: string;
+    };
+  };
+  buttonSchema: {
+    [key in ButtonSchema]: {
+      color: string;
+      backgroundColor: string;
+    };
   };
 }
 
@@ -88,7 +131,7 @@ export const theme: Theme = {
     gray: {
       background: "#5555551A",
       tag: "#5555554D",
-    }
+    },
   },
   title: {
     title1: "24px",
@@ -104,5 +147,39 @@ export const theme: Theme = {
   fontFamily: {
     en: "Poppins",
     kor: "Nanum Gothic",
+  },
+  button: {
+    short: {
+      padding: "7px 13px",
+      fontSize: "12px",
+      fontWeight: "regular",
+      borderRadius: "6px",
+    },
+    medium: {
+      padding: "8px 17px",
+      fontSize: "14px",
+      fontWeight: "regular",
+      borderRadius: "10px",
+    },
+    long: {
+      padding: "13px 150px",
+      fontSize: "16px",
+      fontWeight: "bold",
+      borderRadius: "14px",
+    },
+  },
+  buttonSchema: {
+    primary: {
+      color: "white",
+      backgroundColor: "#006AD7",
+    },
+    white: {
+      color: "#006AD7",
+      backgroundColor: "white",
+    },
+    gray: {
+      color: "#222222",
+      backgroundColor: "#EEEEEE",
+    },
   },
 };
