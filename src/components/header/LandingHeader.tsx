@@ -1,19 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
-import logo from './logo.png';
+import logo from '../../assets/logo/logo.png';
 import { FiGithub } from "react-icons/fi";
 
-const LandingHeader = () => (
-  <HeaderContainer>
-    <Logo><img src={logo} alt="logo"/></Logo>
-    <RightSection>
-        <LoginButton>Login</LoginButton>
-        <a href="https://github.com/MeloDiary" target="_blank" rel="noopener noreferrer">
-            <FiGithub className='github' />
-        </a>
-    </RightSection>
-  </HeaderContainer>
-);
+
+const LandingHeader = () => {
+  return(
+    <HeaderContainer>
+          <Logo><img src={logo} alt="logo"/></Logo>
+          <RightSection>
+              <LoginButton > Login</LoginButton>
+              <a href="https://github.com/MeloDiary" target="_blank" rel="noopener noreferrer">
+                  <FiGithub className='github' />
+              </a>
+          </RightSection>
+      </HeaderContainer>
+  );
+};
 
 export default LandingHeader;
 
@@ -22,7 +25,7 @@ const HeaderContainer = styled.header`
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: ${({theme}) => theme.color.white}
+  background-color:transparent;
 `;
 
 const Logo = styled.div`
@@ -35,7 +38,7 @@ const Logo = styled.div`
 const RightSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px; /* 로그인 버튼과 아이콘 사이에 간격 추가 */
+  gap: 20px; /* 로그인 버튼과 아이콘 사이에 간격 추가 */
   .github{
     width:24px;
     height:24px;
