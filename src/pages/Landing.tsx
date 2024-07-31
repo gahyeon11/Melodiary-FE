@@ -41,6 +41,7 @@ const LandingWrapper = styled(motion.div)`
   background-image: url(${bg});
   background-size: 100% 100%; 
   background-repeat: no-repeat; 
+  background-position: center;
   background-attachment: fixed; 
 `;
 const LandingContainer = styled.main`
@@ -48,7 +49,6 @@ const LandingContainer = styled.main`
   justify-content: flex-start; 
   flex-direction: row;
   align-items: center;
-  height: 100vh;
   height:92vh;
   padding-left: 5%; 
   color: #000;

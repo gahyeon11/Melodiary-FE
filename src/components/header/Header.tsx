@@ -12,7 +12,7 @@ import {
 } from "react-icons/bi";
 import { CiLogout } from "react-icons/ci";
 import NotificationDropdown from "../notification/NotificationDropdown";
-import profileImage from "../../assets/img/cat.jpg"; //api 연결 전 가상 프로필입니다! 필요하다면 사진 업로드 하겠습니다.
+import profileImage from "../../assets/images/cat.jpg"; //api 연결 전 가상 프로필입니다! 필요하다면 사진 업로드 하겠습니다.
 
 function Header() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);

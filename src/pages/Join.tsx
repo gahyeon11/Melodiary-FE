@@ -1,17 +1,129 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import bg from '../assets/images/bg.png';
+import { FcGoogle } from "react-icons/fc";
+import { SiNaver } from "react-icons/si";
+import { RiKakaoTalkFill } from "react-icons/ri";
+
 const Join = () => {
   return (
-    <JoinWrapper
-        
-    >
-      <h1>Join</h1>
+    <JoinWrapper>
+      <ContentWrapper>
+       <JoinTitle>JOIN</JoinTitle>
+      <ButtonContainer>
+        <Button className="google">
+          <IconWrapper><FcGoogle /></IconWrapper>
+          Google로 시작하기
+        </Button>
+        <Button className="kakao">
+          <IconWrapper><RiKakaoTalkFill /></IconWrapper>
+          Kakao로 시작하기
+        </Button>
+        <Button className="naver">
+          <IconWrapper><SiNaver/></IconWrapper>
+          Naver로 시작하기
+        </Button>
+      </ButtonContainer>
+      <LoginLink >이미 계정이 있으신가요? <Link to='/login' className='loginBtn'>로그인</Link></LoginLink>
+      </ContentWrapper>
     </JoinWrapper>
   )
 };
 
-const JoinWrapper = styled(motion.div)`
- margin:100px;
+const JoinWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;  
+  justify-content: center;
+  height:100vh;
+  padding-left: 5%;
+  background-image: url(${bg});
+  background-size: 100% 100%; 
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  
+`;
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+`;
+const JoinTitle = styled.h1`
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: bold;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const Button = styled.button`
+  display: flex;
+  align-items: center;
+  width: 300px;
+  height: 50px;
+  padding-left:15px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: ${({theme}) => theme.fontFamily.kor};
+  font-weight: 600;
+  transition: background-color 0.3s;
+
+
+  &.google {
+    background-color: ${({theme}) => theme.color.white};
+    color: ${({theme}) => theme.color.black};
+    border: 1px solid ${({theme}) => theme.color.grayDF};;
+  }
+
+  &.google:hover {
+    background-color: #f1f1f1;
+  }
+
+  &.kakao {
+    background-color: #ffe812;
+    color: #3c1e1e;
+  }
+
+  &.kakao:hover {
+    background-color: #ffd700;
+  }
+
+  &.naver {
+    background-color: #03c75a;
+    color: #fff;
+  }
+
+  &.naver:hover {
+    background-color: #02b04a;
+  }
+`;
+
+const IconWrapper = styled.div`
+  margin-right: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const LoginLink = styled.div`
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #555;
+
+  .loginBtn{
+    color: #555;
+    text-decoration: underline;
+  }
 `;
 
 export default Join;
