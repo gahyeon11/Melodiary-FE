@@ -1,37 +1,29 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { motion, AnimatePresence  } from 'framer-motion';
+import { motion} from 'framer-motion';
 import bg from '../assets/images/bg.png';
 import { useNavigate } from 'react-router-dom';
 const Landing = () => {
   const navigate = useNavigate();
-  const [isJoinOpen, setIsJoinOpen] = useState(false);
   const openJoinPage = () => {
-    setIsJoinOpen(true);
-    setTimeout(() => navigate('/join'), 500);
+    navigate('/join')
   };
   return(
-    <AnimatePresence>
-      <LandingWrapper
-      initial={{ y: 0 }}
-      animate={isJoinOpen ? { y: '-100%' } : { y: 0 }}
-      transition={{ duration: 0.5 }}
-      >
-        <LandingContainer>
-          <TextContainer>
-            <h1>
-              <Highlight><span>Record</span></Highlight> your day<br />
-              with music.
-            </h1>
-            <p>
-              매일 일기를 작성하며 그날의 기분을 음악과 이미지로 표현하고,<br />
-              친구와 일기 및 음악 목록을 공유할 수 있습니다.
-            </p>
-            <button onClick={openJoinPage} >Write your own diary</button>
-          </TextContainer>
-        </LandingContainer>
-      </LandingWrapper> 
-    </AnimatePresence>
+    <LandingWrapper>
+      <LandingContainer>
+        <TextContainer>
+          <h1>
+            <Highlight><span>Record</span></Highlight> your day<br />
+            with music.
+          </h1>
+          <p>
+            매일 일기를 작성하며 그날의 기분을 음악과 이미지로 표현하고,<br />
+            친구와 일기 및 음악 목록을 공유할 수 있습니다.
+          </p>
+          <button onClick={openJoinPage} >Write your own diary</button>
+        </TextContainer>
+      </LandingContainer>
+    </LandingWrapper> 
   )
 };
 
@@ -43,45 +35,43 @@ const LandingWrapper = styled(motion.div)`
   background-repeat: no-repeat; 
   background-attachment: fixed; 
 `;
+
 const LandingContainer = styled.main`
   display: flex;
   justify-content: flex-start; 
   flex-direction: row;
   align-items: center;
   height: 100vh;
-  height:92vh;
+  height: 92vh;
   padding-left: 5%; 
   color: #000;
   h1 {
     margin-bottom: 20px;
     font-size: 64px;
-    font-weight:650;
-    font-family: ${({theme}) => theme.fontFamily.en};
+    font-weight: 650;
   }
-
   p {
     margin-bottom: 1em;
     text-align: left;
-    font-size: ${({theme}) => theme.text.text1};
-    font-family: ${({theme}) => theme.fontFamily.kor};
+    font-size: ${({ theme }) => theme.text.text1};
+    font-family: ${({ theme }) => theme.fontFamily.kor};
     line-height: 170%;
-    color: ${({theme}) => theme.color.gray777};
+    color: ${({ theme }) => theme.color.gray777};
   }
-
   button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: ${({theme}) => theme.color.coolblue};
-    font-size: ${({theme}) => theme.text.text1};
-    color: ${({theme}) => theme.color.white};
+    background-color: ${({ theme }) => theme.color.coolblue};
+    font-size: ${({ theme }) => theme.text.text1};
+    color: ${({ theme }) => theme.color.white};
     cursor: pointer;
-  }
-    
+  } 
 `
 const TextContainer = styled.div`
   text-align: left; 
 `;
+
 const Highlight = styled.span`
   display: inline-block;
   position: relative;
@@ -98,8 +88,8 @@ const Highlight = styled.span`
     top: 50%;
     width: 90%;
     height: 2.5rem; 
-    margin-top:1.2rem;
+    margin-top: 1.2rem;
     transform: translateY(-50%);
-    background-color: ${({theme}) => theme.color.lightcoolblue};
+    background-color: ${({ theme }) => theme.color.lightcoolblue};
   }
 `;

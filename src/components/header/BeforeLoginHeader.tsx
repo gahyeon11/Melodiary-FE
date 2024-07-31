@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FiGithub } from "react-icons/fi";
-import { BiHeadphone} from "react-icons/bi";
-import { Link} from 'react-router-dom';
+import { BiHeadphone } from "react-icons/bi";
+import { Link } from 'react-router-dom';
 
 const LandingHeader = () => {
   return(
@@ -24,8 +24,6 @@ const LandingHeader = () => {
     </HeaderContainer>
   );
 };
-
-export default LandingHeader;
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -63,12 +61,12 @@ const Logo = styled.div`
 const RightSection = styled.div`
   display: flex;
   align-items: center;
-  margin-right:20px;
-  gap: 20px; /* 로그인 버튼과 아이콘 사이에 간격 추가 */
-  .github{
+  margin-right: 20px;
+  gap: 20px; 
+  .github {
     width:24px;
     height:24px;
-    color: ${({theme}) => theme.color.gray777}
+    color: ${({ theme }) => theme.color.gray777}
   }
 `;
 
@@ -77,5 +75,8 @@ const LoginButton = styled.button`
   background: none;
   font-size: 1em;
   cursor: pointer;
-  color: ${({theme}) => theme.color.gray777}
+  color: ${({ theme }) => theme.color.gray777}
 `;
+
+export default LandingHeader;
+
