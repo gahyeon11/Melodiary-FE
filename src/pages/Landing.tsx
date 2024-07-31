@@ -60,30 +60,27 @@ const LandingContainer = styled.main`
   }
 
   p {
+    margin-bottom: 1em;
+    text-align: left;
     font-size: ${({theme}) => theme.text.text1}
     font-family: ${({theme}) => theme.fontFamily.kor}
-    text-align: left;
-    margin-bottom: 1em;
     line-height: 170%;
     color: ${({theme}) => theme.color.gray777};
   }
 
   button {
     padding: 10px 20px;
-    font-size: ${({theme}) => theme.text.text1}
-    cursor: pointer;
     border: none;
-    background-color: ${({theme}) => theme.color.coolblue};
-    color: ${({theme}) => theme.color.white};
     border-radius: 5px;
+    background-color: ${({theme}) => theme.color.coolblue};
+    font-size: ${({theme}) => theme.text.text1}
+    color: ${({theme}) => theme.color.white};
     cursor: pointer;
   }
     
 `
 const TextContainer = styled.div`
   text-align: left; 
-  
-
 `;
 const Highlight = styled.span`
   display: inline-block;
@@ -96,13 +93,13 @@ const Highlight = styled.span`
   &::before {
     content: '';
     position: absolute;
+    z-index: 0;
     left: 0;
     top: 50%;
-    transform: translateY(-50%);
     width: 90%;
     height: 2.5rem; 
-    background-color: ${({theme}) => theme.color.lightcoolblue};
     margin-top:1.2rem;
-    z-index: 0;
+    transform: translateY(-50%);
+    background-color: ${({theme}) => theme.color.lightcoolblue};
   }
 `;

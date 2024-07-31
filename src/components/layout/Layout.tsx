@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import Header from '../header/Header';
 import Sidebar from '../sidebar/Sidebar';
 import { useState } from 'react';
-import LandingHeader from '../header/LandingHeader';
+import BeforeLoginHeader from '../header/BeforeLoginHeader';
 
 interface Props {
   children: React.ReactNode;
@@ -25,7 +25,7 @@ const Layout = ({ children }: Props) => {
         </>
       ) : (
         <>
-        <LandingHeader />
+        <BeforeLoginHeader />
         <main>
           {children}
         </main>
