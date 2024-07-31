@@ -1,27 +1,35 @@
-import styled from "styled-components";
-import Header from "../header/Header";
-import Sidebar from "../sidebar/Sidebar";
-import { useState } from "react";
+import styled from 'styled-components';
+import Header from '../header/Header';
+import Sidebar from '../sidebar/Sidebar';
+import { useState } from 'react';
+import BeforeLoginHeader from '../header/BeforeLoginHeader';
 
 interface Props {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: Props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <LayoutWrapper>
-      {isLoggedIn ? (
+      {isLoggedIn ? ( 
         <>
           <Header />
           <MainLayout>
             <Sidebar />
-            <main>{children}</main>
+            <main>
+              {children}
+            </main>
           </MainLayout>
         </>
       ) : (
-        <main>{children}</main>
+        <>
+        <BeforeLoginHeader />
+        <main>
+          {children}
+        </main>
+        </>
       )}
     </LayoutWrapper>
   );

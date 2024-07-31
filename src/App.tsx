@@ -10,6 +10,10 @@ import Explore from './pages/Explore';
 import Mates from './pages/Mates';
 import MyPage from './pages/MyPage';
 import WriteDiary from './pages/WriteDiary';
+import Landing from './pages/Landing';
+import Join from './pages/Join';
+import Login from './pages/Login';
+import { AnimatePresence } from 'framer-motion';
 
 const App = () => {
   const routerList = [
@@ -32,6 +36,18 @@ const App = () => {
     {
       path: '/writediary',
       component: <WriteDiary />,
+    },
+    {
+      path: '/',
+      component: <Landing />,
+    },
+    {
+      path: '/join',
+      component: <Join/>,
+    },
+    {
+      path: '/login',
+      component: <Login/>,
     },
   ];
 
