@@ -55,7 +55,7 @@ function Header() {
     //알림 api 연결 전 더미데이터 입니다.
     {
       id: 1,
-      content: "00님이 회원님이 회원님에게 친구 요청했습니다.",
+      content: "00님이 회원님에게 친구 요청을 보냈습니다.",
       diaryId: 1,
       category: "friend",
       date: "2024-07-26",
