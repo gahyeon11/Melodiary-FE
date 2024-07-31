@@ -45,18 +45,18 @@ const LandingWrapper = styled(motion.div)`
 `;
 const LandingContainer = styled.main`
   display: flex;
+  justify-content: flex-start; 
   flex-direction: row;
   align-items: center;
   height: 100vh;
-  justify-content: flex-start; 
   height:92vh;
   padding-left: 5%; 
   color: #000;
   h1 {
+    margin-bottom: 20px;
     font-size: 64px;
     font-weight:650;
     font-family: ${({theme}) => theme.fontFamily.en}
-    margin-bottom: 20px;
   }
 
   p {
