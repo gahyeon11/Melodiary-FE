@@ -56,14 +56,14 @@ const LandingContainer = styled.main`
     margin-bottom: 20px;
     font-size: 64px;
     font-weight:650;
-    font-family: ${({theme}) => theme.fontFamily.en}
+    font-family: ${({theme}) => theme.fontFamily.en};
   }
 
   p {
     margin-bottom: 1em;
     text-align: left;
-    font-size: ${({theme}) => theme.text.text1}
-    font-family: ${({theme}) => theme.fontFamily.kor}
+    font-size: ${({theme}) => theme.text.text1};
+    font-family: ${({theme}) => theme.fontFamily.kor};
     line-height: 170%;
     color: ${({theme}) => theme.color.gray777};
   }
@@ -73,7 +73,7 @@ const LandingContainer = styled.main`
     border: none;
     border-radius: 5px;
     background-color: ${({theme}) => theme.color.coolblue};
-    font-size: ${({theme}) => theme.text.text1}
+    font-size: ${({theme}) => theme.text.text1};
     color: ${({theme}) => theme.color.white};
     cursor: pointer;
   }

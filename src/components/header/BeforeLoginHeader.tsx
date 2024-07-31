@@ -15,7 +15,7 @@ const LandingHeader = () => {
       </Link>
       <RightSection>
         <Link to="/join">
-        <LoginButton > Login</LoginButton>
+        <LoginButton > LOGIN</LoginButton>
         </Link>
         <a href="https://github.com/MeloDiary" target="_blank" rel="MeloDiary">
           <FiGithub className='github' />
