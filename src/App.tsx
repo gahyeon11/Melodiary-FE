@@ -13,6 +13,7 @@ import WriteDiary from './pages/WriteDiary';
 import Landing from './pages/Landing';
 import Join from './pages/Join';
 import Login from './pages/Login';
+import { AnimatePresence } from 'framer-motion';
 
 const App = () => {
   const routerList = [

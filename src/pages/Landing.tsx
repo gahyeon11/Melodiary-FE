@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence  } from 'framer-motion';
 import bg from '../assets/images/bg.png';
 import { useNavigate } from 'react-router-dom';
 const Landing = () => {
@@ -11,25 +11,27 @@ const Landing = () => {
     setTimeout(() => navigate('/join'), 500);
   };
   return(
-    <LandingWrapper
-    initial={{ y: 0 }}
-    animate={isJoinOpen ? { y: '-100%' } : { y: 0 }}
-    transition={{ duration: 0.5 }}
-    >
-      <LandingContainer>
-        <TextContainer>
-          <h1>
-            <Highlight><span>Record</span></Highlight> your day<br />
-            with music.
-          </h1>
-          <p>
-            매일 일기를 작성하며 그날의 기분을 음악과 이미지로 표현하고,<br />
-            친구와 일기 및 음악 목록을 공유할 수 있습니다.
-          </p>
-          <button onClick={openJoinPage} >Write your own diary</button>
-        </TextContainer>
-      </LandingContainer>
-    </LandingWrapper> 
+    <AnimatePresence>
+      <LandingWrapper
+      initial={{ y: 0 }}
+      animate={isJoinOpen ? { y: '-100%' } : { y: 0 }}
+      transition={{ duration: 0.5 }}
+      >
+        <LandingContainer>
+          <TextContainer>
+            <h1>
+              <Highlight><span>Record</span></Highlight> your day<br />
+              with music.
+            </h1>
+            <p>
+              매일 일기를 작성하며 그날의 기분을 음악과 이미지로 표현하고,<br />
+              친구와 일기 및 음악 목록을 공유할 수 있습니다.
+            </p>
+            <button onClick={openJoinPage} >Write your own diary</button>
+          </TextContainer>
+        </LandingContainer>
+      </LandingWrapper> 
+    </AnimatePresence>
   )
 };
 
