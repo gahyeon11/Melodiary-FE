@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FiGithub } from "react-icons/fi";
-import { BiHeadphone} from "react-icons/bi";
-import { Link} from 'react-router-dom';
+import { BiHeadphone } from "react-icons/bi";
+import { Link } from 'react-router-dom';
 
 const LandingHeader = () => {
   return(

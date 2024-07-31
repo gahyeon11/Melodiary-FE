@@ -38,12 +38,13 @@ const Landing = () => {
 export default Landing;
 const LandingWrapper = styled(motion.div)`
   height: 100vh;
-  background-image: url(${bg});
+  background-image: url(${ bg });
   background-size: 100% 100%; 
   background-repeat: no-repeat; 
   background-position: center;
   background-attachment: fixed; 
 `;
+
 const LandingContainer = styled.main`
   display: flex;
   justify-content: flex-start; 
@@ -56,32 +57,29 @@ const LandingContainer = styled.main`
     margin-bottom: 20px;
     font-size: 64px;
     font-weight:650;
-    font-family: ${({theme}) => theme.fontFamily.en};
   }
-
   p {
     margin-bottom: 1em;
     text-align: left;
-    font-size: ${({theme}) => theme.text.text1};
-    font-family: ${({theme}) => theme.fontFamily.kor};
+    font-size: ${({ theme }) => theme.text.text1};
+    font-family: ${({ theme }) => theme.fontFamily.kor};
     line-height: 170%;
-    color: ${({theme}) => theme.color.gray777};
+    color: ${({ theme }) => theme.color.gray777};
   }
-
   button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: ${({theme}) => theme.color.coolblue};
-    font-size: ${({theme}) => theme.text.text1};
-    color: ${({theme}) => theme.color.white};
+    background-color: ${({ theme }) => theme.color.coolblue};
+    font-size: ${({ theme }) => theme.text.text1};
+    color: ${({ theme }) => theme.color.white};
     cursor: pointer;
   }
-    
 `
 const TextContainer = styled.div`
   text-align: left; 
 `;
+
 const Highlight = styled.span`
   display: inline-block;
   position: relative;
@@ -100,6 +98,6 @@ const Highlight = styled.span`
     height: 2.5rem; 
     margin-top:1.2rem;
     transform: translateY(-50%);
-    background-color: ${({theme}) => theme.color.lightcoolblue};
+    background-color: ${({ theme }) => theme.color.lightcoolblue};
   }
 `;

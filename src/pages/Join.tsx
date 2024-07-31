@@ -10,8 +10,9 @@ const Join = () => {
   return (
     <JoinWrapper>
       <ContentWrapper>
-       <JoinTitle>JOIN</JoinTitle>
+       
       <ButtonContainer>
+        <JoinTitle>JOIN</JoinTitle>
         <Button className="google">
           <IconWrapper><FcGoogle /></IconWrapper>
           Google로 시작하기
@@ -24,36 +25,33 @@ const Join = () => {
           <IconWrapper><SiNaver/></IconWrapper>
           Naver로 시작하기
         </Button>
+        <LoginLink >이미 계정이 있으신가요? <Link to='/login' className='loginBtn'>로그인</Link></LoginLink>
       </ButtonContainer>
-      <LoginLink >이미 계정이 있으신가요? <Link to='/login' className='loginBtn'>로그인</Link></LoginLink>
+      
       </ContentWrapper>
     </JoinWrapper>
   )
 };
 
 const JoinWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;  
-  justify-content: center;
-  height:100vh;
-  padding-left: 5%;
+  height: 100vh;
   background-image: url(${bg});
   background-size: 100% 100%; 
-  background-size: cover;
+  background-repeat: no-repeat; 
   background-position: center;
-  background-attachment: fixed;
-  
+  background-attachment: fixed;  
 `;
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  
+  align-items: flex-start;  
+  justify-content: center;
+  height:92vh;
+  padding-left: 5%;
 `;
 const JoinTitle = styled.h1`
   font-size: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   text-align: center;
   font-weight: bold;
 `;
@@ -61,6 +59,7 @@ const JoinTitle = styled.h1`
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1rem;
 `;
 
@@ -116,10 +115,9 @@ const IconWrapper = styled.div`
 `;
 
 const LoginLink = styled.div`
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   font-size: 0.9rem;
   color: #555;
-
   .loginBtn{
     color: #555;
     text-decoration: underline;
