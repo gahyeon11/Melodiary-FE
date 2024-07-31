@@ -11,7 +11,7 @@ import {
   BiSearch,
 } from "react-icons/bi";
 import { CiLogout } from "react-icons/ci";
-import NotificationDropdown from "./NotificationDropdown";
+import NotificationDropdown from "../notification/NotificationDropdown";
 import profileImage from "../../assets/img/cat.jpg"; //api 연결 전 가상 프로필입니다! 필요하다면 사진 업로드 하겠습니다.
 
 function Header() {
@@ -55,21 +55,12 @@ function Header() {
     //알림 api 연결 전 더미데이터 입니다.
     {
       id: 1,
-      message: "00님이 회원님이 회원님에게 친구 요청했습니다.",
-      time: "22시간",
+      content: "00님이 회원님이 회원님에게 친구 요청했습니다.",
+      diaryId: 1,
+      category: "friend",
+      date: "2024-07-26",
     },
-    {
-      id: 2,
-      message: "00님이 회원님의 일기에 댓글을 작성했습니다.",
-      time: "4일",
-    },
-    { id: 3, message: "00님이 새로운 일기를 작성했습니다.", time: "5일" },
-    { id: 4, message: "00님님이 회원님을 멘션했습니다.", time: "1주" },
-    { id: 5, message: "00님이 친구 요청을 거절했습니다.", time: "1주" },
-    { id: 6, message: "00님이 친구 요청을 거절했습니다.", time: "1주" },
-    { id: 7, message: "00님이 친구 요청을 거절했습니다.", time: "1주" },
-    { id: 8, message: "00님이 친구 요청을 거절했습니다.", time: "1주" },
-    { id: 9, message: "00님이 친구 요청을 거절했습니다.", time: "1주" },
+
   ];
 
   return (

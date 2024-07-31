@@ -1,14 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-
-interface Notification {
-  id: number;
-  message: string;
-  time: string;
-}
+import { INotification } from "../../models/notification.model";
 
 interface NotificationDropdownProps {
-  notifications: Notification[];
+  notifications: INotification[];
 }
 
 const NotificationDropdown = React.forwardRef<
@@ -22,9 +17,9 @@ const NotificationDropdown = React.forwardRef<
         {notifications.map((notification) => (
           <NotificationItem key={notification.id}>
             <NotificationContent>
-              <p>{notification.message}</p>
+              <p>{notification.content}</p>
             </NotificationContent>
-            <Time>{notification.time}</Time>
+            <Time>{notification.date}</Time>
           </NotificationItem>
         ))}
       </NotificationBody>
