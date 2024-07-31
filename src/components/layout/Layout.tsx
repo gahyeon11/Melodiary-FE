@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import Header from '../header/Header';
-import Sidebar from '../sidebar/Sidebar';
-import { useState } from 'react';
+import styled from "styled-components";
+import Header from "../header/Header";
+import Sidebar from "../sidebar/Sidebar";
+import { useState } from "react";
 
 interface Props {
   children: React.ReactNode;
@@ -12,18 +12,16 @@ const Layout = ({ children }: Props) => {
 
   return (
     <LayoutWrapper>
-      <Header />
       {isLoggedIn ? (
-        <MainLayout>
-          <Sidebar />
-          <main>
-            {children}
-          </main>
-        </MainLayout>
+        <>
+          <Header />
+          <MainLayout>
+            <Sidebar />
+            <main>{children}</main>
+          </MainLayout>
+        </>
       ) : (
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
       )}
     </LayoutWrapper>
   );
