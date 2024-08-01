@@ -18,17 +18,17 @@ const Layout = ({ children }: Props) => {
           <Header />
           <MainLayout>
             <Sidebar />
-            <main>
+            <MainContent>
               {children}
-            </main>
+            </MainContent>
           </MainLayout>
         </>
       ) : (
         <>
-          <BeforeLoginHeader />
-          <main>
-            {children}
-          </main>
+        <BeforeLoginHeader />
+        <MainLayout>
+          {children}
+        </MainLayout>
         </>
       )}
     </LayoutWrapper>
@@ -49,9 +49,15 @@ const MainLayout = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
+  width: 100%;
+  height: calc(100vh - 64px);
 
   main {
-    width: calc(100vw - 74px);
-    height: 100%;
+    width: 100%;
   }
+`;
+
+const MainContent = styled.div`
+  width: 100%;
+  border-left: 1px solid ${({ theme }) => theme.color.grayDF};
 `;
