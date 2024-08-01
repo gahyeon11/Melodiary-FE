@@ -13,6 +13,7 @@ export type Color =
   | "grayblack"
   | "gray777"
   | "gray999"
+  | "grayCCC"
   | "grayDF"
   | "grayEEE"
   | "white";
@@ -83,6 +84,7 @@ export const theme: Theme = {
     grayblack: "#333333",
     gray777: "#777777",
     gray999: "#999999",
+    grayCCC: "#CCCCCC",
     grayDF: "#DFDFDF",
     grayEEE: "#EEEEEE",
     white: "#FFFFFF",
