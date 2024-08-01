@@ -5,7 +5,8 @@ import { FcGoogle } from "react-icons/fc";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
 
-import {KAKAO_AUTH_URL} from '../config'
+import { KAKAO_AUTH_URL } from '../config'
+import { GOOGLE_AUTH_URL } from '../config';
 
 const Join = () => {
   return (
@@ -13,10 +14,12 @@ const Join = () => {
       <ContentWrapper>
         <ButtonContainer>
           <JoinTitle>JOIN</JoinTitle>
-          <Button className="google">
-            <IconWrapper><FcGoogle /></IconWrapper>
-            Google로 시작하기
-          </Button>
+          <a href={GOOGLE_AUTH_URL}>
+            <Button className="google">
+              <IconWrapper><FcGoogle /></IconWrapper>
+              Google로 시작하기
+            </Button>
+          </a>
           <a href={KAKAO_AUTH_URL}>
             <Button className="kakao">
               <IconWrapper><RiKakaoTalkFill /></IconWrapper>

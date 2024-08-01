@@ -15,6 +15,7 @@ import Join from './pages/Join';
 import Login from './pages/Login';
 import { AnimatePresence } from 'framer-motion';
 import NickName from './pages/Nickname';
+import Auth from './pages/Auth';
 
 const App = () => {
   const routerList = [
@@ -53,6 +54,10 @@ const App = () => {
     {
       path: '/nickname',
       component: <NickName/>,
+    },
+    {
+      path: '/auth',
+      component: <Auth/>,
     },
   ];
 

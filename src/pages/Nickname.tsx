@@ -2,12 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { BiHeadphone } from "react-icons/bi";
-import { REST_API_KEY, REDIRECT_URI, CLIENT_SECRET } from '../config';
+import { KAKAO_REST_API_KEY, CLIENT_SECRET } from '../config';
 
 const NickName = () => {
-  const params = new URL(document.URL).searchParams;
-  const code = params.get('code');
-  console.log(code);
+  
   return (
     <PageWrapper>
       <ContentWrapper>
