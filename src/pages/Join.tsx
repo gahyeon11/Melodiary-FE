@@ -4,10 +4,10 @@ import bg from '../assets/images/bg.png';
 import { FcGoogle } from "react-icons/fc";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
-
-import { KAKAO_AUTH_URL, GOOGLE_AUTH_URL, NAVER_AUTH_URL } from '../config'
+import { GOOGLE_AUTH_URL, KAKAO_AUTH_URL, NAVER_AUTH_URL } from '../config';
 
 const Join = () => {
+
   return (
     <JoinWrapper>
       <ContentWrapper>

@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { BiHeadphone } from "react-icons/bi";
-import { KAKAO_REST_API_KEY, CLIENT_SECRET } from '../config';
 
 const NickName = () => {
   
