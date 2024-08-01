@@ -9,7 +9,7 @@ interface Props {
 }
 
 const Layout = ({ children }: Props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   return (
     <LayoutWrapper>
@@ -25,10 +25,10 @@ const Layout = ({ children }: Props) => {
         </>
       ) : (
         <>
-        <BeforeLoginHeader />
-        <main>
-          {children}
-        </main>
+          <BeforeLoginHeader />
+          <main>
+            {children}
+          </main>
         </>
       )}
     </LayoutWrapper>
@@ -49,5 +49,9 @@ const MainLayout = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
-  width: 100%;
+
+  main {
+    width: calc(100vw - 74px);
+    height: 100%;
+  }
 `;
