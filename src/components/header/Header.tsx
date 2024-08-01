@@ -209,6 +209,7 @@ const Profile = styled.div`
   }
   span {
     margin: 0 8px;
+    padding-bottom: 4px;
   }
 `;
 
@@ -220,6 +221,8 @@ const DefaultProfileIcon = styled(FaUserCircle)`
 
 const IconButton = styled.button`
   position: relative;
+  align-items: center;
+  padding-top: 2px;
   background: none;
   border: none;
   margin: 0;
