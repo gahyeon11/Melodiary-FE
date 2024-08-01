@@ -107,7 +107,7 @@ const WriteDiary = () => {
       document.removeEventListener("click", handleClickMoodOutside);
       document.removeEventListener("click", handleClickScopeOutside);
     };
-  })
+  }, []);
 
   return (
     <WriteDiaryWrapper bgColor={selectedBgColor}>
@@ -148,7 +148,7 @@ const WriteDiary = () => {
                 {colors.map((color, index) => (
                   <li
                     key={index}
-                    onClick={() => {selectBgColorOption(color.name); console.log(color);}}
+                    onClick={() => {selectBgColorOption(color.name)}}
                     style={{ backgroundColor: color.background }}
                   />
                 ))}
@@ -298,7 +298,7 @@ const IconBg = styled.div`
   font-size: ${({ theme }) => theme.text.text2};
 
   .icon > div,
-  .bgColor > div{
+  .bgColor > div {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -316,6 +316,7 @@ const IconBg = styled.div`
       transition: all 0.15s ease-in-out;
     }
   }
+  
   /* 오늘의 이모지 */
   .icon {
     position: relative;
