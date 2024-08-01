@@ -1,10 +1,11 @@
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import bg from '../assets/images/bg.png';
 import { FcGoogle } from "react-icons/fc";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
+
+import {KAKAO_AUTH_URL} from '../config'
 
 const Join = () => {
   return (
@@ -16,10 +17,12 @@ const Join = () => {
             <IconWrapper><FcGoogle /></IconWrapper>
             Google로 시작하기
           </Button>
-          <Button className="kakao">
-            <IconWrapper><RiKakaoTalkFill /></IconWrapper>
-            Kakao로 시작하기
-          </Button>
+          <a href={KAKAO_AUTH_URL}>
+            <Button className="kakao">
+              <IconWrapper><RiKakaoTalkFill /></IconWrapper>
+              Kakao로 시작하기
+            </Button>
+          </a>
           <Button className="naver">
             <IconWrapper><SiNaver/></IconWrapper>
             Naver로 시작하기
