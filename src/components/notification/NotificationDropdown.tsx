@@ -31,16 +31,18 @@ const Dropdown = styled.div`
   position: absolute;
   top: 100%;
   right: 0;
-  background: ${({ theme }) => theme.color.white};
-  border: 1px solid ${({ theme }) => theme.color.grayDF};
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   display: flex;
   flex-direction: column;
   width: 320px;
   max-height: 400px;
   overflow-y: auto;
+  background: ${({ theme }) => theme.color.white};
+  font-family: ${({ theme }) => theme.fontFamily.kor};
+  color: ${({ theme }) => theme.color.black};
+  border: 1px solid ${({ theme }) => theme.color.grayDF};
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 `;
 
 const NotificationHeader = styled.div`
@@ -66,9 +68,9 @@ const NotificationItem = styled.div`
 `;
 
 const NotificationContent = styled.div`
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   p {
     margin: 0;
     text-align: left;
