@@ -1,9 +1,7 @@
-import React from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from './styles/global';
 import { theme } from './styles/theme';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Sidebar from './components/sidebar/Sidebar';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import Explore from './pages/Explore';
@@ -13,7 +11,6 @@ import WriteDiary from './pages/WriteDiary';
 import Landing from './pages/Landing';
 import Join from './pages/Join';
 import Login from './pages/Login';
-import { AnimatePresence } from 'framer-motion';
 
 const App = () => {
   const routerList = [
