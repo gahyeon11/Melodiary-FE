@@ -10,24 +10,22 @@ const Join = () => {
   return (
     <JoinWrapper>
       <ContentWrapper>
-       
-      <ButtonContainer>
-        <JoinTitle>JOIN</JoinTitle>
-        <Button className="google">
-          <IconWrapper><FcGoogle /></IconWrapper>
-          Google로 시작하기
-        </Button>
-        <Button className="kakao">
-          <IconWrapper><RiKakaoTalkFill /></IconWrapper>
-          Kakao로 시작하기
-        </Button>
-        <Button className="naver">
-          <IconWrapper><SiNaver/></IconWrapper>
-          Naver로 시작하기
-        </Button>
-        <LoginLink >이미 계정이 있으신가요? <Link to='/login' className='loginBtn'>로그인</Link></LoginLink>
-      </ButtonContainer>
-      
+        <ButtonContainer>
+          <JoinTitle>JOIN</JoinTitle>
+          <Button className="google">
+            <IconWrapper><FcGoogle /></IconWrapper>
+            Google로 시작하기
+          </Button>
+          <Button className="kakao">
+            <IconWrapper><RiKakaoTalkFill /></IconWrapper>
+            Kakao로 시작하기
+          </Button>
+          <Button className="naver">
+            <IconWrapper><SiNaver/></IconWrapper>
+            Naver로 시작하기
+          </Button>
+          <LoginLink >이미 계정이 있으신가요? <Link to='/login' className='loginBtn'>로그인</Link></LoginLink>
+        </ButtonContainer>
       </ContentWrapper>
     </JoinWrapper>
   )
@@ -73,15 +71,14 @@ const Button = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-family: ${({theme}) => theme.fontFamily.kor};
+  font-family: ${({ theme }) => theme.fontFamily.kor};
   font-weight: 600;
   transition: background-color 0.3s;
 
-
   &.google {
-    background-color: ${({theme}) => theme.color.white};
-    color: ${({theme}) => theme.color.black};
-    border: 1px solid ${({theme}) => theme.color.grayDF};;
+    background-color: ${({ theme }) => theme.color.white};
+    color: ${({ theme }) => theme.color.black};
+    border: 1px solid ${({ theme }) => theme.color.grayDF};;
   }
 
   &.google:hover {
