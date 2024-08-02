@@ -5,48 +5,26 @@ import { VscSymbolColor } from "react-icons/vsc";
 import { RiGlobalLine } from "react-icons/ri";
 import Button from '../components/button/Button';
 import { useEffect, useRef, useState } from 'react';
-import { IScopeOption } from '../models/writeDiary.model';
 import EmojiPicker from 'emoji-picker-react';
 import DiaryPreview from '../components/diary/DiaryPreview';
-
-export const colors = [
-  { name: 'default', background: '#FFFFFF' },
-  { name: 'orange', background: '#FF87461A' },
-  { name: 'beige', background: '#FFD2791A' },
-  { name: 'yellow', background: '#FFDD2B1A' },
-  { name: 'green', background: '#8FEC471A' },
-  { name: 'mint', background: '#71F8C81A' },
-  { name: 'blue', background: '#9AD9EA1A' },
-  { name: 'coolblue', background: '#8AA3F91A' },
-  { name: 'purple', background: '#BA84FF1A' },
-  { name: 'pink', background: '#EA9ACA1A' },
-  { name: 'gray', background: '#9999991A' },
-];
-
-const moods = ["😡", "😟", "🙂", "😆", "😍"];
-
-const scopes: { [key: string]: IScopeOption } = {
-  all: { text: "전체 공개", icon: <RiGlobalLine /> },
-  mate: { text: "친구 공개", icon: <FiUser /> },
-  lock: { text: "비공개", icon: <FiLock /> },
-};
+import { colors, moods, privacies } from '../constants/writeDiary';
 
 const WriteDiary = () => {
   const [selectedEmoji, setSelectedEmoji] = useState<string>("");
   const [selectedBgColor, setSelectedBgColor] = useState<string>("default");
   const [selectedMood, setSelectedMood] = useState<string>("😍");
-  const [selectedScope, setSelectedScope] = useState<IScopeOption>(scopes.lock);
+  const [selectedPrivacy, setSelectedPrivacy] = useState<string>(privacies[2]);
 
   const [isEmojiDropdown, setIsEmojiDropdown] = useState(false);
   const [isBgColorDropdown, setIsBgColorDropdown] = useState(false);
   const [isMoodDropdown, setIsMoodDropdown] = useState(false);
-  const [isScopeDropdown, setIsScopDropdown] = useState(false);
+  const [isPrivacyDropdown, setIsPrivacyDropdown] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const emojiDropdownRef = useRef<HTMLDivElement>(null);
   const bgColorDropdownRef = useRef<HTMLDivElement>(null);
   const moodDropdownRef = useRef<HTMLDivElement>(null);
-  const scopeDropdownRef = useRef<HTMLDivElement>(null);
+  const privacyDropdownRef = useRef<HTMLDivElement>(null);
   const previewOpenRef = useRef<HTMLDivElement>(null);
 
   // toogleDropDown
@@ -59,8 +37,8 @@ const WriteDiary = () => {
   const toogleMoodDropdown = () => {
     setIsMoodDropdown(!isMoodDropdown);
   };
-  const toogleScopeDropdown = () => {
-    setIsScopDropdown(!isScopeDropdown);
+  const tooglePrivacyDropdown = () => {
+    setIsPrivacyDropdown(!isPrivacyDropdown);
   };
   const tooglePreviewOpen = () => {
     setIsPreviewOpen(!isPreviewOpen);
@@ -75,9 +53,9 @@ const WriteDiary = () => {
     setSelectedMood(option);
     setIsMoodDropdown(false);
   };
-  const selectScopeOption = (option: IScopeOption) => {
-    setSelectedScope(option);
-    setIsScopDropdown(false);
+  const selectPrivacyOption = (option: string) => {
+    setSelectedPrivacy(option);
+    setIsPrivacyDropdown(false);
   };
 
   // 외부 클릭 시 드롭다운 닫힘
@@ -96,9 +74,9 @@ const WriteDiary = () => {
       setIsMoodDropdown(false);
     }
   };
-  const handleClickScopeOutside = (e: MouseEvent) => {
-    if(scopeDropdownRef.current && !scopeDropdownRef.current.contains(e.target as Node)) {
-      setIsScopDropdown(false);
+  const handleClickPrivacyOutside = (e: MouseEvent) => {
+    if(privacyDropdownRef.current && !privacyDropdownRef.current.contains(e.target as Node)) {
+      setIsPrivacyDropdown(false);
     }
   };
   const handleClickPreivewOutside = (e: MouseEvent) => {
@@ -111,16 +89,29 @@ const WriteDiary = () => {
     document.addEventListener("click", handleClickEmojiOutside);
     document.addEventListener("click", handleClickBgColorOutside);
     document.addEventListener("click", handleClickMoodOutside);
-    document.addEventListener("click", handleClickScopeOutside);
+    document.addEventListener("click", handleClickPrivacyOutside);
     document.addEventListener("click", handleClickPreivewOutside);
     return () => {
       document.removeEventListener("click", handleClickEmojiOutside);
       document.removeEventListener("click", handleClickBgColorOutside);
       document.removeEventListener("click", handleClickMoodOutside);
-      document.removeEventListener("click", handleClickScopeOutside);
+      document.removeEventListener("click", handleClickPrivacyOutside);
       document.removeEventListener("click", handleClickPreivewOutside);
     };
   }, []);
+
+  const getPrivacyIcon = (privacyName: string) => {
+    switch (privacyName) {
+      case "전체 공개":
+        return <RiGlobalLine />;
+      case "친구 공개":
+        return <FiUser />;
+      case "비공개":
+        return <FiLock />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <WriteDiaryWrapper bgColor={selectedBgColor}>
@@ -224,29 +215,23 @@ const WriteDiary = () => {
           </div>
         </Section>
         {/* 일기 공개 범위 */}
-        <Section className="scope">
+        <Section className="privacy">
           <label>공개범위</label>
-          <div className="select-scope-box" ref={scopeDropdownRef}>
-            <div className="selected-scope" onClick={toogleScopeDropdown}>
-              {selectedScope.icon}
-              {selectedScope.text}
-            </div>
-            {isScopeDropdown && (
-              <ul className="scope-list">
-                {Object.keys(scopes).map((item) => {
-                  if (item === "default") {
-                    return null;
-                  }
-                  const option = scopes[item];
-                  return (
-                    <li key={item} onClick={() => selectScopeOption(option)}>
-                      {option.icon}
-                      <span>{option.text}</span>
+          <div className="select-privacy-box" ref={privacyDropdownRef}>
+            <div className="selected-privacy" onClick={tooglePrivacyDropdown}>
+                {getPrivacyIcon(selectedPrivacy)}
+                <span>{selectedPrivacy}</span>
+              </div>
+              {isPrivacyDropdown && (
+                <ul className="privacy-list">
+                  {privacies.map((privacy) => (
+                    <li key={privacy} onClick={() => selectPrivacyOption(privacy)}>
+                      {getPrivacyIcon(privacy)}
+                      <span>{privacy}</span>
                     </li>
-                  );
-                })}
-              </ul>
-            )}
+                  ))}
+                </ul>
+              )}
           </div>
         </Section>
         {/* 일기 작성 에디터 */}
@@ -473,10 +458,10 @@ const Section = styled.div`
   }
 
   /* 일기 공개 범위 */
-  .select-scope-box {
+  .select-privacy-box {
     position: relative;
 
-    .selected-scope {
+    .selected-privacy {
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
@@ -491,7 +476,7 @@ const Section = styled.div`
       }
     }
 
-    .scope-list {
+    .privacy-list {
       position: absolute;
       top: 28px;
       left: 0;
