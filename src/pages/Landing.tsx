@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion} from 'framer-motion';
-import bg from '../assets/images/bg.png';
+import background from '../assets/images/background.png';
 import { useNavigate } from 'react-router-dom';
 const Landing = () => {
   const navigate = useNavigate();
@@ -30,8 +30,8 @@ const Landing = () => {
 export default Landing;
 const LandingWrapper = styled(motion.div)`
   height: 100vh;
-  background-image: url(${ bg });
-  background-size: 100% 100%; 
+  background-image: url(${ background });
+  background-size: 100% auto;
   background-repeat: no-repeat; 
   background-position: center;
   background-attachment: fixed; 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import bg from '../assets/images/bg.png';
+import background from '../assets/images/background.png';
 import { FcGoogle } from "react-icons/fc";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
@@ -40,11 +40,11 @@ const Join = () => {
 
 const JoinWrapper = styled.div`
   height: 100vh;
-  background-image: url(${bg});
-  background-size: 100% 100%; 
+  background-image: url(${ background});
+  background-size: 100% auto;
   background-repeat: no-repeat; 
   background-position: center;
-  background-attachment: fixed;  
+  background-attachment: fixed;   
 `;
 const ContentWrapper = styled.div`
   display: flex;
