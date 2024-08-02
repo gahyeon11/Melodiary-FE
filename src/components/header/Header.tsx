@@ -11,8 +11,8 @@ import {
   BiSearch,
 } from "react-icons/bi";
 import { CiLogout } from "react-icons/ci";
+import { FaUserCircle } from "react-icons/fa";
 import NotificationDropdown from "../notification/NotificationDropdown";
-import profileImage from "../../assets/images/cat.jpg"; //api 연결 전 가상 프로필입니다! 필요하다면 사진 업로드 하겠습니다.
 
 function Header() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -20,6 +20,11 @@ function Header() {
     useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const notificationDropdownRef = useRef<HTMLDivElement>(null);
+
+  const user = {
+    username: "User",
+    profileImage: null,
+  };
 
   const toggleProfileDropdown = () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
@@ -60,7 +65,6 @@ function Header() {
       category: "friend",
       date: "2024-07-26",
     },
-
   ];
 
   return (
@@ -96,26 +100,28 @@ function Header() {
               />
             )}
           </IconButton>
-          {/* 유저 API 연결 전 상태입니다.  */}
-          <Profile ref={profileDropdownRef}>
-            <Link to="/mypage">
-              <img src={profileImage} alt="profile" />
-            </Link>
-            <span>User</span>
-            <IconButton onClick={toggleProfileDropdown}>
-              <BiSolidChevronDown size={24} />
-            </IconButton>
-            {isProfileDropdownOpen && (
-              <Dropdown>
-                {/* 로그아웃 기능 연결 전 상태입니다.  */}
-                <DropdownItem>
-                  <CiLogout size={20} />
-                  LOGOUT
-                </DropdownItem>
-              </Dropdown>
-            )}
-          </Profile>
         </Icons>
+        <Profile ref={profileDropdownRef}>
+          <Link to="/mypage">
+            {user.profileImage ? (
+              <img src={user.profileImage} alt="profile" />
+            ) : (
+              <DefaultProfileIcon size={32} />
+            )}
+          </Link>
+          <span>{user.username}</span>
+          <IconButton onClick={toggleProfileDropdown}>
+            <BiSolidChevronDown size={24} />
+          </IconButton>
+          {isProfileDropdownOpen && (
+            <Dropdown>
+              <DropdownItem>
+                <CiLogout size={20} />
+                LOGOUT
+              </DropdownItem>
+            </Dropdown>
+          )}
+        </Profile>
       </Container>
     </HeaderWrapper>
   );
@@ -128,7 +134,7 @@ const HeaderWrapper = styled.div`
   height: 64px;
   padding: 0 20px;
   background-color: ${({ theme }) => theme.color.white};
-  border: 1px solid ${({ theme }) => theme.color.grayDF};
+  border-bottom: 1px solid ${({ theme }) => theme.color.grayDF};
 `;
 
 const Logo = styled.div`
@@ -138,6 +144,7 @@ const Logo = styled.div`
     margin-left: 20px;
     color: ${({ theme }) => theme.color.gray999};
   }
+
   h1 {
     margin-left: 10px;
     font-size: ${({ theme }) => theme.title.title3};
@@ -158,7 +165,7 @@ const Container = styled.div`
 const SearchContainer = styled.div`
   display: flex;
   align-items: center;
-  padding: 8px 20px;
+  padding: 8px 100px 8px 20px;
   margin-right: 20px;
   border: 1px solid ${({ theme }) => theme.color.grayDF};
   border-radius: 8px;
@@ -167,17 +174,18 @@ const SearchContainer = styled.div`
   }
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  margin-right: 20px;
-`;
-
 const SearchInput = styled.input`
-  width: 400px;
+  flex-grow: 1;
   margin-left: 8px;
   border: none;
   background: none;
   outline: none;
+  min-width: 100px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  margin-right: 20px;
 `;
 
 const Icons = styled.div`
@@ -193,6 +201,7 @@ const Profile = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  margin-right: 20px;
   img {
     width: 32px;
     height: 32px;
@@ -200,14 +209,24 @@ const Profile = styled.div`
   }
   span {
     margin: 0 8px;
+    padding-bottom: 4px;
   }
+`;
+
+const DefaultProfileIcon = styled(FaUserCircle)`
+  width: 32px;
+  height: 32px;
+  color: ${({ theme }) => theme.color.gray999};
 `;
 
 const IconButton = styled.button`
   position: relative;
+  align-items: center;
+  padding-top: 2px;
   background: none;
   border: none;
   margin: 0;
+  color: ${({ theme }) => theme.color.gray999};
   cursor: pointer;
   &:hover {
     svg {
@@ -237,11 +256,12 @@ const DropdownItem = styled.div`
     background: ${({ theme }) => theme.color.grayLight};
   }
   span {
-    margin-left: 8px;
+    margin: 8px;
   }
   svg {
-      color: ${({ theme }) => theme.color.grayblack};
-    }
+    margin-right: 8px;
+    color: ${({ theme }) => theme.color.grayblack};
+  }
 `;
 
 export default Header;
