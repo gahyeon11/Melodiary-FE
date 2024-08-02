@@ -148,7 +148,7 @@ const WriteDiary = () => {
                 {colors.map((color, index) => (
                   <li
                     key={index}
-                    onClick={() => {selectBgColorOption(color.name)}}
+                    onClick={() => selectBgColorOption(color.name)}
                     style={{ backgroundColor: color.background }}
                   />
                 ))}
@@ -316,7 +316,6 @@ const IconBg = styled.div`
       transition: all 0.15s ease-in-out;
     }
   }
-  
   /* 오늘의 이모지 */
   .icon {
     position: relative;
