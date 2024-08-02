@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import CommentSection from "../components/comment/Comment";
+import { motion } from "framer-motion";
 import {
   FaHeart,
   FaCommentDots,
@@ -9,9 +10,18 @@ import {
   FaGlobe,
   FaLock,
 } from "react-icons/fa";
+import { BiChevronsLeft, BiChevronsRight } from "react-icons/bi";
 import { Link } from "react-router-dom";
 
 function Diary() {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleLayout = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+// /api/diaries/{diaryID}
   const diary = {
     id: 58,
     date: "2024년 7월 31일",
@@ -60,23 +70,26 @@ function Diary() {
     mood: "😊",
     emoji: "💡",
     privacy: "private",
-    like_count: 99,
+    like_count: 4,
     created_at: "2024-07-31",
-    background_color: "pink",
+    background_color: "blue",
   };
 
+  // /api/diaries/{diaryID}
   const weather = {
     weather: "Sunny",
     location: "Seoul",
     avg_temperature: "29.5",
   };
 
+  // /api/diaries/{diaryID}/music
   const music = {
     music_url: "https://www.youtube.com/watch?v=m6pTbEz4w3o",
     title: "Supernatural",
     artist: "NewJeans",
   };
 
+  // /api/users/{userID}
   const user = {
     userID: 1,
     profileImgURL: null,
@@ -87,10 +100,11 @@ function Diary() {
     diaryCount: 27,
   };
 
-  const comment = {
-    heart: diary.like_count,
-    comment: 4,
-  };
+  const likedUsers = [
+    { id: 1, nickname: "user1", profileImgURL: null },
+    { id: 2, nickname: "user2", profileImgURL: null },
+    { id: 3, nickname: "user3", profileImgURL: null },
+  ];
 
   const renderPrivacyIcon = () => {
     switch (diary.privacy) {
@@ -106,8 +120,24 @@ function Diary() {
   };
 
   return (
-    <DiaryContainer backgroundColor={diary.background_color}>
-      <DiaryContent>
+    <DiaryContainer
+      backgroundColor={diary.background_color}
+      isExpanded={isExpanded}
+      initial={{ left: "50vw", width: "50vw" }}
+      animate={{
+        left: isExpanded ? "74px" : "50vw",
+        right: "0",
+        width: isExpanded ? "calc(100vw - 74px)" : "50vw",
+      }}
+      transition={{ duration: 0.5 }}
+    >
+      <ToggleButton onClick={toggleLayout}>
+        {isExpanded ? <BiChevronsRight /> : <BiChevronsLeft />}
+      </ToggleButton>
+      <DiaryContent
+        backgroundColor={diary.background_color}
+        isExpanded={isExpanded}
+      >
         <DiaryHeader>
           <Title>
             <PrivacyContainer>
@@ -164,17 +194,48 @@ function Diary() {
         <DiaryText>
           <div dangerouslySetInnerHTML={{ __html: diary.content }} />
         </DiaryText>
-        <DiaryComment>
-          <DiarySpan>
-            <span className="heart">
-              <FaHeart /> {comment.heart}
-            </span>
-            <span className="comment">
-              <FaCommentDots /> {comment.comment}
-            </span>
-          </DiarySpan>
-          <CommentSection />
-        </DiaryComment>
+        {isExpanded && (
+          <DiaryComment>
+            <DiarySpan>
+              <span
+                className="heart"
+                onMouseEnter={() => setIsModalOpen(true)}
+                onMouseLeave={() => setIsModalOpen(false)}
+              >
+                <FaHeart /> {diary.like_count}
+              </span>
+              <span className="comment">
+                <FaCommentDots /> 4
+              </span>
+            </DiarySpan>
+            {isModalOpen && (
+              <LikesModal>
+                <LikedSpan>
+                  <span className="heart">
+                    <FaHeart />
+                  </span>
+                  <h4>Liked</h4>
+                </LikedSpan>
+                <ul>
+                  {likedUsers.map((user) => (
+                    <LikeItem key={user.id}>
+                      {user.profileImgURL ? (
+                        <ProfileImage
+                          src={user.profileImgURL}
+                          alt={user.nickname}
+                        />
+                      ) : (
+                        <DefaultProfileIcon />
+                      )}
+                      <span>{user.nickname}</span>
+                    </LikeItem>
+                  ))}
+                </ul>
+              </LikesModal>
+            )}
+            <CommentSection />
+          </DiaryComment>
+        )}
       </DiaryContent>
     </DiaryContainer>
   );
@@ -182,32 +243,43 @@ function Diary() {
 
 interface DiaryContainerProps {
   backgroundColor: string;
+  isExpanded: boolean;
 }
 
 interface DiaryTagItemProps {
   tagColor: string;
 }
 
-const DiaryContainer = styled.div<DiaryContainerProps>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  min-width: 96vw;
-  padding: 70px 150px;
+const DiaryContainer = styled(motion.div)<DiaryContainerProps>`
+  position: fixed;
+  top: 64px;
+  height: 100vh;
+  overflow-y: auto;
+
   background-color: ${({ theme, backgroundColor }) =>
     theme.diaryColor[backgroundColor]?.background ||
     theme.diaryColor.default.background};
 `;
 
-const DiaryContent = styled.div`
+const ToggleButton = styled.button`
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+
+  color: ${({ theme }) => theme.color.gray777};
+`;
+
+const DiaryContent = styled.div<DiaryContainerProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 1200px;
-  overflow-x: hidden;
+  padding: ${({ isExpanded }) => (isExpanded ? "70px 170px" : "70px")};
 `;
 
 const DiaryHeader = styled.div`
@@ -231,9 +303,10 @@ const PrivacyContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
+  margin-bottom: 10px;
+
   font-size: ${({ theme }) => theme.text.text3};
   color: ${({ theme }) => theme.color.gray999};
-  margin-bottom: 10px;
 `;
 
 const PrivacyText = styled.p`
@@ -242,15 +315,17 @@ const PrivacyText = styled.p`
 
 const DiaryTitle = styled.h2`
   margin: 0;
+
   font-size: ${({ theme }) => theme.title.title3};
   font-weight: bold;
   color: ${({ theme }) => theme.color.black};
 `;
 
 const DiaryDate = styled.div`
+  margin-bottom: 10px;
+
   font-size: ${({ theme }) => theme.text.text1};
   color: ${({ theme }) => theme.color.black};
-  margin-bottom: 10px;
 `;
 
 const Right = styled.div`
@@ -259,14 +334,19 @@ const Right = styled.div`
   align-items: center;
 `;
 
-const DiaryButton = styled.div<DiaryContainerProps>`
+interface DiaryButtonProps {
+  backgroundColor: string;
+}
+
+const DiaryButton = styled.div<DiaryButtonProps>`
   button {
     padding: 5px 10px;
     border: none;
     border-right: 1px solid ${({ theme }) => theme.color.grayDF};
     background-color: transparent;
-    color: ${({ theme }) => theme.color.gray777};
     cursor: pointer;
+
+    color: ${({ theme }) => theme.color.gray777};
   }
 `;
 
@@ -281,8 +361,8 @@ const DiaryProfile = styled.div`
 `;
 
 const ProfileImage = styled.img`
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
 `;
 
@@ -302,28 +382,31 @@ const DiaryTag = styled.div<DiaryTagItemProps>`
 `;
 
 const DiaryTagItem = styled.div<DiaryTagItemProps>`
-  background-color: ${({ theme, tagColor }) =>
-    theme.diaryColor[tagColor]?.tag || theme.diaryColor.default.tag};
   padding: 5px 15px;
   border-radius: 20px;
-  font-size: ${({ theme }) => theme.text.text3};
   display: flex;
   align-items: center;
   white-space: nowrap;
+
+  background-color: ${({ theme, tagColor }) =>
+    theme.diaryColor[tagColor]?.tag || theme.diaryColor.default.tag};
+  font-size: ${({ theme }) => theme.text.text3};
 `;
 
 const DiaryText = styled.div`
-  font-size: ${({ theme }) => theme.text.text1};
-  color: ${({ theme }) => theme.color.grayblack};
   padding: 0 30px;
-  white-space: pre-line;
   width: 100%;
   max-width: 100%;
+
+  font-size: ${({ theme }) => theme.text.text1};
+  color: ${({ theme }) => theme.color.grayblack};
+  white-space: pre-line;
 `;
 
 const DiarySpan = styled.div`
   display: flex;
   gap: 15px;
+
   .heart {
     color: #ff5c5c;
   }
@@ -338,6 +421,56 @@ const DiaryComment = styled.div`
   gap: 10px;
   width: 100%;
   max-width: 100%;
+`;
+
+const LikesModal = styled.div`
+  position: absolute;
+  z-index: 1000;
+  text-align: left;
+  margin: 24px 0;
+  padding: 15px 25px;
+
+  background-color: ${({ theme }) => theme.color.white};
+  border: 1px solid ${({ theme }) => theme.color.grayDF};
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    font-size: ${({ theme }) => theme.text.text2};
+    padding: 7px 0;
+    border-bottom: 1px solid ${({ theme }) => theme.color.grayDF};
+  }
+`;
+
+const LikedSpan = styled.div`
+  display: flex;
+  gap: 15px;
+  border-bottom: 1px solid ${({ theme }) => theme.color.grayDF};
+
+  .heart {
+    color: #ff5c5c;
+  }
+  h4 {
+    padding: 0 0 10px 0;
+
+    font-size: ${({ theme }) => theme.text.text2};
+    font-weight: bold;
+    text-align: center;
+  }
+`;
+
+const LikeItem = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid ${({ theme }) => theme.color.grayDF};
 `;
 
 export default Diary;
