@@ -2,39 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { FaPen, FaUserCircle } from "react-icons/fa";
 
-// 사용자 데이터
-const users = [
-  {
-    userID: 1,
-    profileImgURL:
-      null,
-    nickname: "musseuk",
-    emailAddress: "musseuk@example.com",
-  },
-  {
-    userID: 2,
-    profileImgURL:
-      "https://i.pinimg.com/236x/db/a4/32/dba4322ad59e8555cfad93442d2c9c3c.jpg",
-    nickname: "hannah",
-    emailAddress: "hannah@example.com",
-  },
-  {
-    userID: 3,
-    profileImgURL:
-      "https://i.pinimg.com/236x/db/a4/32/dba4322ad59e8555cfad93442d2c9c3c.jpg",
-    nickname: "jane",
-    emailAddress: "jane@example.com",
-  },
-  {
-    userID: 4,
-    profileImgURL:
-      "https://i.pinimg.com/236x/db/a4/32/dba4322ad59e8555cfad93442d2c9c3c.jpg",
-    nickname: "mark",
-    emailAddress: "mark@example.com",
-  },
-];
-
-// 댓글 데이터
+// /api/diaries/{diaryID}/comments
 const comments = [
   {
     date: "2024-08-01",
@@ -59,6 +27,38 @@ const comments = [
     commentId: 4,
     content: "잘 보고 갑니다!",
     userId: 4,
+  },
+];
+
+// user정보 : `/api/users/${comment.userId}`
+const users = [
+  {
+    userID: 1,
+    profileImgURL:
+      null,
+    nickname: "musseuk",
+    emailAddress: "musseuk@example.com",
+  },
+  {
+    userID: 2,
+    profileImgURL:
+      "https://i.pinimg.com/236x/db/a4/32/dba4322ad59e8555cfad93442d2c9c3c.jpg",
+    nickname: "Kim",
+    emailAddress: "Kim@example.com",
+  },
+  {
+    userID: 3,
+    profileImgURL:
+      "https://i.pinimg.com/236x/3d/aa/a5/3daaa580c31c86277d13f55594895f8a.jpg",
+    nickname: "Lee",
+    emailAddress: "Lee@example.com",
+  },
+  {
+    userID: 4,
+    profileImgURL:
+      "https://i.pinimg.com/236x/1c/d3/93/1cd393c81aee774ac3e0f586f7413a09.jpg",
+    nickname: "Park",
+    emailAddress: "Park@example.com",
   },
 ];
 
