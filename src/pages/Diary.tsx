@@ -120,127 +120,121 @@ function Diary() {
   };
 
   return (
-      <DiaryContainer
-        backgroundColor={diary.background_color}
-        isExpanded={isExpanded}
-        initial={{ left: "50vw", width: "50vw" }}
-        animate={{
-          left: isExpanded ? "74px" : "50vw",
-          right: "0",
-          width: isExpanded ? "calc(100vw - 74px)" : "50vw",
-        }}
-        transition={{ duration: 0.5 }}
-      >
-        <ToggleButton onClick={toggleLayout}>
-          {isExpanded ? <BiChevronsRight /> : <BiChevronsLeft />}
-        </ToggleButton>
-        <DiaryContent
-          backgroundColor={diary.background_color}
-          isExpanded={isExpanded}
-        >
-          <DiaryHeader>
-            <Title>
-              <PrivacyContainer>
-                {renderPrivacyIcon()}{" "}
-                <PrivacyText>
-                  {diary.privacy === "mate"
-                    ? "친구공개"
-                    : diary.privacy === "public"
-                    ? "전체공개"
-                    : "나만보기"}
-                </PrivacyText>
-              </PrivacyContainer>
-              <DiaryDate>{diary.date}</DiaryDate>
-              <DiaryTitle>{diary.title}</DiaryTitle>
-            </Title>
-            <Right>
-              <DiaryButton backgroundColor={diary.background_color}>
-                <Link to="/writeDiary">
-                  <button type="button">수정하기</button>
-                </Link>
-                <Link to="/writeDiary">
-                  <button type="button">삭제하기</button>
-                </Link>
-              </DiaryButton>
-              <DiaryProfile>
-                <Link to="/mypage">
-                  {user.profileImgURL ? (
-                    <ProfileImage
-                      src={user.profileImgURL}
-                      alt={user.nickname}
-                    />
-                  ) : (
-                    <DefaultProfileIcon />
-                  )}
-                </Link>
-                <p>{user.nickname}</p>
-              </DiaryProfile>
-            </Right>
-          </DiaryHeader>
-          <DiaryTag tagColor={diary.background_color}>
-            <DiaryTagItem tagColor={diary.background_color}>
-              오늘의 이모지 | {diary.emoji}
-            </DiaryTagItem>
-            <DiaryTagItem tagColor={diary.background_color}>
-              기분 | {diary.mood}
-            </DiaryTagItem>
-            <DiaryTagItem tagColor={diary.background_color}>
-              위치 | {weather.location}
-            </DiaryTagItem>
-            <DiaryTagItem tagColor={diary.background_color}>
-              날씨 | {weather.weather} {weather.avg_temperature}°C
-            </DiaryTagItem>
-            <DiaryTagItem tagColor={diary.background_color}>
-              오늘의 선곡 | {music.title} - {music.artist}
-            </DiaryTagItem>
-          </DiaryTag>
-          <DiaryText>
-            <div dangerouslySetInnerHTML={{ __html: diary.content }} />
-          </DiaryText>
-          {isExpanded && (
-            <DiaryComment>
-              <DiarySpan>
-                <span
-                  className="heart"
-                  onMouseEnter={() => setIsModalOpen(true)}
-                  onMouseLeave={() => setIsModalOpen(false)}
-                >
-                  <FaHeart /> {diary.like_count}
-                </span>
-                <span className="comment">
-                  <FaCommentDots /> 4
-                </span>
-              </DiarySpan>
-              {isModalOpen && (
-                <LikesModal>
-                  <LikedSpan>
-                    <span className="heart">
-                      <FaHeart />
-                    </span>
-                    <h4>Liked</h4>
-                  </LikedSpan>
-                  <ul>
-                    {likedUsers.map((user) => (
-                      <LikeItem key={user.id}>
-                        {user.profileImgURL ? (
-                          <ProfileImage
-                            src={user.profileImgURL}
-                            alt={user.nickname}
-                          />
-                        ) : (
-                          <DefaultProfileIcon />
-                        )}
-                        <span>{user.nickname}</span>
-                      </LikeItem>
-                    ))}
-                  </ul>
-                </LikesModal>
-              )}
-              <CommentSection />
-            </DiaryComment>
-          )}
-        </DiaryContent>
-      </DiaryContainer>
+    <DiaryContainer
+      backgroundColor={diary.background_color}
+      isExpanded={isExpanded}
+      initial={{ left: "50vw", width: "50vw" }}
+      animate={{
+        left: isExpanded ? "74px" : "50vw",
+        right: "0",
+        width: isExpanded ? "calc(100vw - 74px)" : "50vw",
+      }}
+      transition={{ duration: 0.5 }}
+    >
+      <ToggleButton onClick={toggleLayout}>
+        {isExpanded ? <BiChevronsRight /> : <BiChevronsLeft />}
+      </ToggleButton>
+      <DiaryContent>
+        <DiaryHeader>
+          <Title>
+            <PrivacyContainer>
+              {renderPrivacyIcon()}{" "}
+              <PrivacyText>
+                {diary.privacy === "mate"
+                  ? "친구공개"
+                  : diary.privacy === "public"
+                  ? "전체공개"
+                  : "나만보기"}
+              </PrivacyText>
+            </PrivacyContainer>
+            <DiaryDate>{diary.date}</DiaryDate>
+            <DiaryTitle>{diary.title}</DiaryTitle>
+          </Title>
+          <Right>
+            <DiaryButton backgroundColor={diary.background_color}>
+              <Link to="/writeDiary">
+                <button type="button">수정하기</button>
+              </Link>
+              <Link to="/writeDiary">
+                <button type="button">삭제하기</button>
+              </Link>
+            </DiaryButton>
+            <DiaryProfile>
+              <Link to="/mypage">
+                {user.profileImgURL ? (
+                  <ProfileImage src={user.profileImgURL} alt={user.nickname} />
+                ) : (
+                  <DefaultProfileIcon />
+                )}
+              </Link>
+              <p>{user.nickname}</p>
+            </DiaryProfile>
+          </Right>
+        </DiaryHeader>
+        <DiaryTag tagColor={diary.background_color}>
+          <DiaryTagItem tagColor={diary.background_color}>
+            오늘의 이모지 | {diary.emoji}
+          </DiaryTagItem>
+          <DiaryTagItem tagColor={diary.background_color}>
+            기분 | {diary.mood}
+          </DiaryTagItem>
+          <DiaryTagItem tagColor={diary.background_color}>
+            위치 | {weather.location}
+          </DiaryTagItem>
+          <DiaryTagItem tagColor={diary.background_color}>
+            날씨 | {weather.weather} {weather.avg_temperature}°C
+          </DiaryTagItem>
+          <DiaryTagItem tagColor={diary.background_color}>
+            오늘의 선곡 | {music.title} - {music.artist}
+          </DiaryTagItem>
+        </DiaryTag>
+        <DiaryText>
+          <div dangerouslySetInnerHTML={{ __html: diary.content }} />
+        </DiaryText>
+        {isExpanded && (
+          <DiaryComment>
+            <DiarySpan>
+              <span
+                className="heart"
+                onMouseEnter={() => setIsModalOpen(true)}
+                onMouseLeave={() => setIsModalOpen(false)}
+              >
+                <FaHeart /> {diary.like_count}
+              </span>
+              <span className="comment">
+                <FaCommentDots /> 4
+              </span>
+            </DiarySpan>
+            {isModalOpen && (
+              <LikesModal>
+                <LikedSpan>
+                  <span className="heart">
+                    <FaHeart />
+                  </span>
+                  <h4>Liked</h4>
+                </LikedSpan>
+                <ul>
+                  {likedUsers.map((user) => (
+                    <LikeItem key={user.id}>
+                      {user.profileImgURL ? (
+                        <ProfileImage
+                          src={user.profileImgURL}
+                          alt={user.nickname}
+                        />
+                      ) : (
+                        <DefaultProfileIcon />
+                      )}
+                      <span>{user.nickname}</span>
+                    </LikeItem>
+                  ))}
+                </ul>
+              </LikesModal>
+            )}
+            <CommentSection />
+          </DiaryComment>
+        )}
+      </DiaryContent>
+    </DiaryContainer>
   );
 }
 
@@ -272,11 +266,10 @@ const ToggleButton = styled.button`
   border: none;
   font-size: 24px;
   cursor: pointer;
-
   color: ${({ theme }) => theme.color.gray777};
 `;
 
-const DiaryContent = styled.div<DiaryContainerProps>`
+const DiaryContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -348,7 +341,6 @@ const DiaryButton = styled.div<DiaryButtonProps>`
     border-right: 1px solid ${({ theme }) => theme.color.grayDF};
     background-color: transparent;
     cursor: pointer;
-
     color: ${({ theme }) => theme.color.gray777};
   }
 `;
