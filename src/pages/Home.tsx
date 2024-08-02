@@ -24,7 +24,8 @@ export default Home;
 const HomeWrapper = styled.div`
   display: flex;
   height: 100vh;
-  width: 100vw;
+  width: calc(100vw - 100px); /* 사이드바의 너비를 고려 */
+  margin-left: 100px; /* 사이드바의 너비만큼 왼쪽 여백 추가 */
   margin: 0;
   padding: 0;
   box-sizing: border-box;
