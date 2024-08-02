@@ -20,7 +20,7 @@ const formats = [
   'align', 'link', 'image'
 ];
 
-const Editor = () => {
+const DiaryEditor = () => {
   const [text, setText] = useState('');
 
   const handleChange = (value: any) => {
@@ -28,23 +28,24 @@ const Editor = () => {
   };
 
   return (
-    <EditorWrapper>
+    <DiaryEditorWrapper>
       <ReactQuill
         value={text} 
         onChange={handleChange} 
         modules={modules} 
         formats={formats} 
       />
-    </EditorWrapper>
+    </DiaryEditorWrapper>
   );
 };
 
-export default Editor;
+export default DiaryEditor;
 
-const EditorWrapper = styled.div`
+const DiaryEditorWrapper = styled.div`
   width: 100%;
 
   .ql-container {
+    width: 100%;
     height: 600px;
   }
 `;

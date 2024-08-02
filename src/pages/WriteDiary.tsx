@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Editor from '../components/diary/Editor';
+import DiaryEditor from '../components/diary/DiaryEditor';
 import { FiPlusCircle, FiUser, FiLock, FiSearch, FiSend } from "react-icons/fi";
 import { VscSymbolColor } from "react-icons/vsc";
 import { RiGlobalLine } from "react-icons/ri";
@@ -7,8 +7,9 @@ import Button from '../components/button/Button';
 import { useEffect, useRef, useState } from 'react';
 import { IScopeOption } from '../models/writeDiary.model';
 import EmojiPicker from 'emoji-picker-react';
+import DiaryPreview from '../components/diary/DiaryPreview';
 
-const colors = [
+export const colors = [
   { name: 'default', background: '#FFFFFF' },
   { name: 'orange', background: '#FF87461A' },
   { name: 'beige', background: '#FFD2791A' },
@@ -40,11 +41,13 @@ const WriteDiary = () => {
   const [isBgColorDropdown, setIsBgColorDropdown] = useState(false);
   const [isMoodDropdown, setIsMoodDropdown] = useState(false);
   const [isScopeDropdown, setIsScopDropdown] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const emojiDropdownRef = useRef<HTMLDivElement>(null);
   const bgColorDropdownRef = useRef<HTMLDivElement>(null);
   const moodDropdownRef = useRef<HTMLDivElement>(null);
   const scopeDropdownRef = useRef<HTMLDivElement>(null);
+  const previewOpenRef = useRef<HTMLDivElement>(null);
 
   // toogleDropDown
   const toogleEmojiDropdown = () => {
@@ -58,6 +61,9 @@ const WriteDiary = () => {
   };
   const toogleScopeDropdown = () => {
     setIsScopDropdown(!isScopeDropdown);
+  };
+  const tooglePreviewOpen = () => {
+    setIsPreviewOpen(!isPreviewOpen);
   };
 
   // selectOption
@@ -95,22 +101,32 @@ const WriteDiary = () => {
       setIsScopDropdown(false);
     }
   };
+  const handleClickPreivewOutside = (e: MouseEvent) => {
+    if(previewOpenRef.current && !previewOpenRef.current.contains(e.target as Node)) {
+      setIsPreviewOpen(false);
+    }
+  };
 
   useEffect(() => {
     document.addEventListener("click", handleClickEmojiOutside);
     document.addEventListener("click", handleClickBgColorOutside);
     document.addEventListener("click", handleClickMoodOutside);
     document.addEventListener("click", handleClickScopeOutside);
+    document.addEventListener("click", handleClickPreivewOutside);
     return () => {
       document.removeEventListener("click", handleClickEmojiOutside);
       document.removeEventListener("click", handleClickBgColorOutside);
       document.removeEventListener("click", handleClickMoodOutside);
       document.removeEventListener("click", handleClickScopeOutside);
+      document.removeEventListener("click", handleClickPreivewOutside);
     };
   }, []);
 
   return (
     <WriteDiaryWrapper bgColor={selectedBgColor}>
+      {isPreviewOpen && (
+        <DiaryPreview selectedBgColor={selectedBgColor} />
+      )}
       <WriteDiaryContents>
         {/* 아이콘 추가, 배경 색상 추가 */}
         <div className="today-emoji">
@@ -234,10 +250,15 @@ const WriteDiary = () => {
           </div>
         </Section>
         {/* 일기 작성 에디터 */}
-        <Editor />
+        <DiaryEditor />
         {/* 미리보기, 등록하기 BTN */}
-        <SubmitBox>
-          <Button size="short" schema="gray">
+        <SubmitBox ref={previewOpenRef}>
+          <Button
+            size="short" 
+            schema="gray"
+            type="button"
+            onClick={tooglePreviewOpen}
+          >
             <FiSearch size={16} /> 미리보기
           </Button>
           <Button size="short" schema="gray">
@@ -257,6 +278,7 @@ const WriteDiaryWrapper = styled.div<{ bgColor: string }>`
   height: 100%;
   padding: 80px 10%;
   background-color: ${({ theme, bgColor }) => theme.diaryColor[bgColor].background};
+  position: relative;
 
   &:-webkit-scrollbar {
     display: none;
