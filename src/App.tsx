@@ -11,40 +11,45 @@ import WriteDiary from './pages/WriteDiary';
 import Landing from './pages/Landing';
 import Join from './pages/Join';
 import Login from './pages/Login';
+import Diary from "./pages/Diary";
 
 const App = () => {
   const routerList = [
     {
-      path: '/home',
+      path: "/home",
       component: <Home />,
     },
     {
-      path: '/explore',
+      path: "/explore",
       component: <Explore />,
     },
     {
-      path: '/mates',
+      path: "/mates",
       component: <Mates />,
     },
     {
-      path: '/mypage',
+      path: "/mypage",
       component: <MyPage />,
     },
     {
-      path: '/writediary',
+      path: "/writediary",
       component: <WriteDiary />,
     },
     {
-      path: '/',
+      path: "/",
       component: <Landing />,
     },
     {
-      path: '/join',
-      component: <Join/>,
+      path: "/join",
+      component: <Join />,
     },
     {
-      path: '/login',
-      component: <Login/>,
+      path: "/login",
+      component: <Login />,
+    },
+    {
+      path: "/diary",
+      component: <Diary />,
     },
   ];
 
@@ -55,14 +60,14 @@ const App = () => {
         element: <Layout>{item.component}</Layout>,
       };
     })
-  )
-  
+  );
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <RouterProvider router={router} />
     </ThemeProvider>
-  )
+  );
 };
 
 export default App;
