@@ -13,6 +13,7 @@ export type Color =
   | "grayblack"
   | "gray777"
   | "gray999"
+  | "grayCCC"
   | "grayDF"
   | "grayEEE"
   | "white";
@@ -83,6 +84,7 @@ export const theme: Theme = {
     grayblack: "#333333",
     gray777: "#777777",
     gray999: "#999999",
+    grayCCC: "#CCCCCC",
     grayDF: "#DFDFDF",
     grayEEE: "#EEEEEE",
     white: "#FFFFFF",
@@ -93,8 +95,8 @@ export const theme: Theme = {
       tag: "#EEEEEE",
     },
     orange: {
-      background: "#FF59001A",
-      tag: "#FF59004D",
+      background: "#FF87461A",
+      tag: "#FF87464D",
     },
     beige: {
       background: "#FFD2791A",
@@ -109,28 +111,28 @@ export const theme: Theme = {
       tag: "#8FEC474D",
     },
     mint: {
-      background: "#55EDB61A",
-      tag: "#55EDB64D",
+      background: "#71F8C81A",
+      tag: "#71F8C84D",
     },
     blue: {
       background: "#9AD9EA1A",
       tag: "#9AD9EA4D",
     },
     coolblue: {
-      background: "#55EDB61A",
-      tag: "#55EDB64D",
+      background: "#8AA3F91A",
+      tag: "#8AA3F91A4D",
     },
     purple: {
-      background: "#A062EE1A",
-      tag: "#A062EE4D",
+      background: "#BA84FF1A",
+      tag: "#BA84FF4D",
     },
     pink: {
       background: "#EA9ACA1A",
       tag: "#EA9ACA4D",
     },
     gray: {
-      background: "#5555551A",
-      tag: "#5555554D",
+      background: "#9999991A",
+      tag: "#9999994D",
     },
   },
   title: {

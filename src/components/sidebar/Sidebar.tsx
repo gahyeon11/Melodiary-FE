@@ -47,9 +47,8 @@ const SidebarWrapper = styled.aside`
   align-items: center;
   gap: 16px;
   width: 74px;
-  height: calc(100vh - 64px);
+  height: 100%;
   padding: 24px 0;
-  border-right: 1px solid ${({ theme }) => theme.color.grayDF};
 `;
 
 const SidebarLink = styled(Link)<{ active: boolean }>`

@@ -9,13 +9,14 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: ${theme.fontFamily.en};
   }
-
+  
   body {
     margin: 0;
     padding: 0;
     font-family: ${theme.fontFamily.en};
+    color: ${({ theme }) => theme.color.black};
+    background-color: ${({ theme }) => theme.color.white};
   }
 
   a {
