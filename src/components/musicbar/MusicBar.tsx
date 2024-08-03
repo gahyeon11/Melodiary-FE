@@ -140,20 +140,18 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
     >
       <VideoContainer ref={playerRef} />
       <TrackInfo>
-        <LeftControl>
           <TrackText>
             <TrackTitle>{title}</TrackTitle>
             <TrackArtist>{artist}</TrackArtist>
           </TrackText>
-          <button onClick={handlePlayPause}>
+        <ProgressContainer>
+        <button onClick={handlePlayPause}>
             {isPlaying ? (
               <IoIosPause size={"24px"} />
             ) : (
               <IoIosPlay size={"24px"} />
             )}
           </button>
-        </LeftControl>
-        <ProgressContainer>
           <Time>{currentTime}</Time>
           <ProgressBar value={progress} isExpanded={isExpanded}>
             <input
@@ -250,28 +248,21 @@ const TrackArtist = styled.div`
   color: ${({ theme }) => theme.color.black};
 `;
 
-const LeftControl = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 35px;
-
-  button {
-    background-color: transparent;
-    color: ${({ theme }) => theme.color.grayblack};
-    border: none;
-    margin-top: 5px;
-    cursor: pointer;
-
-    &:hover {
-      color: ${({ theme }) => theme.color.gray777};
-    }
-  }
-`;
-
 const ProgressContainer = styled.div`
   display: flex;
   align-items: center;
+  button {
+    background-color: transparent;
+    color: ${({ theme }) => theme.color.gray777};
+    border: none;
+    margin-top: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+
+    &:hover {
+      color: ${({ theme }) => theme.color.grayblack};
+    }
+  }
 `;
 
 const Time = styled.div`
@@ -330,11 +321,11 @@ const VolumeButton = styled.button`
   background-color: transparent;
   border: none;
   cursor: pointer;
-  color: ${({ theme }) => theme.color.gray999};
+  color: ${({ theme }) => theme.color.gray777};
   margin-top: 5px;
 
   &:hover {
-    color: ${({ theme }) => theme.color.gray777};
+    color: ${({ theme }) => theme.color.grayblack};
   }
 `;
 
@@ -369,7 +360,7 @@ const VolumeControl = styled.div<{
     appearance: none;
     width: 10px;
     height: 10px;
-    background: ${({ theme }) => theme.color.gray999};
+    background: ${({ theme }) => theme.color.gray777};
     cursor: pointer;
     border-radius: 50%;
   }
