@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { BiChevronsLeft, BiChevronsRight } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import MusicBar from "../components/musicbar/MusicBar";
 
 function Diary() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -25,54 +26,17 @@ function Diary() {
   const diary = {
     id: 58,
     date: "2024년 7월 31일",
-    title: "Supernatural",
+    title: "제목",
     content: `
-  <h1 style="text-align: center; color: #8e44ad; text-shadow: 2px 2px #bdc3c7;">Supernatural - NewJeans</h1>
-
-  <p style="font-size: 20px; color: #2980b9; margin-bottom: 20px;">
-    <span style="color: #e74c3c; font-weight: bold;">I don't know what we've done</span><br />
-    <span style="color: #2ecc71; background-color: #f1c40f; padding: 2px 4px; border-radius: 4px;">되돌아가긴 싫어, もう知っている</span><br />
-    <span style="color: #9b59b6;">Don't know what we've been sold</span><br />
-    <span style="text-decoration: underline; color: #34495e;">見つけられるよ, so it's sure</span> <span style="color: #e67e22;">(come on)</span>
-  </p>
-<p><img src="https://i.pinimg.com/236x/4d/44/82/4d44823306b8de27a24a200f8c2730a4.jpg" alt="Diary Image 1" /></p>
-
-  <p style="font-size: 18px; margin-bottom: 20px;">
-    <span style="color: #f39c12; font-weight: bold;">Golden moon, diamond stars</span><br />
-    <span style="color: #3498db;">In a moment, you and I</span><br />
-    <span style="font-style: italic; color: #c0392b;">Second chance, しょうがない</span><br />
-    <span style="background-color: #2ecc71; color: white; padding: 2px 6px; border-radius: 4px;">もう少し待って, 너와 내게 향하게</span> <span style="color: #16a085;">(ayy)</span>
-  </p>
-
-  <p style="font-size: 20px; font-weight: bold; color: #e74c3c; margin-bottom: 20px;">
-    <span style="text-decoration: underline; color: #8e44ad;">My feeling's getting deeper</span> <span style="color: #3498db;">(deeper)</span><br />
-    <span style="color: #27ae60;">내 심박수를 믿어</span> <span style="color: #e67e22;">(믿어)</span><br />
-    <span style="background-color: #f39c12; color: white; padding: 2px 4px; border-radius: 4px;">우리 인연은 깊어</span> <span style="font-style: italic; color: #9b59b6;">(you know)</span><br />
-    <span style="color: #e74c3c; font-weight: bold;">I gotta see the meaning of it</span>
-  </p>
-
-  <p style="font-size: 20px; color: #2980b9; margin-bottom: 20px;">
-    <span style="color: #e74c3c; font-weight: bold;">I don't know what we've done</span><br />
-    <span style="color: #2ecc71; background-color: #f1c40f; padding: 2px 4px; border-radius: 4px;">되돌아가긴 싫어, もう知っている</span><br />
-    <span style="color: #9b59b6;">Don't know what we've been sold</span><br />
-    <span style="text-decoration: underline; color: #34495e;">見つけられるよ, so it's sure</span>
-  </p>
-
-  <p style="font-size: 22px; font-weight: bold; text-align: center; color: #8e44ad;">
-    <span style="background-color: #f39c12; color: white; padding: 5px 10px; border-radius: 6px;">It's supernatural</span><br />
-    <span style="font-style: italic; color: #3498db;">It's supernatural</span>
-  </p>
-
-
-<p><img src="https://i.pinimg.com/236x/81/d4/ab/81d4abdff4eb42ec8dc22ce7bd93d01b.jpg" alt="Diary Image 2" /></p>
-    `,
+html 내용 
+ `,
     user_id: "1",
     mood: "😊",
     emoji: "💡",
     privacy: "private",
     like_count: 4,
     created_at: "2024-07-31",
-    background_color: "blue",
+    background_color: "green",
   };
 
   // /api/diaries/{diaryID}
@@ -84,7 +48,7 @@ function Diary() {
 
   // /api/diaries/{diaryID}/music
   const music = {
-    music_url: "https://www.youtube.com/watch?v=m6pTbEz4w3o",
+    music_url: "https://www.youtube.com/watch?v=Jkd_CsnaF2k",
     title: "Supernatural",
     artist: "NewJeans",
   };
@@ -120,121 +84,132 @@ function Diary() {
   };
 
   return (
-    <DiaryContainer
-      backgroundColor={diary.background_color}
-      isExpanded={isExpanded}
-      initial={{ left: "50vw", width: "50vw" }}
-      animate={{
-        left: isExpanded ? "74px" : "50vw",
-        right: "0",
-        width: isExpanded ? "calc(100vw - 74px)" : "50vw",
-      }}
-      transition={{ duration: 0.5 }}
-    >
-      <ToggleButton onClick={toggleLayout}>
-        {isExpanded ? <BiChevronsRight /> : <BiChevronsLeft />}
-      </ToggleButton>
-      <DiaryContent>
-        <DiaryHeader>
-          <Title>
-            <PrivacyContainer>
-              {renderPrivacyIcon()}{" "}
-              <PrivacyText>
-                {diary.privacy === "mate"
-                  ? "친구공개"
-                  : diary.privacy === "public"
-                  ? "전체공개"
-                  : "나만보기"}
-              </PrivacyText>
-            </PrivacyContainer>
-            <DiaryDate>{diary.date}</DiaryDate>
-            <DiaryTitle>{diary.title}</DiaryTitle>
-          </Title>
-          <Right>
-            <DiaryButton backgroundColor={diary.background_color}>
-              <Link to="/writeDiary">
-                <button type="button">수정하기</button>
-              </Link>
-              <Link to="/writeDiary">
-                <button type="button">삭제하기</button>
-              </Link>
-            </DiaryButton>
-            <DiaryProfile>
-              <Link to="/mypage">
-                {user.profileImgURL ? (
-                  <ProfileImage src={user.profileImgURL} alt={user.nickname} />
-                ) : (
-                  <DefaultProfileIcon />
-                )}
-              </Link>
-              <p>{user.nickname}</p>
-            </DiaryProfile>
-          </Right>
-        </DiaryHeader>
-        <DiaryTag tagColor={diary.background_color}>
-          <DiaryTagItem tagColor={diary.background_color}>
-            오늘의 이모지 | {diary.emoji}
-          </DiaryTagItem>
-          <DiaryTagItem tagColor={diary.background_color}>
-            기분 | {diary.mood}
-          </DiaryTagItem>
-          <DiaryTagItem tagColor={diary.background_color}>
-            위치 | {weather.location}
-          </DiaryTagItem>
-          <DiaryTagItem tagColor={diary.background_color}>
-            날씨 | {weather.weather} {weather.avg_temperature}°C
-          </DiaryTagItem>
-          <DiaryTagItem tagColor={diary.background_color}>
-            오늘의 선곡 | {music.title} - {music.artist}
-          </DiaryTagItem>
-        </DiaryTag>
-        <DiaryText>
-          <div dangerouslySetInnerHTML={{ __html: diary.content }} />
-        </DiaryText>
-        {isExpanded && (
-          <DiaryComment>
-            <DiarySpan>
-              <span
-                className="heart"
-                onMouseEnter={() => setIsModalOpen(true)}
-                onMouseLeave={() => setIsModalOpen(false)}
-              >
-                <FaHeart /> {diary.like_count}
-              </span>
-              <span className="comment">
-                <FaCommentDots /> 4
-              </span>
-            </DiarySpan>
-            {isModalOpen && (
-              <LikesModal>
-                <LikedSpan>
-                  <span className="heart">
-                    <FaHeart />
-                  </span>
-                  <h4>Liked</h4>
-                </LikedSpan>
-                <ul>
-                  {likedUsers.map((user) => (
-                    <LikeItem key={user.id}>
-                      {user.profileImgURL ? (
-                        <ProfileImage
-                          src={user.profileImgURL}
-                          alt={user.nickname}
-                        />
-                      ) : (
-                        <DefaultProfileIcon />
-                      )}
-                      <span>{user.nickname}</span>
-                    </LikeItem>
-                  ))}
-                </ul>
-              </LikesModal>
-            )}
-            <CommentSection />
-          </DiaryComment>
-        )}
-      </DiaryContent>
-    </DiaryContainer>
+    <>
+      <DiaryContainer
+        backgroundColor={diary.background_color}
+        isExpanded={isExpanded}
+        initial={{ left: "50vw", width: "50vw" }}
+        animate={{
+          left: isExpanded ? "74px" : "50vw",
+          right: "0",
+          width: isExpanded ? "calc(100vw - 74px)" : "50vw",
+        }}
+        transition={{ duration: 0.5 }}
+      >
+        <ToggleButton onClick={toggleLayout}>
+          {isExpanded ? <BiChevronsRight /> : <BiChevronsLeft />}
+        </ToggleButton>
+        <DiaryContent>
+          <DiaryHeader>
+            <Title>
+              <PrivacyContainer>
+                {renderPrivacyIcon()}{" "}
+                <PrivacyText>
+                  {diary.privacy === "mate"
+                    ? "친구공개"
+                    : diary.privacy === "public"
+                    ? "전체공개"
+                    : "나만보기"}
+                </PrivacyText>
+              </PrivacyContainer>
+              <DiaryDate>{diary.date}</DiaryDate>
+              <DiaryTitle>{diary.title}</DiaryTitle>
+            </Title>
+            <Right>
+              <DiaryButton backgroundColor={diary.background_color}>
+                <Link to="/writeDiary">
+                  <button type="button">수정하기</button>
+                </Link>
+                <Link to="/writeDiary">
+                  <button type="button">삭제하기</button>
+                </Link>
+              </DiaryButton>
+              <DiaryProfile>
+                <Link to="/mypage">
+                  {user.profileImgURL ? (
+                    <ProfileImage
+                      src={user.profileImgURL}
+                      alt={user.nickname}
+                    />
+                  ) : (
+                    <DefaultProfileIcon />
+                  )}
+                </Link>
+                <p>{user.nickname}</p>
+              </DiaryProfile>
+            </Right>
+          </DiaryHeader>
+          <DiaryTag tagColor={diary.background_color}>
+            <DiaryTagItem tagColor={diary.background_color}>
+              오늘의 이모지 | {diary.emoji}
+            </DiaryTagItem>
+            <DiaryTagItem tagColor={diary.background_color}>
+              기분 | {diary.mood}
+            </DiaryTagItem>
+            <DiaryTagItem tagColor={diary.background_color}>
+              위치 | {weather.location}
+            </DiaryTagItem>
+            <DiaryTagItem tagColor={diary.background_color}>
+              날씨 | {weather.weather} {weather.avg_temperature}°C
+            </DiaryTagItem>
+            <DiaryTagItem tagColor={diary.background_color}>
+              오늘의 선곡 | {music.title} - {music.artist}
+            </DiaryTagItem>
+          </DiaryTag>
+          <DiaryText>
+            <div dangerouslySetInnerHTML={{ __html: diary.content }} />
+          </DiaryText>
+          {isExpanded && (
+            <DiaryComment>
+              <DiarySpan>
+                <span
+                  className="heart"
+                  onMouseEnter={() => setIsModalOpen(true)}
+                  onMouseLeave={() => setIsModalOpen(false)}
+                >
+                  <FaHeart /> {diary.like_count}
+                </span>
+                <span className="comment">
+                  <FaCommentDots /> 4
+                </span>
+              </DiarySpan>
+              {isModalOpen && (
+                <LikesModal>
+                  <LikedSpan>
+                    <span className="heart">
+                      <FaHeart />
+                    </span>
+                    <h4>Liked</h4>
+                  </LikedSpan>
+                  <ul>
+                    {likedUsers.map((user) => (
+                      <LikeItem key={user.id}>
+                        {user.profileImgURL ? (
+                          <ProfileImage
+                            src={user.profileImgURL}
+                            alt={user.nickname}
+                          />
+                        ) : (
+                          <DefaultProfileIcon />
+                        )}
+                        <span>{user.nickname}</span>
+                      </LikeItem>
+                    ))}
+                  </ul>
+                </LikesModal>
+              )}
+              <CommentSection />
+            </DiaryComment>
+          )}
+        </DiaryContent>
+      </DiaryContainer>
+      <MusicBar
+        youtubeUrl={music.music_url}
+        title={music.title}
+        artist={music.artist}
+        isExpanded={isExpanded}
+      />
+    </>
   );
 }
 
@@ -276,6 +251,7 @@ const DiaryContent = styled.div`
   align-items: center;
   width: 100%;
   padding: 80px 10%;
+  margin-bottom: 80px;
 `;
 
 const DiaryHeader = styled.div`
@@ -389,7 +365,7 @@ const DiaryTagItem = styled.div<DiaryTagItemProps>`
 `;
 
 const DiaryText = styled.div`
-  padding: 0 30px;
+  padding: 10px 30px;
   width: 100%;
   max-width: 100%;
 
