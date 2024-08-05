@@ -7,7 +7,7 @@ import { RiKakaoTalkFill } from "react-icons/ri";
 import { GOOGLE_AUTH_URL, KAKAO_AUTH_URL, NAVER_AUTH_URL } from '../config';
 
 const Join = () => {
-
+  console.log(GOOGLE_AUTH_URL);
   return (
     <JoinWrapper>
       <ContentWrapper>

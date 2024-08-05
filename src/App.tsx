@@ -16,6 +16,7 @@ import Login from './pages/Login';
 import { AnimatePresence } from 'framer-motion';
 import NickName from './pages/Nickname';
 import Auth from './pages/Auth';
+import { AuthProvider, tokenLoader } from './context/AuthContext';
 
 const App = () => {
   const routerList = [
@@ -42,6 +43,7 @@ const App = () => {
     {
       path: '/',
       component: <Landing />,
+      loader: tokenLoader,
     },
     {
       path: '/join',
@@ -72,8 +74,11 @@ const App = () => {
   
   return (
     <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <GlobalStyle />
+        <RouterProvider router={router} />
+      </AuthProvider>
+      
     </ThemeProvider>
   )
 };
