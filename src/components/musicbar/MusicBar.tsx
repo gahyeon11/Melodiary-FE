@@ -123,8 +123,13 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
     if (player) {
       const duration = player.getDuration();
       player.seekTo((duration * newProgress) / 100);
+      if (!isPlaying) {
+        player.playVideo();
+        setIsPlaying(true);
+      }
     }
   };
+  
 
   return (
     <MusicBarContainer
@@ -206,6 +211,7 @@ const MusicBarContainer = styled(motion.div)<musicProps>`
   display: flex;
   align-items: center;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
 `;
 
 const VideoContainer = styled.div`
@@ -255,8 +261,7 @@ const ProgressContainer = styled.div`
     background-color: transparent;
     color: ${({ theme }) => theme.color.gray777};
     border: none;
-    margin-top: 5px;
-    margin-right: 10px;
+    margin: 4px 2px 0 10px ;
     cursor: pointer;
 
     &:hover {
@@ -266,11 +271,10 @@ const ProgressContainer = styled.div`
 `;
 
 const Time = styled.div`
-  font-size: 12px;
+  font-size: ${({theme})=> theme.text.text2};
   color: ${({ theme }) => theme.color.gray999};
-  width: 40px;
+  width: 50px;
   text-align: center;
-  margin-top: 2px;
 `;
 
 interface ProgressBarProps {
