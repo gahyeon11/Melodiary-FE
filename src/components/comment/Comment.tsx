@@ -102,6 +102,7 @@ const CommentsContainer = styled.div`
   background-color: none;
   border-top: 1px solid ${({ theme }) => theme.color.grayDF};
   padding: 0 15px;
+  margin-bottom: 80px;
 `;
 
 const Comment = styled.div`
