@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Calendar from '../components/diary/Calender';
+import PlayList from '../components/diary/PlayList';
 
 const Home = () => {
   return (
@@ -10,6 +11,8 @@ const Home = () => {
           <Calendar />
         </CalendarSection>
         <Playlist>
+          <CalendarHeader>🎵 따봉고양이 님의 플레이리스트</CalendarHeader>
+          <PlayList />
         </Playlist>
       </LeftSection>
       <RightSection>
@@ -69,6 +72,7 @@ const RightSection = styled.div`
 const Playlist = styled.div`
   margin-top: 20px;
   padding: 20px;
+  max-width: 700px;
 `;
 
 const Message = styled.div`
