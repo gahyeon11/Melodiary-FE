@@ -13,6 +13,7 @@ import {
 import { CiLogout } from "react-icons/ci";
 import { FaUserCircle } from "react-icons/fa";
 import NotificationDropdown from "../notification/NotificationDropdown";
+import { useAuth } from "../../context/AuthContext";
 
 function Header() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -20,6 +21,7 @@ function Header() {
     useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const notificationDropdownRef = useRef<HTMLDivElement>(null);
+  const {isAuthenticated, logout} = useAuth();
 
   const user = {
     username: "User",
@@ -116,7 +118,7 @@ function Header() {
           {isProfileDropdownOpen && (
             <Dropdown>
               <DropdownItem>
-                <CiLogout size={20} />
+                <CiLogout size={20} onClick={logout} />
                 LOGOUT
               </DropdownItem>
             </Dropdown>

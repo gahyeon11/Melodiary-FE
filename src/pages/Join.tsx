@@ -1,11 +1,20 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import background from '../assets/images/background.png';
 import { FcGoogle } from "react-icons/fc";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import { GOOGLE_SIGNUP_URL, KAKAO_SIGNUP_URL, NAVER_SIGNUP_URL } from '../config';
+import { useAuth } from '../context/AuthContext';
+import { useEffect } from 'react';
 const Join = () => {
+  const {isAuthenticated} = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/home');
+    }
+  }, [isAuthenticated, navigate]);
   return (
     <JoinWrapper>
       <ContentWrapper>

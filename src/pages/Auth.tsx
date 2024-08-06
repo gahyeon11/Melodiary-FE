@@ -10,9 +10,11 @@ import { ISignup } from '../models/user.model';
 import { signUp, login } from '../api/auth.api';
 import axios from 'axios';
 import Modal from '../components/modal/signupModal';
+import { useAuth } from '../context/AuthContext';
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { login: setAuthToken } = useAuth();
   const urlParams = new URLSearchParams(window.location.search);
   const stateParam = urlParams.get('state');
   const code = urlParams.get('code');
@@ -49,14 +51,18 @@ const Auth = () => {
             const { accessToken, userId } = response.data;
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('userId', userId);
-            //navigate('/nickname'); // 리다이렉트
+            setAuthToken(accessToken, userId);
+            if(action === 'signup'){
+              //navigate('/nickname'); // 리다이렉트
+            } else if (action === 'login') {
+              navigate('/home'); 
+            }  
           }
         } catch (error) {
           if (axios.isAxiosError(error) && error.response?.status === 409) {
             setModalMessage("이미 가입된 정보가 있습니다. \n로그인 화면으로 이동할까요?");
           } else {
             console.error('OAuth 실패:', error);
-            //navigate('/home'); 
           }
         }
       } else {
