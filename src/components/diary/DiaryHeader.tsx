@@ -114,8 +114,8 @@ interface DiaryTextProps {
 }
 
 const ProfileIconContainer = styled.div<DiaryTextProps>`
-  width: ${({ isSummary }) => (isSummary ? "55px" : "30px")};
-  height: ${({ isSummary }) => (isSummary ? "55px" : "30px")};
+  width: ${({ isSummary }) => (isSummary ? "51px" : "29px")};
+  height: ${({ isSummary }) => (isSummary ? "51px" : "29px")};
   border-radius: 50%;
   background-color: #ffffff;
   display: flex;
@@ -124,8 +124,8 @@ const ProfileIconContainer = styled.div<DiaryTextProps>`
 `;
 
 const DefaultProfileIcon = styled(FaUserCircle)<DiaryTextProps>`
-  width: ${({ isSummary }) => (isSummary ? "55px" : "30px")};
-  height: ${({ isSummary }) => (isSummary ? "55px" : "30px")};
+  width: ${({ isSummary }) => (isSummary ? "55px" : "28px")};
+  height: ${({ isSummary }) => (isSummary ? "55px" : "28px")};
   color: ${({ theme }) => theme.color.gray999};
 `;
 
@@ -210,8 +210,8 @@ const ProfileText = styled.div`
 `;
 
 const ProfileImage = styled.img<DiaryTextProps>`
-  width: ${({ isSummary }) => (isSummary ? "55px" : "30px")};
-  height: ${({ isSummary }) => (isSummary ? "55px" : "30px")};
+  width: ${({ isSummary }) => (isSummary ? "55px" : "28px")};
+  height: ${({ isSummary }) => (isSummary ? "55px" : "28px")};
   border-radius: 50%;
 `;
 

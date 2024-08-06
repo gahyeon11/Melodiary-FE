@@ -77,7 +77,7 @@ const DiaryItem: React.FC<DiaryItemProps> = ({
             : isSummary
             ? "18vw"
             : isExpanded
-            ? "74px"
+            ? "70px"
             : "50vw",
         width:
           isSummary && isMatesPage
@@ -153,8 +153,5 @@ const Diary = styled.div<DiaryProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  cursor: ${({ isSummary }) => (isSummary ? "pointer" : "default")}; /* 커서 모양 변경 */
-  &:hover {
-    opacity: ${({ isSummary }) => (isSummary ? 0.8 : 1)}; /* 호버 효과 추가 */
-  }
+  cursor: ${({ isSummary }) => (isSummary ? "pointer" : "default")}; 
 `;

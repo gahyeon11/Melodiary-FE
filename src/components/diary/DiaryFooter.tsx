@@ -6,6 +6,7 @@ import {
   FaCommentDots,
   FaRegHeart,
   FaUserCircle,
+  FaRegCommentDots,
 } from "react-icons/fa";
 import { DiaryItemProps } from "./DiaryItem";
 
@@ -50,10 +51,10 @@ const DiaryFooter: React.FC<DiaryItemProps> = ({
               handleLikeClick(event);
             }}
           >
-            {userHasLiked ? <FaHeart size={22}/> : <FaRegHeart size={22}/>} {likeCount}
+            {userHasLiked ? <FaHeart size={20}/> : <FaRegHeart size={20}/>} {likeCount}
           </span>
           <span className="comment">
-            <FaCommentDots size={22}/> 4
+            <FaRegCommentDots size={20}/> 4
           </span>
         </DiarySpan>
       </SummaryFooter>
@@ -67,10 +68,10 @@ const DiaryFooter: React.FC<DiaryItemProps> = ({
               onMouseEnter={() => setIsModalOpen(true)}
               onMouseLeave={() => setIsModalOpen(false)}
             >
-              {userHasLiked ? <FaHeart size={22}/> : <FaRegHeart size={22}/>} {likeCount}
+              {userHasLiked ? <FaHeart size={20}/> : <FaRegHeart size={20}/>} {likeCount}
             </span>
             <span className="comment">
-              <FaCommentDots size={22}/> 4
+              <FaRegCommentDots size={20}/> 4
             </span>
           </DiarySpan>
           {isModalOpen && (
