@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import Button from "../button/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   BiBell,
   BiEdit,
@@ -22,6 +22,12 @@ function Header() {
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const notificationDropdownRef = useRef<HTMLDivElement>(null);
   const {isAuthenticated, logout} = useAuth();
+  const navigate = useNavigate();
+
+  const onClickLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const user = {
     username: "User",
@@ -117,8 +123,8 @@ function Header() {
           </IconButton>
           {isProfileDropdownOpen && (
             <Dropdown>
-              <DropdownItem>
-                <CiLogout size={20} onClick={logout} />
+              <DropdownItem onClick={onClickLogout}>
+                <CiLogout size={20}/>
                 LOGOUT
               </DropdownItem>
             </Dropdown>

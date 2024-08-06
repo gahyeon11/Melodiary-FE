@@ -1,8 +1,18 @@
 import styled from 'styled-components';
 import Calendar from '../components/diary/Calender';
 import PlayList from '../components/diary/PlayList';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Home = () => {
+  const {isAuthenticated} = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
   return (
     <HomeWrapper>
       <LeftSection>
