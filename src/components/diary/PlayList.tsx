@@ -1,6 +1,7 @@
 // Playlist.tsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 
 interface PlaylistItem {
   title: string;
@@ -29,6 +30,18 @@ const PlayList = () => {
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const renderPlaylistItems = () => {
@@ -63,8 +76,8 @@ const PlayList = () => {
   return (
     <PlaylistContainer>
       <Table>
-        <thead>
-          <tr className='playListHeader'>
+        <thead className='playListHeader'>
+          <tr>
             <th>제목</th>
             <th>가수</th>
             <th>사용 날짜</th>
@@ -72,7 +85,15 @@ const PlayList = () => {
         </thead>
         <tbody>{renderPlaylistItems()}</tbody>
       </Table>
-      <Pagination>{renderPageNumbers()}</Pagination>
+      <Pagination>
+        <ArrowButton onClick={handlePreviousPage}>
+          <IoIosArrowBack />
+        </ArrowButton>
+        {renderPageNumbers()}
+        <ArrowButton onClick={handleNextPage}>
+          <IoIosArrowForward />
+        </ArrowButton>
+      </Pagination>
     </PlaylistContainer>
   );
 };
@@ -80,45 +101,59 @@ const PlayList = () => {
 export default PlayList;
 
 const PlaylistContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  max-width: 700px;
   margin: auto;
-  padding: 20px;
-  box-sizing: border-box;
   text-align: center;
 `;
 
 const Table = styled.table`
-  width: 500px;
-  border-collapse: collapse;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  .playListHeader {
-    border-bottom: 1px solid #ddd;
+  width: 100%;
+  max-width: 700px;
+  border-collapse: separate; 
+  border-spacing: 0; 
+  border: 1px solid ${({ theme }) => theme.color.grayDF}; 
+  border-radius: 8px;
+  font-family: ${({ theme }) => theme.fontFamily.kor};
+  .playListHeader th {
+    border-bottom: 1px solid ${({ theme }) => theme.color.grayDF}; 
   }
   th, td {
     padding: 10px;
     border: none;
   }
-
 `;
 
 const Pagination = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 15px;
+`;
+
+const ArrowButton = styled.button`
+  display: flex;
+  align-items: center;
+  margin: 0 3px 0 3px;
+  border: none;
+  background: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: ${({ theme }) => theme.color.grayblack}; 
 `;
 
 const PageNumber = styled.button<{ isActive: boolean }>`
-  padding: 10px;
-  margin: 0 5px;
+  width: 28px;
+  height: 28px;  
+  margin: 0 5px; 
+  padding-bottom: 2px;
   border: none;
-  background-color: ${({ isActive }) => (isActive ? '#007bff' : '#f9f9f9')};
-  color: ${({ isActive }) => (isActive ? '#fff' : '#000')};
+  border-radius: 50px;
+  background-color: ${({ isActive }) => (isActive ? ({ theme }) => theme.color.lightblue : ({ theme }) => theme.color.white )};
+  color: ${({ isActive }) => (isActive ? ({ theme }) => theme.color.white : '#000')};
   cursor: pointer;
-
   &:hover {
-    background-color: #007bff;
-    color: #fff;
+    background-color: ${({ theme }) => theme.color.lightblue30};
+    color: #000;
   }
 `;

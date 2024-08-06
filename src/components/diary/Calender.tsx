@@ -9,8 +9,12 @@ interface Emojis {
 }
 
 const Calendar = () => {
-  const [year, setYear] = useState<number>(2024);
-  const [month, setMonth] = useState<number>(6);
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+  const currentDate = today.getDate();
+  const [year, setYear] = useState<number>(currentYear);
+  const [month, setMonth] = useState<number>(currentMonth);
   const [showSelector, setShowSelector] = useState<boolean>(false);
 
   const emojis: Emojis = {
@@ -58,10 +62,6 @@ const Calendar = () => {
 
 
   const renderCalendar = () => {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth();
-    const currentDate = today.getDate();
     const startDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const weeks: JSX.Element[] = [];
@@ -73,11 +73,9 @@ const Calendar = () => {
 
     for (let day = 1; day <= daysInMonth; day++) {
       let emoji = emojis[day];
-
       if (year > currentYear || (year === currentYear && month > currentMonth) || (year === currentYear && month === currentMonth && day > currentDate)) {
         emoji = <EmojiX src={future} alt="Future" />; // 미래 날짜에 추가할 특정 이모지
       }
-
       days.push(
         <td key={day}>
           <DayContainer>
@@ -88,13 +86,11 @@ const Calendar = () => {
           </DayContainer>
         </td>
       );
-
       if ((day + startDay) % 7 === 0 || day === daysInMonth) {
         weeks.push(<tr key={day}>{days}</tr>);
         days = [];
       }
     }
-
     return weeks;
   };
 
@@ -160,31 +156,31 @@ const CalendarContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: ${({ theme }) => theme.fontFamily.kor};
   width: 100%;
+  font-family: ${({ theme }) => theme.fontFamily.kor};
 `;
 
 const ControlsWrapper = styled.div`
-  padding: 4px 14px 9px 14px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
   position: relative; 
+  padding: 4px 14px 9px 14px;
+  border-bottom: 1px solid ${({ theme }) => theme.color.grayDF};
+  text-align: left;
 `;
 
 const Control = styled.div`
-  text-align: left;
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   padding: 0px 0;
+  text-align: left;
 `;
 
 const Dropdown = styled.div`
   display: flex;
   align-items: center;
-  cursor: pointer;
   font-size: ${({ theme }) => theme.text.text3};
+  cursor: pointer;
   span {
     padding: 5px 5px;
     padding-right: 0px;
@@ -198,8 +194,8 @@ const Arrow = styled.span`
 const IconWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
   margin-left: auto;
+  gap: 10px;
 `;
 
 const ArrowIcon = styled.div`
@@ -213,13 +209,13 @@ const MonthYearSelector = styled.div`
   position: absolute;
   top: 100%; 
   left: 0;
-  background: white;
-  border: 1px solid #ddd;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   z-index: 10;
-  border-radius: 8px;
   margin-top: 5px; 
+  padding: 10px;
+  background: ${({ theme }) => theme.color.white};;
+  border: 1px solid ${({ theme }) => theme.color.grayDF};
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 `;
 
 const SelectorHeader = styled.div`
@@ -243,37 +239,35 @@ const MonthGrid = styled.div`
 
 const MonthButton = styled.button`
   padding: 10px;
-  font-size: 16px;
-  cursor: pointer;
   border: none;
   background-color: #f2f2f2;
+  font-size: 16px;
+  cursor: pointer;
   transition: background-color 0.3s;
-
   &:hover {
-    background-color: #ddd;
+    background-color: ${({ theme }) => theme.color.grayDF};
   }
-
   &.active {
-    background-color: #a0c4ff;
+    background-color: ${({ theme }) => theme.color.lightblue};
   }
 `;
 
 const Table = styled.table`
   width: 100%;
   max-width: 700px;
+  padding-bottom: 20px;
+  overflow: hidden;
   border-collapse: separate;
   border-spacing: 0;
   border-radius: 8px;
-  padding-bottom: 20px;
-  overflow: hidden;
-  border: 1px solid #ddd;
+  border: 1px solid ${({ theme }) => theme.color.grayDF};
   th, td {
     padding-top: 5px;
-    text-align: center;
     border: none;
+    text-align: center;
   }
   th {
-    padding: 15px 0 20px ;
+    padding: 10px 0 15px;
     background-color: transparent;
   }
 `;
@@ -290,8 +284,8 @@ const DayEmoji = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 10px;
   height: 21.5px;
+  padding-top: 10px;
 `;
 
 const EmojiX = styled.img`
