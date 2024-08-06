@@ -48,7 +48,7 @@ const MainLayout = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  align-items: flex-start;
+  /* align-items: flex-start; */
   width: 100%;
   height: calc(100vh - 64px);
 
@@ -59,4 +59,5 @@ const MainLayout = styled.div`
 
 const MainContent = styled.div`
   width: 100%;
+  border-left: 1px solid ${({ theme }) => theme.color.grayDF};
 `;
