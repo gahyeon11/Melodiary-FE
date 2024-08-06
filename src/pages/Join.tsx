@@ -5,15 +5,13 @@ import { FcGoogle } from "react-icons/fc";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import { GOOGLE_SIGNUP_URL, KAKAO_SIGNUP_URL, NAVER_SIGNUP_URL } from '../config';
-import { GOOGLE_AUTH_URL } from '../config';
 const Join = () => {
-  console.log(GOOGLE_SIGNUP_URL);
   return (
     <JoinWrapper>
       <ContentWrapper>
         <ButtonContainer>
           <JoinTitle>JOIN</JoinTitle>
-          <a href={GOOGLE_AUTH_URL}>
+          <a href={GOOGLE_SIGNUP_URL}>
             <Button className="google">
               <IconWrapper><FcGoogle /></IconWrapper>
               Google로 시작하기

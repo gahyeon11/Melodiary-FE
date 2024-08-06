@@ -5,15 +5,13 @@ import { FcGoogle } from "react-icons/fc";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import { GOOGLE_LOGIN_URL, KAKAO_LOGIN_URL, NAVER_LOGIN_URL } from '../config';
-import { GOOGLE_AUTH_URL } from '../config';
 const Login = () => {
-  console.log(GOOGLE_LOGIN_URL);
   return (
     <LoginWrapper>
       <ContentWrapper>
         <ButtonContainer>
           <LoginTitle>LOGIN</LoginTitle>
-          <a href={GOOGLE_AUTH_URL}>
+          <a href={GOOGLE_LOGIN_URL}>
             <Button className="google">
               <IconWrapper><FcGoogle /></IconWrapper>
               Google로 시작하기
