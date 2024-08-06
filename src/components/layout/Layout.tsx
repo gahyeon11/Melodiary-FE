@@ -9,7 +9,7 @@ interface Props {
 }
 
 const Layout = ({ children }: Props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <LayoutWrapper>
