@@ -68,7 +68,7 @@ function Header() {
     //알림 api 연결 전 더미데이터 입니다.
     {
       id: 1,
-      content: "00님이 회원님에게 친구 요청을 보냈습니다.",
+      content: "김머쓱님이 회원님에게 친구 요청을 보냈습니다.",
       diaryId: 1,
       category: "friend",
       date: "2024-07-26",
@@ -210,6 +210,8 @@ const Profile = styled.div`
   display: flex;
   align-items: center;
   margin-right: 20px;
+  margin-top: 4px;
+
   img {
     width: 32px;
     height: 32px;
@@ -224,6 +226,7 @@ const Profile = styled.div`
 const DefaultProfileIcon = styled(FaUserCircle)`
   width: 32px;
   height: 32px;
+  margin-top: 2px;
   color: ${({ theme }) => theme.color.gray999};
 `;
 
