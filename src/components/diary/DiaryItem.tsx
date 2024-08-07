@@ -52,9 +52,6 @@ const DiaryItem: React.FC<DiaryItemProps> = ({
 
   const isMatesPage = location.pathname.includes("mates");
 
-  console.log("Current location:", location.pathname);
-  console.log("Is Mates Page:", isMatesPage);
-
   const handleDiaryClick = () => {
     if (isSummary) {
       navigate(`/diary/${diary.id}`);
