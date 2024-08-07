@@ -35,7 +35,7 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
   };
 
   const videoId = getVideoId(youtubeUrl);
-
+  
   useEffect(() => {
     const formatTime = (seconds: number) => {
       const minutes = Math.floor(seconds / 60);
@@ -73,15 +73,29 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
       });
     };
 
-    const tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName("script")[0];
-    if (firstScriptTag && firstScriptTag.parentNode) {
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    }
+    const loadYouTubeIframeAPI = () => {
+      if (!(window as any).YT) {
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName("script")[0];
+        if (firstScriptTag && firstScriptTag.parentNode) {
+          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        }
+        (window as any).onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+      } else {
+        onYouTubeIframeAPIReady(); // 이미 로드된 경우 즉시 실행
+      }
+    };
 
-    (window as any).onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
-  }, [videoId]);
+    loadYouTubeIframeAPI();
+
+    return () => {
+      if (player) {
+        player.destroy(); // 메모리 누수 방지
+      }
+    };
+  }, [youtubeUrl, videoId]); // 의존성 배열에 youtubeUrl과 videoId 포함
+
 
   const handlePlayPause = () => {
     if (player) {
