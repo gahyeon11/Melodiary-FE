@@ -1,31 +1,38 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import background from '../assets/images/background.png';
 import { FcGoogle } from "react-icons/fc";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
-import { GOOGLE_AUTH_URL, KAKAO_AUTH_URL, NAVER_AUTH_URL } from '../config';
-
+import { GOOGLE_SIGNUP_URL, KAKAO_SIGNUP_URL, NAVER_SIGNUP_URL } from '../config';
+import { useAuth } from '../context/AuthContext';
+import { useEffect } from 'react';
 const Join = () => {
-  console.log(GOOGLE_AUTH_URL);
+  const {isAuthenticated} = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/home');
+    }
+  }, [isAuthenticated, navigate]);
   return (
     <JoinWrapper>
       <ContentWrapper>
         <ButtonContainer>
           <JoinTitle>JOIN</JoinTitle>
-          <a href={GOOGLE_AUTH_URL}>
+          <a href={GOOGLE_SIGNUP_URL}>
             <Button className="google">
               <IconWrapper><FcGoogle /></IconWrapper>
               Google로 시작하기
             </Button>
           </a>
-          <a href={KAKAO_AUTH_URL}>
+          <a href={KAKAO_SIGNUP_URL}>
             <Button className="kakao">
               <IconWrapper><RiKakaoTalkFill /></IconWrapper>
               Kakao로 시작하기
             </Button>
           </a>
-          <a href={NAVER_AUTH_URL}>
+          <a href={NAVER_SIGNUP_URL}>
             <Button className="naver">
               <IconWrapper><SiNaver/></IconWrapper>
               Naver로 시작하기
@@ -41,7 +48,7 @@ const Join = () => {
 const JoinWrapper = styled.div`
   height: 100vh;
   background-image: url(${ background});
-  background-size: 100% auto;
+  background-size: cover;
   background-repeat: no-repeat; 
   background-position: center;
   background-attachment: fixed;   
@@ -55,9 +62,9 @@ const ContentWrapper = styled.div`
   padding-left: 5%;
 `;
 const JoinTitle = styled.h1`
-  font-size: 2rem;
   margin-bottom: 0.5rem;
   text-align: center;
+  font-size: 2rem;
   font-weight: bold;
 `;
 
@@ -74,38 +81,32 @@ const Button = styled.button`
   width: 300px;
   height: 50px;
   padding-left:15px;
-  font-size: 1rem;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
   font-family: ${({ theme }) => theme.fontFamily.kor};
   font-weight: 600;
+  font-size: 1rem;
   transition: background-color 0.3s;
-
+  cursor: pointer;
   &.google {
     background-color: ${({ theme }) => theme.color.white};
     color: ${({ theme }) => theme.color.black};
     border: 1px solid ${({ theme }) => theme.color.grayDF};;
   }
-
   &.google:hover {
     background-color: #f1f1f1;
   }
-
   &.kakao {
     background-color: #ffe812;
     color: #3c1e1e;
   }
-
   &.kakao:hover {
     background-color: #ffd700;
   }
-
   &.naver {
     background-color: #03c75a;
     color: #fff;
   }
-
   &.naver:hover {
     background-color: #02b04a;
   }

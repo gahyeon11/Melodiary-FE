@@ -14,7 +14,7 @@ const LandingHeader = () => {
         </Logo>
       </Link>
       <RightSection>
-        <Link to="/join">
+        <Link to="/login">
         <LoginButton > LOGIN</LoginButton>
         </Link>
         <a href="https://github.com/MeloDiary" target="_blank" rel="MeloDiary">

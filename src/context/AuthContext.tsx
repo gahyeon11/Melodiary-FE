@@ -1,9 +1,10 @@
 // AuthContext.tsx
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (token: string, userId: number) => void;
+  login: (accessToken: string, userId: number) => void;
   logout: () => void;
   userId: number | null;
 }
@@ -19,25 +20,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('user_id');
+    const accessToken = localStorage.getItem('accessToken');
+    const userId = localStorage.getItem('userId');
 
-    if (token && userId) {
+    if (accessToken && userId) {
       setIsAuthenticated(true);
       setUserId(Number(userId));
     }
   }, []);
 
-  const login = (token: string, userId: number) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user_id', userId.toString());
+  const login = (accessToken: string, userId: number) => {
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('userId', userId.toString());
     setIsAuthenticated(true);
     setUserId(userId);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user_id');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userId');
     setIsAuthenticated(false);
     setUserId(null);
   };
@@ -59,10 +60,10 @@ export const useAuth = (): AuthContextType => {
 
 // 추가: loader 함수 정의 및 내보내기
 export const tokenLoader = async () => {
-  const token = localStorage.getItem('token');
-  const userId = localStorage.getItem('user_id');
+  const accessToken = localStorage.getItem('accessToken');
+  const userId = localStorage.getItem('userId');
 
-  if (token && userId) {
+  if (accessToken && userId) {
     return {
       isAuthenticated: true,
       userId: Number(userId),
