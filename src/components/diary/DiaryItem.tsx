@@ -120,17 +120,28 @@ const DiaryItem: React.FC<DiaryItemProps> = ({
 
 export default DiaryItem;
 
-interface DiaryContainerProps {
+export interface DiaryAllProps {
   backgroundColor: string;
   isExpanded: boolean;
   isSummary: boolean;
   isMatesPage: boolean;
 }
-interface DiaryProps {
+
+export interface DiaryExpandSummaryProps {
+  isExpanded: boolean;
   isSummary: boolean;
 }
 
-const DiaryContainer = styled(motion.div)<DiaryContainerProps>`
+export interface DiarySummaryProps {
+  isSummary: boolean;
+}
+
+export interface DiaryTagProps {
+  tagColor: string;
+  isSummary: boolean;
+}
+
+const DiaryContainer = styled(motion.div)<DiaryAllProps>`
   position: ${({ isSummary }) => (isSummary ? "relative" : "fixed")};
   top: ${({ isSummary }) => (isSummary ? "0" : "63px")};
   height: ${({ isSummary }) => (isSummary ? "auto" : "100vh")};
@@ -145,7 +156,7 @@ const DiaryContainer = styled(motion.div)<DiaryContainerProps>`
   width: ${({ isExpanded }) => (isExpanded ? "calc(100vw - 74px)" : "50vw")};
 `;
 
-const Diary = styled.div<DiaryProps>`
+const Diary = styled.div<DiarySummaryProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;

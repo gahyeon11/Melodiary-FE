@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { BiChevronsLeft, BiChevronsRight } from "react-icons/bi";
 import { FaGlobe, FaLock, FaUserCircle, FaUserFriends } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { DiaryItemProps } from "./DiaryItem";
+import { DiaryItemProps, DiarySummaryProps } from "./DiaryItem";
 
 const DiaryHeader: React.FC<DiaryItemProps> = ({
   diary,
@@ -109,34 +109,30 @@ const DiaryHeader: React.FC<DiaryItemProps> = ({
 
 export default DiaryHeader;
 
-interface DiaryTextProps {
-  isSummary: boolean;
-}
-
-const ProfileIconContainer = styled.div<DiaryTextProps>`
+const ProfileIconContainer = styled.div<DiarySummaryProps>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: ${({ isSummary }) => (isSummary ? "51px" : "29px")};
   height: ${({ isSummary }) => (isSummary ? "51px" : "29px")};
   border-radius: 50%;
   background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
-const DefaultProfileIcon = styled(FaUserCircle)<DiaryTextProps>`
+const DefaultProfileIcon = styled(FaUserCircle)<DiarySummaryProps>`
   width: ${({ isSummary }) => (isSummary ? "55px" : "28px")};
   height: ${({ isSummary }) => (isSummary ? "55px" : "28px")};
   color: ${({ theme }) => theme.color.gray999};
 `;
 
-const HeaderContainer = styled.div<DiaryTextProps>`
+const HeaderContainer = styled.div<DiarySummaryProps>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
   max-width: 100%;
-  margin-bottom: 20px;
   padding: ${({ isSummary }) => (isSummary ? "5% 0 0 5%" : "80px 10% 0 10%")};
+  margin-bottom: 20px;
 `;
 
 const Title = styled.div`
@@ -157,19 +153,19 @@ const PrivacyText = styled.p`
   margin: 0;
 `;
 
-const DiaryTitle = styled.h2<DiaryTextProps>`
+const DiaryTitle = styled.h2<DiarySummaryProps>`
+  display: flex;
+  justify-content: start;
   margin: 0;
+  margin: ${({ isSummary }) => (isSummary ? "0 0 15px 0" : "10px 0")};
   font-size: ${({ theme }) => theme.title.title3};
   font-weight: 600;
   color: ${({ theme }) => theme.color.black};
-  justify-content: start;
-  margin: ${({ isSummary }) => (isSummary ? "0 0 15px 0" : "10px 0")};
 `;
 
-const DiaryDate = styled.div<DiaryTextProps>`
+const DiaryDate = styled.div<DiarySummaryProps>`
   font-size: ${({ isSummary, theme }) =>
     isSummary ? ` ${theme.text.text2}` : `${theme.text.text1}`};
-
   color: ${({ isSummary, theme }) =>
     isSummary ? ` ${theme.color.gray999}` : `${theme.color.black}`};
   margin: ${({ isSummary }) => (isSummary ? "0" : "0 0 10px 0")};
@@ -177,9 +173,9 @@ const DiaryDate = styled.div<DiaryTextProps>`
 
 const Right = styled.div`
   display: flex;
-  gap: 5px;
   align-items: start;
   justify-content: start;
+  gap: 5px;
 `;
 
 const DiaryButton = styled.div`
@@ -193,11 +189,12 @@ const DiaryButton = styled.div`
   }
 `;
 
-const DiaryProfile = styled.div<DiaryTextProps>`
+const DiaryProfile = styled.div<DiarySummaryProps>`
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: ${({ isSummary }) => (isSummary ? "10px" : "5px")};
+
   p {
     padding-bottom: ${({ isSummary }) => (isSummary ? "0" : "2px")};
     font-weight: ${({ isSummary }) => (isSummary ? "600" : "0")};
@@ -209,7 +206,7 @@ const ProfileText = styled.div`
   flex-direction: column;
 `;
 
-const ProfileImage = styled.img<DiaryTextProps>`
+const ProfileImage = styled.img<DiarySummaryProps>`
   width: ${({ isSummary }) => (isSummary ? "55px" : "28px")};
   height: ${({ isSummary }) => (isSummary ? "55px" : "28px")};
   border-radius: 50%;

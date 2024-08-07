@@ -1,245 +1,145 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import CommentSection from "../comment/Comment";
-import {
-  FaHeart,
-  FaCommentDots,
-  FaRegHeart,
-  FaUserCircle,
-  FaRegCommentDots,
-} from "react-icons/fa";
-import { DiaryItemProps } from "./DiaryItem";
+import { DiaryExpandSummaryProps, DiaryItemProps, DiarySummaryProps, DiaryTagProps } from "./DiaryItem";
 
-const DiaryFooter: React.FC<DiaryItemProps> = ({
+const DiaryContent: React.FC<DiaryItemProps> = ({
   diary,
-  likedUsers,
   isSummary = false,
-  isExpanded,
-  likeCount,
-  userHasLiked,
-  setLikeCount,
-  setUserHasLiked,
+  isExpanded = false,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-  const handleLikeClick = (event: React.MouseEvent) => {
-    event.stopPropagation(); // 이벤트 버블링 방지
-    if (
-      userHasLiked &&
-      setLikeCount &&
-      setUserHasLiked &&
-      likeCount !== undefined
-    ) {
-      setLikeCount(likeCount - 1);
-      setUserHasLiked(false);
-    } else if (setLikeCount && setUserHasLiked && likeCount !== undefined) {
-      setLikeCount(likeCount + 1);
-      setUserHasLiked(true);
-    }
+  // content에서 이미지 태그 제거 (요약 버전을 위해서)
+  const stripImagesFromContent = (htmlContent: string) => {
+    return htmlContent.replace(/<img[^>]*>/g, "");
   };
 
   return (
-    <>
-      <SummaryFooter isSummary={isSummary}>
-        <DiarySpan>
-          <span
-            className="heart"
-            onMouseEnter={() => setIsModalOpen(true)}
-            onMouseLeave={() => setIsModalOpen(false)}
-            onClick={(event) => {
-              event.stopPropagation(); // 이벤트 버블링 막기
-              handleLikeClick(event);
-            }}
-          >
-            {userHasLiked ? <FaHeart size={20}/> : <FaRegHeart size={22}/>} {likeCount}
-          </span>
-          <span className="comment">
-            <FaRegCommentDots size={20}/> 4
-          </span>
-        </DiarySpan>
-      </SummaryFooter>
-
-      {!isSummary && isExpanded && (
-        <DiaryComment>
-          <DiarySpan>
-            <span
-              className="heart"
-              onClick={handleLikeClick}
-              onMouseEnter={() => setIsModalOpen(true)}
-              onMouseLeave={() => setIsModalOpen(false)}
-            >
-              {userHasLiked ? <FaHeart size={20}/> : <FaRegHeart size={20}/>} {likeCount}
-            </span>
-            <span className="comment">
-              <FaRegCommentDots size={20}/> 4
-            </span>
-          </DiarySpan>
-          {isModalOpen && (
-            <LikesModal>
-              <LikedSpan>
-                <span className="heart" onClick={handleLikeClick}>
-                  <FaHeart size={22} color={userHasLiked ? "#ff5c5c" : "#ccc"} />{" "}
-                </span>
-                <h4>Liked</h4>
-              </LikedSpan>
-              <ul>
-                {likedUsers.map((user) => (
-                  <LikeItem key={user.id}>
-                    {user.profileImgURL ? (
-                      <ProfileImage
-                        src={user.profileImgURL}
-                        alt={user.nickname}
-                      />
-                    ) : (
-                      <ProfileIconContainer>
-                        <DefaultProfileIcon />
-                      </ProfileIconContainer>
-                    )}
-                    <span>{user.nickname}</span>
-                  </LikeItem>
-                ))}
-              </ul>
-            </LikesModal>
-          )}
-          <CommentSection />
-        </DiaryComment>
+    <ContentContainer isSummary={isSummary}>
+      {isSummary && diary.body.img_urls.length > 0 && (
+        <SummaryImage src={diary.body.img_urls[0]} alt={diary.body.title} />
       )}
-    </>
+      <Title>
+        {isSummary && (
+          <Right>
+            <DiaryTitle isSummary={isSummary}>{diary.body.title}</DiaryTitle>
+          </Right>
+        )}
+      </Title>
+      <DiaryTag tagColor={diary.body.background_color} isSummary={isSummary}>
+        <DiaryTagItem
+          tagColor={diary.body.background_color}
+          isSummary={isSummary}
+        >
+          오늘의 이모지 | {diary.body.emoji}
+        </DiaryTagItem>
+        <DiaryTagItem
+          tagColor={diary.body.background_color}
+          isSummary={isSummary}
+        >
+          기분 | {diary.body.mood}
+        </DiaryTagItem>
+        <DiaryTagItem
+          tagColor={diary.body.background_color}
+          isSummary={isSummary}
+        >
+          위치 | {diary.body.weather.location}
+        </DiaryTagItem>
+        <DiaryTagItem
+          tagColor={diary.body.background_color}
+          isSummary={isSummary}
+        >
+          날씨 | {diary.body.weather.icon} {diary.body.weather.avg_temperature}°C
+        </DiaryTagItem>
+        <DiaryTagItem
+          tagColor={diary.body.background_color}
+          isSummary={isSummary}
+        >
+          오늘의 선곡 | {diary.body.music.title} - {diary.body.music.artist}
+        </DiaryTagItem>
+      </DiaryTag>
+      <DiaryText isExpanded={isExpanded} isSummary={isSummary}>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: isSummary
+              ? stripImagesFromContent(diary.body.content)
+                  .split("\n")
+                  .slice(0, 2)
+                  .join("\n") + " ..."
+              : diary.body.content,
+          }}
+        />
+      </DiaryText>
+    </ContentContainer>
   );
 };
 
-export default DiaryFooter;
+export default DiaryContent;
 
-
-interface DiaryTextProps {
-  isSummary: boolean;
-}
-
-const ProfileIconContainer = styled.div`
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const DefaultProfileIcon = styled(FaUserCircle)`
-  width: 30px;
-  height: 30px;
-  color: ${({ theme }) => theme.color.gray999};
-`;
-
-const SummaryFooter = styled.div<DiaryTextProps>`
-  display: ${({ isSummary }) => (isSummary ? "flex" : "none")};
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 10px 5% 5% 5%;
-`;
-
-const DiarySpan = styled.div`
-  display: flex;
-  gap: 15px;
-
-  .heart {
-    color: #ff5c5c;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-
-    svg {
-      padding-right: 2px;
-      margin: 0 4px 2px 0;
-    }
-    :hover{
-      color: #ff1d1d;
-    }
-  }
-
-  .comment {
-    color: ${({ theme }) => theme.color.primary};
-    display: flex;
-    align-items: center;
-
-    svg {
-      margin: 0 4px 2px 0;
-    }
-    :hover{
-      color: #0055AC;
-    }
-  }
-`;
-
-const DiaryComment = styled.div`
+const ContentContainer = styled.div<DiarySummaryProps>`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  padding: ${({ isSummary }) => (isSummary ? "0 5%" : "0 10%")};
+`;
+
+const Title = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Right = styled.div`
+  display: flex;
+  gap: 5px;
+  align-items: start;
+  justify-content: start;
+`;
+
+const DiaryTitle = styled.h2<DiarySummaryProps>`
+  margin: 0;
+  justify-content: start;
+  font-size: ${({ theme }) => theme.title.title3};
+  font-weight: 600;
+  color: ${({ theme }) => theme.color.black};
+  margin: ${({ isSummary }) => (isSummary ? "0 0 10px 0" : "10px 0")};
+`;
+
+const DiaryTag = styled.div<DiaryTagProps>`
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   width: 100%;
+  padding: 10px 0;
+  border-top: ${({ isSummary, theme }) =>
+    isSummary ? "none" : `1px solid ${theme.color.grayDF}`};
+  border-bottom: ${({ isSummary, theme }) =>
+    isSummary ? "none" : `1px solid ${theme.color.grayDF}`};
+`;
+
+const DiaryTagItem = styled.div<DiaryTagProps>`
+  display: flex;
+  align-items: center;
+  padding: 5px 15px;
+  white-space: nowrap;
+  border-radius: 20px;
+  background-color: ${({ theme, tagColor }) =>
+    theme.diaryColor[tagColor]?.tag || theme.diaryColor.default.tag};
+  font-size: ${({ theme }) => theme.text.text3};
+`;
+
+const DiaryText = styled.div<DiaryExpandSummaryProps>`
+  width: 100%;
   max-width: 100%;
-  padding: 0 10%;
-  margin-bottom: 100px;
+  padding: ${({ isSummary }) => (isSummary ? "10px 0 0 0" : "30px 0 0 0")};
+  margin-bottom: ${({ isExpanded, isSummary }) =>
+    isExpanded || isSummary ? "10px" : "150px"};
+  font-size: ${({ theme }) => theme.text.text1};
+  color: ${({ theme }) => theme.color.grayblack};
+  white-space: pre-line;
 `;
 
-const LikesModal = styled.div`
-  position: absolute;
-  z-index: 1000;
-  text-align: left;
-  margin: 24px 0;
-  padding: 15px 25px;
-  background-color: ${({ theme }) => theme.color.white};
-  border: 1px solid ${({ theme }) => theme.color.grayDF};
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  li {
-    font-size: ${({ theme }) => theme.text.text2};
-    padding: 7px 0;
-    border-bottom: 1px solid ${({ theme }) => theme.color.grayDF};
-  }
-`;
-
-const LikedSpan = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid ${({ theme }) => theme.color.grayDF};
-
-  .heart {
-    display: flex;
-    align-items: center;
-
-    svg {
-      margin-right: 4px;
-    }
-  }
-
-  h4 {
-    margin: 2px 2px 0 0;
-    font-size: ${({ theme }) => theme.text.text2};
-    font-weight: bold;
-    text-align: center;
-  }
-`;
-
-const LikeItem = styled.li`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 0;
-  border-bottom: 1px solid ${({ theme }) => theme.color.grayDF};
-`;
-
-const ProfileImage = styled.img`
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+const SummaryImage = styled.img`
+  width: 100%;
+  max-height: 450px;
+  object-fit: cover;
+  margin-bottom: 10px;
 `;

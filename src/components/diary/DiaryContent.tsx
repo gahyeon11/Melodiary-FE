@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { DiaryItemProps } from "./DiaryItem";
+import { DiaryExpandSummaryProps, DiaryItemProps, DiarySummaryProps, DiaryTagProps } from "./DiaryItem";
 
 const DiaryContent: React.FC<DiaryItemProps> = ({
   diary,
@@ -77,23 +77,7 @@ const DiaryContent: React.FC<DiaryItemProps> = ({
 
 export default DiaryContent;
 
-interface DiaryTagItemProps {
-  tagColor: string;
-  isSummary: boolean;
-}
-
-interface DiaryTextProps {
-  isSummary: boolean;
-  
-}
-
-interface DiarySummarydProps {
-  isExpanded: boolean;
-  isSummary: boolean;
-
-}
-
-const ContentContainer = styled.div<DiaryTextProps>`
+const ContentContainer = styled.div<DiarySummaryProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -113,43 +97,44 @@ const Right = styled.div`
   justify-content: start;
 `;
 
-const DiaryTitle = styled.h2<DiaryTextProps>`
+const DiaryTitle = styled.h2<DiarySummaryProps>`
   margin: 0;
+  margin: ${({ isSummary }) => (isSummary ? "0 0 10px 0" : "10px 0")};
+  justify-content: start;
   font-size: ${({ theme }) => theme.title.title3};
   font-weight: 600;
   color: ${({ theme }) => theme.color.black};
-  justify-content: start;
-  margin: ${({ isSummary }) => (isSummary ? "0 0 10px 0" : "10px 0")};
 `;
 
-const DiaryTag = styled.div<DiaryTagItemProps>`
+const DiaryTag = styled.div<DiaryTagProps>`
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  padding: 10px 0 10px 0;
   width: 100%;
-  border-bottom: ${({ isSummary, theme }) =>
-    isSummary ? "none" : `1px solid ${theme.color.grayDF}`};
+  padding: 10px 0;
   border-top: ${({ isSummary, theme }) =>
+    isSummary ? "none" : `1px solid ${theme.color.grayDF}`};
+  border-bottom: ${({ isSummary, theme }) =>
     isSummary ? "none" : `1px solid ${theme.color.grayDF}`};
 `;
 
-const DiaryTagItem = styled.div<DiaryTagItemProps>`
-  padding: 5px 15px;
-  border-radius: 20px;
+const DiaryTagItem = styled.div<DiaryTagProps>`
   display: flex;
   align-items: center;
+  padding: 5px 15px;
   white-space: nowrap;
+  border-radius: 20px;
   background-color: ${({ theme, tagColor }) =>
     theme.diaryColor[tagColor]?.tag || theme.diaryColor.default.tag};
   font-size: ${({ theme }) => theme.text.text3};
 `;
 
-const DiaryText = styled.div<DiarySummarydProps>`
-  padding: ${({ isSummary }) => (isSummary ? "10px 0 0 0" : "30px 0 0 0")};
-  margin-bottom: ${({ isExpanded, isSummary }) => (isExpanded || isSummary ? "10px" : "150px")};
+const DiaryText = styled.div<DiaryExpandSummaryProps>`
   width: 100%;
   max-width: 100%;
+  padding: ${({ isSummary }) => (isSummary ? "10px 0 0 0" : "30px 0 0 0")};
+  margin-bottom: ${({ isExpanded, isSummary }) =>
+    isExpanded || isSummary ? "10px" : "150px"};
   font-size: ${({ theme }) => theme.text.text1};
   color: ${({ theme }) => theme.color.grayblack};
   white-space: pre-line;
