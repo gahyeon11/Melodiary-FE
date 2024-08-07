@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion} from 'framer-motion';
-import bg from '../assets/images/bg.png';
+import background from '../assets/images/background.png';
 import { useNavigate } from 'react-router-dom';
 const Landing = () => {
   const navigate = useNavigate();
@@ -30,9 +30,10 @@ const Landing = () => {
 export default Landing;
 const LandingWrapper = styled(motion.div)`
   height: 100vh;
-  background-image: url(${bg});
-  background-size: 100% 100%; 
+  background-image: url(${ background });
+  background-size: 100% auto;
   background-repeat: no-repeat; 
+  background-position: center;
   background-attachment: fixed; 
 `;
 
@@ -41,8 +42,7 @@ const LandingContainer = styled.main`
   justify-content: flex-start; 
   flex-direction: row;
   align-items: center;
-  height: 100vh;
-  height: 92vh;
+  height:92vh;
   padding-left: 5%; 
   color: #000;
   h1 {
@@ -66,7 +66,8 @@ const LandingContainer = styled.main`
     font-size: ${({ theme }) => theme.text.text1};
     color: ${({ theme }) => theme.color.white};
     cursor: pointer;
-  } 
+  }
+    
 `
 const TextContainer = styled.div`
   text-align: left; 

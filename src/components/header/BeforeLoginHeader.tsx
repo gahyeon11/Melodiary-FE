@@ -10,7 +10,7 @@ const LandingHeader = () => {
       <Link to="/">
         <Logo>
           <BiHeadphone size={24} />
-          <h1>MeloDiary</h1>
+          <h1>MeloDiary </h1> 
         </Logo>
       </Link>
       <RightSection>

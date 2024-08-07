@@ -1,7 +1,9 @@
 import { ThemeProvider } from "styled-components";
+
 import { GlobalStyle } from "./styles/global";
 import { theme } from "./styles/theme";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
@@ -12,6 +14,9 @@ import Landing from "./pages/Landing";
 import Join from "./pages/Join";
 import Login from "./pages/Login";
 import Diary from "./pages/Diary";
+import NickName from './pages/Nickname';
+import Auth from './pages/Auth';
+import { AuthProvider, tokenLoader } from './context/AuthContext';
 
 const App = () => {
   const routerList = [
@@ -38,6 +43,7 @@ const App = () => {
     {
       path: "/",
       component: <Landing />,
+      loader: tokenLoader,
     },
     {
       path: "/join",
@@ -50,6 +56,14 @@ const App = () => {
     {
       path: "/diary",
       component: <Diary />,
+    },
+    {
+      path: '/nickname',
+      component: <NickName/>,
+    },
+    {
+      path: '/auth',
+      component: <Auth/>,
     },
   ];
 
@@ -64,8 +78,11 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <GlobalStyle />
+        <RouterProvider router={router} />
+      </AuthProvider>
+      
     </ThemeProvider>
   );
 };
