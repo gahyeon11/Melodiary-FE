@@ -24,8 +24,9 @@ const Sidebar = () => {
             key={link.to}
             active={isActive}
           > {isActive && (
-              <Background
-                layoutId="activeBackground"
+              // 사이드바 리스트 배경 모션
+              <SidebarBackground
+                layoutId="sidebarActiveBackground"
                 initial={false}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -40,6 +41,8 @@ const Sidebar = () => {
   );
 };
 
+export default Sidebar;
+
 const SidebarWrapper = styled.aside`
   display: flex;
   flex-direction: column;
@@ -47,9 +50,8 @@ const SidebarWrapper = styled.aside`
   align-items: center;
   gap: 16px;
   width: 74px;
-  height: calc(100vh - 64px);
+  height: 100%;
   padding: 24px 0;
-  border-right: 1px solid ${({ theme }) => theme.color.grayDF};
 `;
 
 const SidebarLink = styled(Link)<{ active: boolean }>`
@@ -70,15 +72,13 @@ const SidebarLink = styled(Link)<{ active: boolean }>`
   }
 `;
 
-const Background = styled(motion.div)`
+const SidebarBackground = styled(motion.div)`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #006AD71A;
+  background-color: ${({ theme }) => theme.color.primary10};
   border-radius: 14px;
   z-index: -1;
 `;
-
-export default Sidebar;

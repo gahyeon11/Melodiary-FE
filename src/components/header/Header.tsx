@@ -81,7 +81,7 @@ function Header() {
           <SearchInput type="text" placeholder="Search mate" />
         </SearchContainer>
         <ButtonContainer>
-          <Link to="/writeDiary">
+          <Link to="/writediary">
             <Button size="medium" schema="primary">
               <BiEdit size={20} /> Create Diary
             </Button>
