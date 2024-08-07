@@ -8,26 +8,51 @@ import { useEffect, useRef, useState } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 import DiaryPreview from '../components/diary/DiaryPreview';
 import { colors, moods, privacies } from '../constants/writeDiary';
+import { useGeoLocation } from '../hooks/useGeoLocation';
+
+const geolocationOptions = {
+  enableHighAccuracy: true,
+  timeout: 1000 * 10,
+  maximumAge: 1000 * 3600 * 24,
+}
 
 const WriteDiary = () => {
+  // 날짜, 요일
+  const week = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+  const today = new Date();
+  const todayDay = week[today.getDay()];
+  const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일 ${todayDay}`;
+
+  // 날씨
+  const { location, error } = useGeoLocation(geolocationOptions);
+  if(location) {
+    console.log("위도 : ", location?.latitude);
+    console.log("경도 : ", location?.longitude);
+  } else {
+    console.log("GeoLocationError : ", error);
+  }
+  
+  // 상태 (오늘의 이모지, 배경 색상, 기분, 공개 범위)
   const [selectedEmoji, setSelectedEmoji] = useState<string>("");
   const [selectedBgColor, setSelectedBgColor] = useState<string>("default");
   const [selectedMood, setSelectedMood] = useState<string>("😍");
   const [selectedPrivacy, setSelectedPrivacy] = useState<string>(privacies[2]);
 
+  // 드롭다운 여부 (오늘의 이모지, 배경 색상, 기분, 공개 범위, 미리보기)
   const [isEmojiDropdown, setIsEmojiDropdown] = useState(false);
   const [isBgColorDropdown, setIsBgColorDropdown] = useState(false);
   const [isMoodDropdown, setIsMoodDropdown] = useState(false);
   const [isPrivacyDropdown, setIsPrivacyDropdown] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
+  // 현재 드롭다운이 되는 영역 (오늘의 이모지, 배경 색상, 기분, 공개 범위, 미리보기)
   const emojiDropdownRef = useRef<HTMLDivElement>(null);
   const bgColorDropdownRef = useRef<HTMLDivElement>(null);
   const moodDropdownRef = useRef<HTMLDivElement>(null);
   const privacyDropdownRef = useRef<HTMLDivElement>(null);
   const previewOpenRef = useRef<HTMLDivElement>(null);
 
-  // toogleDropDown
+  // 드롭다운 토글 함수 (오늘의 이모지, 배경 색상, 기분, 공개 범위)
   const toogleEmojiDropdown = () => {
     setIsEmojiDropdown(!isEmojiDropdown);
   };
@@ -44,7 +69,7 @@ const WriteDiary = () => {
     setIsPreviewOpen(!isPreviewOpen);
   };
 
-  // selectOption
+  // 드롭다운 옵션 (배경 색상, 기분, 공개 범위)
   const selectBgColorOption = (option: string) => {
     setSelectedBgColor(option);
     setIsBgColorDropdown(false);
@@ -58,7 +83,7 @@ const WriteDiary = () => {
     setIsPrivacyDropdown(false);
   };
 
-  // 외부 클릭 시 드롭다운 닫힘
+  // 외부 클릭 시 드롭다운 닫힘 (오늘의 이모지, 배경 색상, 기분, 공개 범위, 미리보기)
   const handleClickEmojiOutside = (e: MouseEvent) => {
     if(emojiDropdownRef.current && !emojiDropdownRef.current.contains(e.target as Node)) {
       setIsEmojiDropdown(false);
@@ -189,7 +214,7 @@ const WriteDiary = () => {
         {/* 오늘의 날짜 */}
         <Section className="today">
           <label>날짜</label>
-          <span>2024년 7월 17일 목요일</span>
+          <span>{formattedDate}</span>
         </Section>
         {/* 오늘의 날씨 */}
         <Section className="weather">
