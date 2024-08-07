@@ -59,62 +59,64 @@ const DiaryItem: React.FC<DiaryItemProps> = ({
   };
 
   return (
-    <DiaryContainer
-      backgroundColor={diary.body.background_color}
-      isExpanded={isExpanded}
-      isSummary={isSummary}
-      isMatesPage={isMatesPage}
-      initial={{ left: isSummary ? "18vw" : "50vw", width: "50vw" }}
-      animate={{
-        left:
-          isSummary && isMatesPage
-            ? "14vw"
-            : isSummary
-            ? "18vw"
-            : isExpanded
-            ? "73px"
-            : "50vw",
-        width:
-          isSummary && isMatesPage
-            ? "55vw"
-            : isSummary
-            ? "60vw"
-            : isExpanded
-            ? "calc(100vw - 74px)"
-            : "50vw",
-      }}
-      transition={{ duration: 0.5 }}
-      onClick={handleDiaryClick}
-    >
-      <Diary isSummary={isSummary}>
-        <DiaryHeader
-          diary={diary}
-          user={user}
-          likedUsers={dummyLikedUsers}
-          isSummary={isSummary}
-          toggleExpand={toggleExpand}
-          isExpanded={isExpanded}
-        />
-        <DiaryContent
-          diary={diary}
-          isSummary={isSummary}
-          user={user}
-          likedUsers={likedUsers}
-          isExpanded={isExpanded}
-        />
-        <DiaryFooter
-          diary={diary}
-          user={user}
-          likedUsers={dummyLikedUsers}
-          isSummary={isSummary}
-          isExpanded={isExpanded}
-          likeCount={likeCount}
-          userHasLiked={userHasLiked}
-          setLikeCount={setLikeCount}
-          setUserHasLiked={setUserHasLiked}
-        />
-      </Diary>
-    </DiaryContainer>
+    <DiaryWrapper>
+      <DiaryContainer
+        backgroundColor={diary.body.background_color}
+        isExpanded={isExpanded}
+        isSummary={isSummary}
+        isMatesPage={isMatesPage}
+        initial={{ left: isSummary ? "18vw" : "50vw", width: "50vw" }}
+        animate={{
+          left:
+            isSummary && isMatesPage
+              ? "14vw"
+              : isSummary
+              ? "18vw"
+              : isExpanded
+              ? "73px"
+              : "50vw",
+          width:
+            isSummary && isMatesPage
+              ? "55vw"
+              : isSummary
+              ? "60vw"
+              : isExpanded
+              ? "calc(100vw - 74px)"
+              : "50vw",
+        }}
+        transition={{ duration: 0.5 }}
+        onClick={handleDiaryClick}
+      >
+        <Diary isSummary={isSummary}>
+          <DiaryHeader
+            diary={diary}
+            user={user}
+            likedUsers={dummyLikedUsers}
+            isSummary={isSummary}
+            toggleExpand={toggleExpand}
+            isExpanded={isExpanded}
+          />
+          <DiaryContent
+            diary={diary}
+            isSummary={isSummary}
+            user={user}
+            likedUsers={likedUsers}
+            isExpanded={isExpanded}
+          />
+          <DiaryFooter
+            diary={diary}
+            user={user}
+            likedUsers={dummyLikedUsers}
+            isSummary={isSummary}
+            isExpanded={isExpanded}
+            likeCount={likeCount}
+            userHasLiked={userHasLiked}
+            setLikeCount={setLikeCount}
+            setUserHasLiked={setUserHasLiked}
+          />
+        </Diary>
+      </DiaryContainer>
+    </DiaryWrapper>
   );
 };
 
@@ -141,9 +143,14 @@ export interface DiaryTagProps {
   isSummary: boolean;
 }
 
+const DiaryWrapper = styled.div`
+  justify-content: center;
+  align-items: center;
+`;
+
 const DiaryContainer = styled(motion.div)<DiaryAllProps>`
   position: ${({ isSummary }) => (isSummary ? "relative" : "fixed")};
-  top: ${({ isSummary }) => (isSummary ? "0" : "63px")};
+  top: ${({ isSummary }) => (isSummary ? "0" : "64px")};
   height: ${({ isSummary }) => (isSummary ? "auto" : "100vh")};
   overflow-y: ${({ isSummary }) => (isSummary ? "visible" : "auto")};
   background-color: ${({ theme, backgroundColor }) =>
