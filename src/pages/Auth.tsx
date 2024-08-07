@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import background from '../assets/images/background.png';
 import { FcGoogle } from "react-icons/fc";
 import { SiNaver } from "react-icons/si";
@@ -41,11 +40,7 @@ const Auth = () => {
             response = await axios.post('https://api.melodiary.site/api/users/login', authData, {
               withCredentials: true,
             });
-          }else{
-            const signUpResponse = await signUp(authData);
-            console.log('SignUp Response:', signUpResponse);
           }
-
           if (response) {
             console.log('Successfully received jwt:', response.data);
             const { accessToken, userId } = response.data;
@@ -74,7 +69,6 @@ const Auth = () => {
     handleOAuth();
   }, [navigate, stateParam, code]);
   
-    
   const closeModal = () => {
     setModalMessage(null);
     navigate('/join');
@@ -84,6 +78,7 @@ const Auth = () => {
     setModalMessage(null);
     navigate('/login');
   };
+
   return (
     <JoinWrapper>
       <ContentWrapper>
@@ -101,7 +96,6 @@ const Auth = () => {
               <IconWrapper><SiNaver/></IconWrapper>
               Naver로 시작하기
             </Button>
-          <LoginLink >이미 계정이 있으신가요? <Link to='/login' className='loginBtn'>로그인</Link></LoginLink>
         </ButtonContainer>
       </ContentWrapper>
       {modalMessage && (
@@ -132,8 +126,8 @@ const ContentWrapper = styled.div`
   padding-left: 5%;
 `;
 const JoinTitle = styled.h1`
+  margin-bottom: 0.5rem;    
   font-size: 2rem;
-  margin-bottom: 0.5rem;
   text-align: center;
   font-weight: bold;
 `;
@@ -151,59 +145,41 @@ const Button = styled.button`
   width: 300px;
   height: 50px;
   padding-left:15px;
-  font-size: 1rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-family: ${({ theme }) => theme.fontFamily.kor};
+  font-size: 1rem;
   font-weight: 600;
   transition: background-color 0.3s;
-
   &.google {
     background-color: ${({ theme }) => theme.color.white};
     color: ${({ theme }) => theme.color.black};
     border: 1px solid ${({ theme }) => theme.color.grayDF};;
   }
-
   &.google:hover {
     background-color: #f1f1f1;
   }
-
   &.kakao {
     background-color: #ffe812;
     color: #3c1e1e;
   }
-
   &.kakao:hover {
     background-color: #ffd700;
   }
-
   &.naver {
     background-color: #03c75a;
     color: #fff;
   }
-
   &.naver:hover {
     background-color: #02b04a;
   }
 `;
-
 const IconWrapper = styled.div`
-  margin-right: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-right: 50px;
 `;
-
-const LoginLink = styled.div`
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  color: #555;
-  .loginBtn{
-    color: #555;
-    text-decoration: underline;
-  }
-`;
-
 
 export default Auth ;

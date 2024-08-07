@@ -14,7 +14,7 @@ export const signUp = async (data: ISignup) => {
       withCredentials: true
       })
       .then((response: { data: any }) => {
-        console.log('Successfully received jwt:', response.data);
+        //console.log('Successfully received jwt:', response.data);
         return response.data;
       })
       .catch((error: any) => {

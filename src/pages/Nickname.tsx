@@ -45,8 +45,8 @@ const ContentWrapper = styled.div`
 const Logo = styled.div`
   display: flex;
   align-items: center;
-  font-family: ${({theme}) => theme.fontFamily.kor};
   margin-bottom: 5px;
+  font-family: ${({theme}) => theme.fontFamily.kor};
   svg {
     color: ${({ theme }) => theme.color.gray999};
   }
@@ -64,10 +64,10 @@ const Logo = styled.div`
 `;
 
 const WelcomeMessage = styled.p`
+  margin-bottom: 20px;
+  text-align: center;  
   font-size: 1rem;
   color: #333;
-  margin-bottom: 20px;
-  text-align: center;
   font-family: ${({theme}) => theme.fontFamily.kor};
 `;
 
@@ -80,10 +80,10 @@ const InputWrapper = styled.div`
 const NicknameInput = styled.input`
   width: 100%;
   padding: 10px;
-  font-size: 1rem;
+  margin-bottom: 5px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  margin-bottom: 5px;
+  font-size: 1rem;
   font-family: ${({theme}) => theme.fontFamily.kor};
   text-align: center;
 `;
@@ -98,11 +98,11 @@ const InputInfo = styled.p`
 const EnterButton = styled.button`
   width: 100%;
   padding: 10px;
-  font-size: 1rem;
-  color: ${({ theme }) => theme.color.primary};
-  background-color: ${({ theme }) => theme.color.white};
   border: 1px solid ${({ theme }) => theme.color.primary};
   border-radius: 5px;
+  background-color: ${({ theme }) => theme.color.white};
+  font-size: 1rem;
+  color: ${({ theme }) => theme.color.primary};
   cursor: pointer;
   font-family: ${({theme}) => theme.fontFamily.kor};
   &:hover {

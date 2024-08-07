@@ -8,8 +8,8 @@ const createOAuthUrl = (type: AuthType, action: ActionType): string => {
     kakao: 'YOUR_KAKAO_CLIENT_ID'
   };
 
-  //const redirect_uri = 'https://melo-diary.vercel.app/auth';
-  const redirect_uri = `https://melo-diary.vercel.app/auth?type=google`;
+  const redirect_uri = 'https://melo-diary.vercel.app/auth';
+  //const redirect_uri = `https://melo-diary.vercel.app/auth?type=google`;
   const state = JSON.stringify({ type, action });
   
   let auth_url = '';
