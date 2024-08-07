@@ -51,7 +51,7 @@ const DiaryFooter: React.FC<DiaryItemProps> = ({
               handleLikeClick(event);
             }}
           >
-            {userHasLiked ? <FaHeart size={20}/> : <FaRegHeart size={20}/>} {likeCount}
+            {userHasLiked ? <FaHeart size={20}/> : <FaRegHeart size={22}/>} {likeCount}
           </span>
           <span className="comment">
             <FaRegCommentDots size={20}/> 4
@@ -150,6 +150,7 @@ const DiarySpan = styled.div`
     cursor: pointer;
 
     svg {
+      padding-right: 2px;
       margin: 0 4px 2px 0;
     }
     :hover{
@@ -222,7 +223,6 @@ const LikedSpan = styled.div`
   }
 
   h4 {
-    /* padding: 0 0 10px 0; */
     margin: 2px 2px 0 0;
     font-size: ${({ theme }) => theme.text.text2};
     font-weight: bold;
