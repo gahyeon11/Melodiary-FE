@@ -86,7 +86,7 @@ export default Home;
 
 const HomeWrapper = styled.div`
   display: flex;
-  width: calc(100vw - 100px);
+  width: calc(100vw - 145px);
   margin-left: 100px;
   margin: 0;
   padding: 0;
