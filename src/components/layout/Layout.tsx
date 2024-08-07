@@ -27,9 +27,9 @@ const Layout = ({ children }: Props) => {
       ) : (
         <>
         <BeforeLoginHeader />
-        <MainLayout>
+        <main>
           {children}
-        </MainLayout>
+        </main>
         </>
       )}
     </LayoutWrapper>
