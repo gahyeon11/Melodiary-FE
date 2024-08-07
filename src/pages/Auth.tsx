@@ -112,7 +112,7 @@ const Auth = () => {
 const JoinWrapper = styled.div`
   height: 100vh;
   background-image: url(${ background});
-  background-size: 100% auto;
+  background-size: cover;
   background-repeat: no-repeat; 
   background-position: center;
   background-attachment: fixed;   
