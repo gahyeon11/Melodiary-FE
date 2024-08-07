@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import Button from "../button/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   BiBell,
   BiEdit,
@@ -13,6 +13,7 @@ import {
 import { CiLogout } from "react-icons/ci";
 import { FaUserCircle } from "react-icons/fa";
 import NotificationDropdown from "../notification/NotificationDropdown";
+import { useAuth } from "../../context/AuthContext";
 
 function Header() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -20,6 +21,13 @@ function Header() {
     useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const notificationDropdownRef = useRef<HTMLDivElement>(null);
+  const {isAuthenticated, logout} = useAuth();
+  const navigate = useNavigate();
+
+  const onClickLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const user = {
     username: "User",
@@ -115,8 +123,8 @@ function Header() {
           </IconButton>
           {isProfileDropdownOpen && (
             <Dropdown>
-              <DropdownItem>
-                <CiLogout size={20} />
+              <DropdownItem onClick={onClickLogout}>
+                <CiLogout size={20}/>
                 LOGOUT
               </DropdownItem>
             </Dropdown>

@@ -3,17 +3,18 @@ import Header from '../header/Header';
 import Sidebar from '../sidebar/Sidebar';
 import { useState } from 'react';
 import BeforeLoginHeader from '../header/BeforeLoginHeader';
+import { useAuth } from '../../context/AuthContext';
 
 interface Props {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: Props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const {isAuthenticated, logout} = useAuth();
 
   return (
     <LayoutWrapper>
-      {isLoggedIn ? ( 
+      {isAuthenticated ? ( 
         <>
           <Header />
           <MainLayout>

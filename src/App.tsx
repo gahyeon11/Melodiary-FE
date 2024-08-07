@@ -86,11 +86,10 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
+      <GlobalStyle />
       <AuthProvider>
-        <GlobalStyle />
         <RouterProvider router={router} />
       </AuthProvider>
-      
     </ThemeProvider>
   );
 };

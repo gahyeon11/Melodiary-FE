@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { motion} from 'framer-motion';
 import background from '../assets/images/background.png';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 const Landing = () => {
+  const {isAuthenticated, logout} = useAuth();
   const navigate = useNavigate();
   const openJoinPage = () => {
-    navigate('/join')
+    navigate('/join');
   };
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/home');
+    }
+  }, [isAuthenticated, navigate]);
   return(
     <LandingWrapper>
       <LandingContainer>
@@ -31,7 +38,7 @@ export default Landing;
 const LandingWrapper = styled(motion.div)`
   height: 100vh;
   background-image: url(${ background });
-  background-size: 100% auto;
+  background-size: cover;
   background-repeat: no-repeat; 
   background-position: center;
   background-attachment: fixed; 
