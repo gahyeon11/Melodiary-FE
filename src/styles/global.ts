@@ -13,9 +13,9 @@ export const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    font-family: ${({ theme }) => theme.fontFamily.en};
     color: ${({ theme }) => theme.color.black};
     background-color: ${({ theme }) => theme.color.white};
+    font-family: ${({ theme }) => theme.fontFamily.en};
   }
 
   a {
