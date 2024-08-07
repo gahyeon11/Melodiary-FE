@@ -89,9 +89,9 @@ export const dummyDiaries: IDiary[] = [
       emoji: "🏠",
       privacy: "private",
       music: {
-        url: "https://www.youtube.com/watch?v=uNN2lN7M7cA",
-        title: "Right Now",
-        artist: "NewJeans",
+        url: "https://www.youtube.com/watch?v=BfI89YxNzVY",
+        title: "Armageddon",
+        artist: "aespa",
       },
 
       weather: {
@@ -127,9 +127,9 @@ export const dummyDiaries: IDiary[] = [
       emoji: "🏠",
       privacy: "private",
       music: {
-        url: "https://www.youtube.com/watch?v=uNN2lN7M7cA",
-        title: "Right Now",
-        artist: "NewJeans",
+        url: "https://www.youtube.com/watch?v=m2iuZ-uDziM",
+        title: "Sticky",
+        artist: "키스오브라이프",
       },
 
       weather: {
@@ -164,9 +164,9 @@ export const dummyDiaries: IDiary[] = [
       emoji: "🏠",
       privacy: "private",
       music: {
-        url: "https://www.youtube.com/watch?v=uNN2lN7M7cA",
-        title: "Right Now",
-        artist: "NewJeans",
+        url: "https://www.youtube.com/watch?v=4U031MuTa-s",
+        title: "青い珊瑚礁",
+        artist: "Newjeans 하니(Hanni)",
       },
 
       weather: {
@@ -260,12 +260,12 @@ export const dummyDiaryData = {
 
 export const dummyFriendRequests = [
   { id: 1, nickname: "김머쓱", profileImgURL: null },
-  { id: 2, nickname: "박머쓱", profileImgURL: null },
+  { id: 2, nickname: "Kim", profileImgURL: null },
 ];
 
 export const dummyMates = [
+  { id: 3, nickname: "Lee", profileImgURL: null },
   { id: 4, nickname: "따봉고양이", profileImgURL: null },
   { id: 5, nickname: "구름강쥐", profileImgURL: null },
   { id: 6, nickname: "심슨냥이", profileImgURL: null },
-  { id: 7, nickname: "식빵목걸이", profileImgURL: null },
 ];
