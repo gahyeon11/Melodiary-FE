@@ -25,8 +25,16 @@ const App = () => {
       component: <Home />,
     },
     {
+      path: "/home/:userId",
+      component: <Home />,
+    },
+    {
+      path: "/diary/:diaryId",
+      component: <Diary />,
+    },
+    {
       path: "/explore",
-      component: <Explore />,
+      component: <Explore/>, 
     },
     {
       path: "/mates",

@@ -48,7 +48,7 @@ const MainLayout = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  align-items: flex-start;
+  /* align-items: flex-start; */
   width: 100%;
   height: calc(100vh - 64px);
 
