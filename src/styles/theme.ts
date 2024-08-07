@@ -91,48 +91,48 @@ export const theme: Theme = {
   },
   diaryColor: {
     default: {
-      background: "#FFFFFF",
+      background: "#FFFFFF", 
       tag: "#EEEEEE",
     },
     orange: {
-      background: "#FF87461A",
-      tag: "#FF87464D",
+      background: "#FFF3EE", 
+      tag: "#FFDED4", 
     },
     beige: {
-      background: "#FFD2791A",
-      tag: "#FFD2794D",
+      background: "#FFF7EF", 
+      tag: "#FFEBD3",
     },
     yellow: {
-      background: "#FFDD2B1A",
-      tag: "#FFDD2B4D",
+      background: "#FFFCE8",
+      tag: "#FFF5C6",
     },
     green: {
-      background: "#8FEC471A",
-      tag: "#8FEC474D",
+      background: "#F3FDEF", 
+      tag: "#E2F9CC",
     },
     mint: {
-      background: "#71F8C81A",
-      tag: "#71F8C84D",
+      background: "#F1FDF9",
+      tag: "#E5FAF3",
     },
     blue: {
-      background: "#9AD9EA1A",
-      tag: "#9AD9EA4D",
+      background: "#F5FCFD", 
+      tag: "#DFF2F6",
     },
     coolblue: {
-      background: "#8AA3F91A",
-      tag: "#8AA3F91A4D",
+      background: "#F3F5FD",
+      tag: "#D3DBFB",
     },
     purple: {
-      background: "#BA84FF1A",
-      tag: "#BA84FF4D",
+      background: "#F7F1FE",
+      tag: "#E6D8FE",
     },
     pink: {
-      background: "#EA9ACA1A",
-      tag: "#EA9ACA4D",
+      background: "#FDF3F9", 
+      tag: "#FAD8E8", 
     },
     gray: {
-      background: "#9999991A",
-      tag: "#9999994D",
+      background: "#F5F5F5",
+      tag: "#E2E2E2", 
     },
   },
   title: {
