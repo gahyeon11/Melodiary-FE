@@ -61,7 +61,6 @@ const SidebarWrapper = styled.aside`
   width: 74px;
   height: 100%;
   padding: 24px 0;
-  border-right: 1px solid ${({ theme }) => theme.color.grayDF};
 `;
 
 const SidebarLink = styled.div<{ active: boolean }>`

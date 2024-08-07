@@ -47,13 +47,11 @@ const DiaryItem: React.FC<DiaryItemProps> = ({
 
   useEffect(() => {
     // 좋아요 초기 상태 설정 추가 필요
-    setUserHasLiked(false); // 우선 항상 false로 설정
+    setUserHasLiked(false);
   }, []);
 
-  // 현재 페이지가 "Mates" 페이지인지 확인
   const isMatesPage = location.pathname.includes("mates");
 
-  // 디버그 로그 추가
   console.log("Current location:", location.pathname);
   console.log("Is Mates Page:", isMatesPage);
 
@@ -77,7 +75,7 @@ const DiaryItem: React.FC<DiaryItemProps> = ({
             : isSummary
             ? "18vw"
             : isExpanded
-            ? "70px"
+            ? "73px"
             : "50vw",
         width:
           isSummary && isMatesPage
@@ -100,7 +98,7 @@ const DiaryItem: React.FC<DiaryItemProps> = ({
           toggleExpand={toggleExpand}
           isExpanded={isExpanded}
         />
-        <DiaryContent 
+        <DiaryContent
           diary={diary}
           isSummary={isSummary}
           user={user}
@@ -131,7 +129,7 @@ interface DiaryContainerProps {
   isSummary: boolean;
   isMatesPage: boolean;
 }
-interface DiaryProps{
+interface DiaryProps {
   isSummary: boolean;
 }
 
@@ -145,7 +143,8 @@ const DiaryContainer = styled(motion.div)<DiaryContainerProps>`
     theme.diaryColor.default.background};
   margin-bottom: ${({ isSummary }) => (isSummary ? "50px" : "0")};
   border-radius: ${({ isSummary }) => (isSummary ? "20px" : "0")};
-  border: 1px solid ${({ theme }) => theme.color.grayDF};
+  border: ${({ isSummary, theme }) =>
+    isSummary ? `1px solid ${theme.color.grayDF}` : "none"};
   width: ${({ isExpanded }) => (isExpanded ? "calc(100vw - 74px)" : "50vw")};
 `;
 
@@ -153,5 +152,5 @@ const Diary = styled.div<DiaryProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  cursor: ${({ isSummary }) => (isSummary ? "pointer" : "default")}; 
+  cursor: ${({ isSummary }) => (isSummary ? "pointer" : "default")};
 `;

@@ -146,7 +146,7 @@ const DiaryTagItem = styled.div<DiaryTagItemProps>`
 `;
 
 const DiaryText = styled.div<DiarySummarydProps>`
-  padding: ${({ isSummary }) => (isSummary ? "10px 0 0 0" : "5% 0 0 0")};
+  padding: ${({ isSummary }) => (isSummary ? "10px 0 0 0" : "30px 0 0 0")};
   margin-bottom: ${({ isExpanded, isSummary }) => (isExpanded || isSummary ? "10px" : "150px")};
   width: 100%;
   max-width: 100%;
