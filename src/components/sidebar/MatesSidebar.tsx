@@ -1,8 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
-import { FaUserCircle, FaRegCheckCircle, FaRegTimesCircle, FaLongArrowAltRight  } from 'react-icons/fa';
-import { dummyFriendRequests, dummyMates } from '../../dummyData';
-import { Link } from 'react-router-dom';
+import React from "react";
+import styled from "styled-components";
+import { FaUserCircle, FaLongArrowAltRight } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa6";
+import { IoClose } from "react-icons/io5";
+import { dummyFriendRequests, dummyMates } from "../../dummyData";
+import { Link } from "react-router-dom";
 
 function MatesSidebar() {
   const handleAccept = (id: number) => {
@@ -55,7 +57,9 @@ function MatesSidebar() {
                 )}
               </ProfileLink>
               <Nickname>{mate.nickname}</Nickname>
-              <Arrow><FaLongArrowAltRight /></Arrow>
+              <Arrow>
+                <FaLongArrowAltRight />
+              </Arrow>
             </FriendItem>
           </FriendItemLink>
         ))}
@@ -120,9 +124,9 @@ const IconButtons = styled.div`
   margin-left: auto;
 `;
 
-const AcceptIcon = styled(FaRegCheckCircle)`
-  width: 20px;
-  height: 20px;
+const AcceptIcon = styled(FaCheck)`
+  width: 18px;
+  height: 18px;
   cursor: pointer;
   color: ${({ theme }) => theme.color.gray777};
   &:hover {
@@ -130,7 +134,7 @@ const AcceptIcon = styled(FaRegCheckCircle)`
   }
 `;
 
-const RejectIcon = styled(FaRegTimesCircle)`
+const RejectIcon = styled(IoClose)`
   width: 20px;
   height: 20px;
   cursor: pointer;
