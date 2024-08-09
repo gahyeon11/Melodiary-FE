@@ -1,12 +1,10 @@
 // AuthContext.tsx
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (accessToken: string, userId: number) => void;
+  login: (accessToken: string) => void;
   logout: () => void;
-  userId: number | null;
 }
 
 interface AuthProviderProps {
@@ -17,34 +15,27 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
-    const userId = localStorage.getItem('userId');
 
-    if (accessToken && userId) {
+    if (accessToken) {
       setIsAuthenticated(true);
-      setUserId(Number(userId));
     }
   }, []);
 
-  const login = (accessToken: string, userId: number) => {
+  const login = (accessToken: string) => {
     localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('userId', userId.toString());
     setIsAuthenticated(true);
-    setUserId(userId);
   };
 
   const logout = () => {
     localStorage.removeItem('accessToken');
-    localStorage.removeItem('userId');
     setIsAuthenticated(false);
-    setUserId(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, userId }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

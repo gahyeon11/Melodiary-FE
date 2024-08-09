@@ -4,7 +4,21 @@ import { FiGithub } from "react-icons/fi";
 import { BiHeadphone } from "react-icons/bi";
 import { Link } from 'react-router-dom';
 
-const LandingHeader = () => {
+interface BeforeLoginHeaderProps {
+  isNicknamePage?: boolean;
+}
+
+const LandingHeader: React.FC<BeforeLoginHeaderProps> = ({ isNicknamePage }) => {
+  if (isNicknamePage) {
+    return(
+      <HeaderContainer>
+          <Logo>
+            <BiHeadphone size={24} />
+            <h1>MeloDiary </h1> 
+          </Logo>
+      </HeaderContainer>
+    );
+  }
   return(
     <HeaderContainer>
       <Link to="/">

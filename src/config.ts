@@ -8,8 +8,7 @@ const createOAuthUrl = (type: AuthType, action: ActionType): string => {
     kakao: 'YOUR_KAKAO_CLIENT_ID'
   };
 
-  const redirect_uri = 'https://melo-diary.vercel.app/auth';
-  //const redirect_uri = `https://melo-diary.vercel.app/auth?type=google`;
+  const redirect_uri = 'https://melodiary.site/auth';
   const state = JSON.stringify({ type, action });
   
   let auth_url = '';
@@ -30,6 +29,3 @@ export const KAKAO_LOGIN_URL = createOAuthUrl('kakao', 'login');
 export const GOOGLE_LOGIN_URL = createOAuthUrl('google', 'login');
 //네이버 state 추후 수정 Math.random().toString(36).substr(2, 11)
 export const NAVER_LOGIN_URL = createOAuthUrl('naver', 'login');
-
-export const GOOGLE_REDIRECT_URI = `https://melo-diary.vercel.app/auth?type=google`;
-export const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${GOOGLE_REDIRECT_URI}&response_type=code&scope=email`;

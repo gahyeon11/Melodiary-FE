@@ -4,7 +4,7 @@ import { FcGoogle } from "react-icons/fc";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ISignup } from '../models/user.model';
 import { signUp, login } from '../api/auth.api';
 import axios from 'axios';
@@ -33,22 +33,18 @@ const Auth = () => {
         try {
           let response;
           if (action === 'signup') {
-            response = await axios.post('https://api.melodiary.site/api/users', authData, {
-              withCredentials: true,
-            });
+            response = await signUp(authData);
           } else if (action === 'login') {
-            response = await axios.post('https://api.melodiary.site/api/users/login', authData, {
-              withCredentials: true,
-            });
+            response = await login(authData);
           }
+
           if (response) {
             console.log('Successfully received jwt:', response.data);
-            const { accessToken, userId } = response.data;
+            const { accessToken } = response.data;
             localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('userId', userId);
-            setAuthToken(accessToken, userId);
+            setAuthToken(accessToken);
             if(action === 'signup'){
-              //navigate('/nickname'); // 리다이렉트
+              navigate('/nickname'); // 리다이렉트
             } else if (action === 'login') {
               navigate('/home'); 
             }  
@@ -96,6 +92,7 @@ const Auth = () => {
               <IconWrapper><SiNaver/></IconWrapper>
               Naver로 시작하기
             </Button>
+            <LoginLink >이미 계정이 있으신가요? <Link to='/login' className='loginBtn'>로그인</Link></LoginLink>
         </ButtonContainer>
       </ContentWrapper>
       {modalMessage && (
@@ -180,6 +177,16 @@ const IconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin-right: 50px;
+`;
+
+const LoginLink = styled.div`
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+  .loginBtn{
+    color: #555;
+    text-decoration: underline;
+  }
 `;
 
 export default Auth ;
