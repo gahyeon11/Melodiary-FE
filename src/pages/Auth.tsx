@@ -32,17 +32,17 @@ const Auth = () => {
 
         try {
           let response;
-          if (action === 'signup') {
+           if (action === 'signup') {
             response = await signUp(authData);
           } else if (action === 'login') {
-            response = await login(authData);
+            response = await login(authData); 
           }
 
           if (response) {
             console.log('Successfully received jwt:', response.data);
-            const { accessToken } = response.data;
-            localStorage.setItem('accessToken', accessToken);
-            setAuthToken(accessToken);
+            const { access_token } = response.data;
+            localStorage.setItem('access_token', access_token);
+            setAuthToken(access_token);
             if(action === 'signup'){
               navigate('/nickname'); // 리다이렉트
             } else if (action === 'login') {
@@ -50,8 +50,10 @@ const Auth = () => {
             }  
           }
         } catch (error) {
-          if (axios.isAxiosError(error) && error.response?.status === 409) {
+          if (axios.isAxiosError(error) && error.response?.status === 409 && action === 'signup') {
             setModalMessage("이미 가입된 정보가 있습니다. \n로그인 화면으로 이동할까요?");
+          } else if (axios.isAxiosError(error) && error.response?.status === 404 && action === 'login') {
+            setModalMessage("없는 계정입니다. \n회원가입 화면으로 이동할까요?");
           } else {
             console.error('OAuth 실패:', error);
           }
@@ -67,12 +69,20 @@ const Auth = () => {
   
   const closeModal = () => {
     setModalMessage(null);
-    navigate('/join');
+    if(action === 'signup'){
+      navigate('/join');
+    }else if(action === 'login') {
+      navigate('/login');
+    }
   };
 
   const confirmModal = () => {
     setModalMessage(null);
-    navigate('/login');
+    if(action === 'signup'){
+      navigate('/login');
+    }else if(action === 'login') {
+      navigate('/join');
+    }
   };
 
   return (

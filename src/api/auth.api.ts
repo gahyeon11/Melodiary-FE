@@ -1,34 +1,26 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { ISignup } from '../models/user.model';
 const port = process.env.REACT_APP_PORT || '3000';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-export const handleGoogleOAuthURL = async (code: string): Promise<{ token: string, user: any }> => {
+export const handleGoogleOAuthURL = async (code: string): Promise<{ access_token: string, user_id: any }> => {
   const response = await axios.post(`${API_BASE_URL}/auth/oauth/google`, { code });
   return response.data;
 };
 
-export const signUp = async (data: ISignup) => {
-  try {
-    await axios.post('https://api.melodiary.site/api/users', data, {
-      withCredentials: true
-      })
-      .then((response: { data: any }) => {
-        return response;
-      })
-      .catch((error: any) => {
-        console.error('Error:', error);
-      });
-  } catch (error) {
-    console.error("회원가입에 실패했습니다.", error);
-  }
+export const signUp = async (data: ISignup): Promise<AxiosResponse<{ access_token: string; user_id: any }>> => {
+  let response;
+  response = await axios.post(`${API_BASE_URL}/users`, data, {
+    withCredentials: true,
+  });
+  return response;
+  
 };
 
-export const login = async (data: ISignup)  => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/users/login`, data);
-    return response.data;
-  } catch (error) {
-    console.error("로그인에 실패했습니다.", error);
-  }
+export const login = async (data: ISignup): Promise<AxiosResponse<{ access_token: string; user_id: any }>>  => {
+  let response;
+  response = await axios.post(`${API_BASE_URL}/users/login`, data, {
+    withCredentials: true,
+  });
+  return response;
 };
