@@ -1,10 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { BiHeadphone } from "react-icons/bi";
+import { useUserStore } from '../store/authStore';
+import { registerNickname } from '../api/auth.api';
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 const NickName = () => {
-  
+  const [nickname, setNickname] = useState<string>(''); // 닉네임 상태 관리
+  const { login: setAuthToken } = useAuth();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(event.target.value);
+    setErrorMessage(null);
+  };
+
+  const handleRegisterNickname = async () => {
+    if (nickname.length < 2 || nickname.length > 14) {
+      alert('닉네임은 2자에서 14자 사이여야 합니다.');
+      return;
+    }
+    const userId = localStorage.getItem('user_id');
+    const accessToken = localStorage.getItem('access_token');
+    try {
+      if (userId && accessToken) {
+        const response = await registerNickname(userId, nickname);
+        console.log('닉네임 등록 성공:', response.data);
+        setAuthToken(accessToken, Number(userId));
+        navigate('/home'); // 닉네임 등록 후 홈으로 이동
+        
+        // 추가적인 로직이 필요하면 여기에 작성
+      } 
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        setErrorMessage("이미 존재하는 닉네임입니다.");
+      } else {
+        setErrorMessage("닉네임 등록에 실패했습니다. 다시 시도해주세요.");
+      }
+    }
+  };
   return (
     <PageWrapper>
       <ContentWrapper>
@@ -16,10 +52,15 @@ const NickName = () => {
           여러분만의 닉네임을 입력하고 시작해보세요.
         </WelcomeMessage>
         <InputWrapper>
-          <NicknameInput placeholder="닉네임을 입력하세요" />
-          <InputInfo>2 ~ 14자로 입력해주세요.</InputInfo>
+          <NicknameInput placeholder="닉네임을 입력하세요"  
+            value={nickname} 
+            onChange={handleNicknameChange} 
+            isError={!!errorMessage}  />
+           <InputInfo isError={!!errorMessage}>
+            {errorMessage || "2 ~ 14자로 입력해주세요."}
+          </InputInfo>
         </InputWrapper>
-        <EnterButton>입장하기</EnterButton>
+        <EnterButton onClick={handleRegisterNickname}>입장하기</EnterButton>
       </ContentWrapper>
     </PageWrapper>
   );
@@ -77,20 +118,20 @@ const InputWrapper = styled.div`
   text-align: center;
 `;
 
-const NicknameInput = styled.input`
+const NicknameInput = styled.input<{ isError: boolean }>`
   width: 100%;
   padding: 10px;
   margin-bottom: 5px;
-  border: 1px solid #ddd;
+  border: 1px solid ${({ isError, theme }) => isError ? '#fb122f' : '#ddd'};
   border-radius: 5px;
   font-size: 1rem;
   font-family: ${({theme}) => theme.fontFamily.kor};
   text-align: center;
 `;
 
-const InputInfo = styled.p`
+const InputInfo = styled.p<{ isError: boolean }>`
   font-size: 0.8rem;
-  color: #888;
+  color: ${({ isError, theme }) => isError ? '#fb122f': '#888'};
   text-align: center;
   font-family: ${({theme}) => theme.fontFamily.kor};
 `;

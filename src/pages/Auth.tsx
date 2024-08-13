@@ -10,6 +10,7 @@ import { signUp, login } from '../api/auth.api';
 import axios from 'axios';
 import Modal from '../components/modal/signupModal';
 import { useAuth } from '../context/AuthContext';
+import { useUserStore } from '../store/authStore';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const Auth = () => {
   const code = urlParams.get('code');
   const [modalMessage, setModalMessage] = useState<string | null>(null);
   const [action, setAction] = useState<string | null>(null);
+  const setUserId = useUserStore((state) => state.setUserId);
 
   useEffect(() => {
     const handleOAuth = async () => {
@@ -40,12 +42,14 @@ const Auth = () => {
 
           if (response) {
             console.log('Successfully received jwt:', response.data);
-            const { access_token } = response.data;
+            const { access_token, user_id } = response.data;
             localStorage.setItem('access_token', access_token);
-            setAuthToken(access_token);
+            localStorage.setItem('user_id', user_id.toString());
             if(action === 'signup'){
-              navigate('/nickname'); // 리다이렉트
+              localStorage.setItem('access_token', access_token);
+              navigate(`/nickname`); // 리다이렉트
             } else if (action === 'login') {
+              setAuthToken(access_token, user_id);
               navigate('/home'); 
             }  
           }
@@ -53,7 +57,7 @@ const Auth = () => {
           if (axios.isAxiosError(error) && error.response?.status === 409 && action === 'signup') {
             setModalMessage("이미 가입된 정보가 있습니다. \n로그인 화면으로 이동할까요?");
           } else if (axios.isAxiosError(error) && error.response?.status === 404 && action === 'login') {
-            setModalMessage("없는 계정입니다. \n회원가입 화면으로 이동할까요?");
+            setModalMessage("가입된 정보가 없습니다. \n회원가입 화면으로 이동할까요?");
           } else {
             console.error('OAuth 실패:', error);
           }
@@ -65,7 +69,7 @@ const Auth = () => {
     };
 
     handleOAuth();
-  }, [navigate, stateParam, code]);
+  }, [navigate, stateParam, code, setUserId, setAuthToken]);
   
   const closeModal = () => {
     setModalMessage(null);

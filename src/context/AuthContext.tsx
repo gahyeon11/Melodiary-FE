@@ -3,7 +3,7 @@ import React, { createContext, useState, useContext, useEffect, ReactNode } from
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (accessToken: string) => void;
+  login: (access_token: string, user_id: number) => void;
   logout: () => void;
 }
 
@@ -17,20 +17,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
+    const access_token = localStorage.getItem('access_token');
+    const user_id = localStorage.getItem('user_id');
 
-    if (accessToken) {
+    if (access_token) {
       setIsAuthenticated(true);
     }
   }, []);
 
-  const login = (accessToken: string) => {
-    localStorage.setItem('accessToken', accessToken);
+  const login = (access_token: string, user_id: number) => {
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('user_id', user_id.toString());
     setIsAuthenticated(true);
   };
 
   const logout = () => {
-    localStorage.removeItem('accessToken');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_id');
     setIsAuthenticated(false);
   };
 
@@ -49,15 +52,15 @@ export const useAuth = (): AuthContextType => {
   return context;
 };
 
-// 추가: loader 함수 정의 및 내보내기
-export const tokenLoader = async () => {
-  const accessToken = localStorage.getItem('accessToken');
-  const userId = localStorage.getItem('userId');
 
-  if (accessToken && userId) {
+export const tokenLoader = async () => {
+  const access_token = localStorage.getItem('access_token');
+  const user_id = localStorage.getItem('user_id');
+
+  if (access_token) {
     return {
       isAuthenticated: true,
-      userId: Number(userId),
+      userId: Number(user_id),
     };
   } else {
     return {

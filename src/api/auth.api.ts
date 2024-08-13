@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
-import { ISignup } from '../models/user.model';
+import { INicknameRequest, ISignup } from '../models/user.model';
+import { useUserStore } from '../store/authStore';
 const port = process.env.REACT_APP_PORT || '3000';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -8,6 +9,7 @@ export const handleGoogleOAuthURL = async (code: string): Promise<{ access_token
   return response.data;
 };
 
+//회원가입
 export const signUp = async (data: ISignup): Promise<AxiosResponse<{ access_token: string; user_id: any }>> => {
   let response;
   response = await axios.post(`${API_BASE_URL}/users`, data, {
@@ -17,10 +19,29 @@ export const signUp = async (data: ISignup): Promise<AxiosResponse<{ access_toke
   
 };
 
+//로그인
 export const login = async (data: ISignup): Promise<AxiosResponse<{ access_token: string; user_id: any }>>  => {
   let response;
   response = await axios.post(`${API_BASE_URL}/users/login`, data, {
     withCredentials: true,
   });
+  return response;
+};
+
+//최초 닉네임 등록
+export const registerNickname = async (id: string, nickname: string): Promise<AxiosResponse<any>> => {
+  const accessToken = localStorage.getItem('access_token');
+  const userId = parseInt(id, 10)
+  const data: INicknameRequest = {
+    nickname,
+  };
+
+  const response = await axios.post(`${API_BASE_URL}/users/${userId}/nickname`, data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 포함
+    },
+    withCredentials: true,
+  });
+
   return response;
 };

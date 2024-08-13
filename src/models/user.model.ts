@@ -3,3 +3,6 @@ export interface ISignup {
     authorization_code : string,
 }
 
+export interface INicknameRequest {
+    nickname: string;
+}
