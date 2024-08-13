@@ -1,13 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { INicknameRequest, ISignup } from '../models/user.model';
-import { useUserStore } from '../store/authStore';
-const port = process.env.REACT_APP_PORT || '3000';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
-export const handleGoogleOAuthURL = async (code: string): Promise<{ access_token: string, user_id: any }> => {
-  const response = await axios.post(`${API_BASE_URL}/auth/oauth/google`, { code });
-  return response.data;
-};
 
 //회원가입
 export const signUp = async (data: ISignup): Promise<AxiosResponse<{ access_token: string; user_id: any }>> => {

@@ -60,7 +60,6 @@ export const useAuth = (): AuthContextType => {
   return context;
 };
 
-
 export const tokenLoader = async () => {
   const access_token = localStorage.getItem('access_token');
   const user_id = localStorage.getItem('user_id');

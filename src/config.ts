@@ -1,9 +1,11 @@
 type AuthType = 'google' | 'naver' | 'kakao';
 type ActionType = 'signup' | 'login';
 
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
 const createOAuthUrl = (type: AuthType, action: ActionType): string => {
   const client_ids = {
-    google: '137081432785-0rhjqb5shd67ov2ec4escraufk5fd6kt.apps.googleusercontent.com',
+    google: GOOGLE_CLIENT_ID,
     naver: 'YOUR_NAVER_CLIENT_ID',
     kakao: 'YOUR_KAKAO_CLIENT_ID'
   };

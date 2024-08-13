@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { BiHeadphone } from "react-icons/bi";
-import { useUserStore } from '../store/authStore';
 import { registerNickname } from '../api/auth.api';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
@@ -15,11 +14,9 @@ const NickName = () => {
   const { isSignupComplete, setIsSignupComplete } = useAuth();
 
   useEffect(() => {
-    console.log(isSignupComplete);
     if (!isSignupComplete) {
       navigate('/'); // 접근을 막고 싶은 페이지로 리다이렉트
     }
-
     // 컴포넌트가 언마운트될 때 상태 초기화
     return () => {
       setIsSignupComplete(false);
@@ -44,8 +41,6 @@ const NickName = () => {
         console.log('닉네임 등록 성공:', response.data);
         setAuthToken(accessToken, Number(userId));
         navigate('/home'); // 닉네임 등록 후 홈으로 이동
-        
-        // 추가적인 로직이 필요하면 여기에 작성
       } 
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
@@ -93,7 +88,7 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  background-color: white;
+  background-color: ${({ theme }) => theme.color.white};
   border-radius: 10px;
 `;
 
@@ -101,7 +96,7 @@ const Logo = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 5px;
-  font-family: ${({theme}) => theme.fontFamily.kor};
+  font-family: ${({ theme }) => theme.fontFamily.kor};
   svg {
     color: ${({ theme }) => theme.color.gray999};
   }
@@ -110,7 +105,7 @@ const Logo = styled.div`
     background: linear-gradient(90deg, #9ad9ea, #202879);
     background-clip: text;
     color: transparent;
-    font-family: ${({theme}) => theme.fontFamily.eng};
+    font-family: ${({ theme }) => theme.fontFamily.eng};
     font-size: ${({ theme }) => theme.title.title3};
     font-weight: bold;
     -webkit-background-clip: text;
@@ -122,8 +117,8 @@ const WelcomeMessage = styled.p`
   margin-bottom: 20px;
   text-align: center;  
   font-size: 1rem;
-  color: #333;
-  font-family: ${({theme}) => theme.fontFamily.kor};
+  color: ${({ theme }) => theme.color.grayblack};
+  font-family: ${({ theme }) => theme.fontFamily.kor};
 `;
 
 const InputWrapper = styled.div`
@@ -136,18 +131,18 @@ const NicknameInput = styled.input<{ isError: boolean }>`
   width: 100%;
   padding: 10px;
   margin-bottom: 5px;
-  border: 1px solid ${({ isError, theme }) => isError ? '#fb122f' : '#ddd'};
+  border: 1px solid ${({ isError, theme }) => isError ? '#fb122f' : theme.color.grayDF};
   border-radius: 5px;
   font-size: 1rem;
-  font-family: ${({theme}) => theme.fontFamily.kor};
+  font-family: ${({ theme }) => theme.fontFamily.kor};
   text-align: center;
 `;
 
 const InputInfo = styled.p<{ isError: boolean }>`
   font-size: 0.8rem;
-  color: ${({ isError, theme }) => isError ? '#fb122f': '#888'};
+  color: ${({ isError, theme }) => isError ? '#fb122f': theme.color.gray777};
   text-align: center;
-  font-family: ${({theme}) => theme.fontFamily.kor};
+  font-family: ${({ theme }) => theme.fontFamily.kor};
 `;
 
 const EnterButton = styled.button`
@@ -159,7 +154,7 @@ const EnterButton = styled.button`
   font-size: 1rem;
   color: ${({ theme }) => theme.color.primary};
   cursor: pointer;
-  font-family: ${({theme}) => theme.fontFamily.kor};
+  font-family: ${({ theme }) => theme.fontFamily.kor};
   &:hover {
     color: ${({ theme }) => theme.color.white};
     background-color: ${({ theme }) => theme.color.primary};
