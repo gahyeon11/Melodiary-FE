@@ -3,8 +3,11 @@ import React, { createContext, useState, useContext, useEffect, ReactNode } from
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  isSignupComplete: boolean;
   login: (access_token: string, user_id: number) => void;
   logout: () => void;
+  completeSignup: () => void;
+  setIsSignupComplete: (value: boolean) => void;
 }
 
 interface AuthProviderProps {
@@ -15,6 +18,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isSignupComplete, setIsSignupComplete] = useState<boolean>(false);
 
   useEffect(() => {
     const access_token = localStorage.getItem('access_token');
@@ -37,8 +41,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsAuthenticated(false);
   };
 
+  const completeSignup = () => {
+    setIsSignupComplete(true);
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isSignupComplete, login, completeSignup, logout, setIsSignupComplete}}>
       {children}
     </AuthContext.Provider>
   );

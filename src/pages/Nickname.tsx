@@ -12,6 +12,20 @@ const NickName = () => {
   const { login: setAuthToken } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { isSignupComplete, setIsSignupComplete } = useAuth();
+
+  useEffect(() => {
+    console.log(isSignupComplete);
+    if (!isSignupComplete) {
+      navigate('/'); // 접근을 막고 싶은 페이지로 리다이렉트
+    }
+
+    // 컴포넌트가 언마운트될 때 상태 초기화
+    return () => {
+      setIsSignupComplete(false);
+    };
+  }, [isSignupComplete, navigate, setIsSignupComplete]);
+
   const handleNicknameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
     setErrorMessage(null);

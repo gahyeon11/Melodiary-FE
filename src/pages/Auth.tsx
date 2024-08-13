@@ -14,7 +14,7 @@ import { useUserStore } from '../store/authStore';
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { login: setAuthToken } = useAuth();
+  const { login: setAuthToken, completeSignup } = useAuth();
   const urlParams = new URLSearchParams(window.location.search);
   const stateParam = urlParams.get('state');
   const code = urlParams.get('code');
@@ -46,7 +46,7 @@ const Auth = () => {
             localStorage.setItem('access_token', access_token);
             localStorage.setItem('user_id', user_id.toString());
             if(action === 'signup'){
-              localStorage.setItem('access_token', access_token);
+              completeSignup();
               navigate(`/nickname`); // 리다이렉트
             } else if (action === 'login') {
               setAuthToken(access_token, user_id);
