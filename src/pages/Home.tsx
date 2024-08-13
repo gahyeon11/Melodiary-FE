@@ -7,19 +7,36 @@ import MusicBar from "../components/musicbar/MusicBar";
 import Calendar from "../components/diary/Calender";
 import PlayList from "../components/diary/PlayList";
 import { dummyDiaries, dummyLikedUsers, dummyUsers } from "../dummyData";
-import { useUserStore } from "../store/authStore";
+import { getProfile } from "../api/auth.api";
 
 const Home = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { userId } = useParams();
   const { state } = useLocation();
-
+  const user_id = localStorage.getItem('user_id');
+  const [nickname, setNickname] = useState<string | null>(null);
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/');
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        if (user_id) {
+          const response = await getProfile(user_id);
+          const { nickname } = response.data;
+          setNickname(nickname);
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+  
+    fetchProfile();
+  }, [user_id]);
 
   // 유저 데이터를 받아오기
   const selectedUserId = userId || "1"; // 기본 userId 설정
@@ -46,11 +63,11 @@ const Home = () => {
     <HomeWrapper>
       <LeftSection>
         <CalendarSection>
-          <CalendarHeader>📅 따봉고양이 님의 달력</CalendarHeader>
+          <CalendarHeader>📅 {nickname} 님의 달력</CalendarHeader>
           <Calendar />
         </CalendarSection>
         <PlaylistSection>
-          <PlaylistHeader>🎵 따봉고양이 님의 플레이리스트</PlaylistHeader>
+          <PlaylistHeader>🎵 {nickname} 님의 플레이리스트</PlaylistHeader>
           <PlayList />
         </PlaylistSection>
       </LeftSection>
