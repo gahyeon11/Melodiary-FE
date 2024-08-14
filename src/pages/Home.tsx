@@ -8,7 +8,7 @@ import Calendar from "../components/diary/Calender";
 import PlayList from "../components/diary/PlayList";
 import { dummyDiaries, dummyLikedUsers, dummyUsers } from "../dummyData";
 import { getProfile } from "../api/auth.api";
-
+import AddMateButton from "../components/button/AddMateButton";
 const Home = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -16,6 +16,8 @@ const Home = () => {
   const { state } = useLocation();
   const user_id = localStorage.getItem('user_id');
   const [nickname, setNickname] = useState<string | null>(null);
+  const [isOwnProfile, setIsOwnProfile] = useState(true);
+
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/');
@@ -25,8 +27,8 @@ const Home = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        if (user_id) {
-          const response = await getProfile(user_id);
+        if (userId) {
+          const response = await getProfile(userId);
           const { nickname } = response.data;
           setNickname(nickname);
         }
@@ -37,6 +39,12 @@ const Home = () => {
   
     fetchProfile();
   }, [user_id]);
+
+  useEffect(() => {
+    if (userId && user_id) {
+      setIsOwnProfile(userId === user_id); // userId와 user_id가 같은지 비교
+    }
+  }, [userId, user_id]);
 
   // 유저 데이터를 받아오기
   const selectedUserId = userId || "1"; // 기본 userId 설정
@@ -63,7 +71,12 @@ const Home = () => {
     <HomeWrapper>
       <LeftSection>
         <CalendarSection>
-          <CalendarHeader>📅 {nickname} 님의 달력</CalendarHeader>
+          <CalendarHeader>
+            📅 {nickname} 님의 달력
+            {!isOwnProfile && (
+              <AddMateButton state={'NM'}/>
+            )}
+          </CalendarHeader>
           <Calendar />
         </CalendarSection>
         <PlaylistSection>
@@ -136,6 +149,23 @@ const CalendarHeader = styled.div`
   font-size: ${({ theme }) => theme.title.title4};
   font-family: ${({ theme }) => theme.fontFamily.kor};
   text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const FriendRequestButton = styled.button`
+  background-color: ${({ theme }) => theme.color.primary};
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: ${({ theme }) => theme.fontFamily.kor};
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* 아이콘과 텍스트 사이의 간격 조정 */
 `;
 
 const PlaylistSection = styled.div`

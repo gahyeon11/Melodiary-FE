@@ -50,7 +50,7 @@ const Auth = () => {
               navigate(`/nickname`); // 리다이렉트
             } else if (action === 'login') {
               setAuthToken(access_token, user_id);
-              navigate('/home'); 
+              navigate(`/home/${user_id}`); 
             }  
           }
         } catch (error) {
