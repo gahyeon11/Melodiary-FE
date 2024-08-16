@@ -8,7 +8,7 @@ export const getCalender = async (userId : string , month : string): Promise<Axi
             Authorization: `Bearer ${accessToken}`, 
           },
         params: {
-          userID: userId,
+          userId: userId,
           month: month,
         },
         withCredentials: true,

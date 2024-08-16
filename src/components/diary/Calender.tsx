@@ -34,10 +34,10 @@ const Calendar = () => {
           if (response && response.data) {
             const formattedEmojis: Emojis = {};
             console.log(response);
-            console.log(response.data);
-            response.data.forEach((entry: { date: string; emoji: string }) => {
+            console.log(response.data.calendar);
+            response.data.calendar.forEach((entry: { date: string; emoji: string }) => {
               const day = new Date(entry.date).getDate();
-              formattedEmojis[day-1] = entry.emoji;
+              formattedEmojis[day] = entry.emoji;
             });
 
             setEmojis(formattedEmojis); // emojis 상태 업데이트
