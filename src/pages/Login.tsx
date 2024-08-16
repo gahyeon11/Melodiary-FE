@@ -105,7 +105,7 @@ const Button = styled.button`
   }
   &.naver {
     background-color: #03c75a;
-    color: #fff;
+    color: ${({ theme }) => theme.color.white};
   }
   &.naver:hover {
     background-color: #02b04a;
@@ -122,9 +122,9 @@ const IconWrapper = styled.div`
 const LoginLink = styled.div`
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: #555;
+  color: ${({ theme }) => theme.color.gray777};
   .loginBtn{
-    color: #555;
+    color: ${({ theme }) => theme.color.gray777};
     text-decoration: underline;
   }
 `;

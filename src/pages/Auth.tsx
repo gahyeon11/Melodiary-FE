@@ -4,21 +4,23 @@ import { FcGoogle } from "react-icons/fc";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ISignup } from '../models/user.model';
 import { signUp, login } from '../api/auth.api';
 import axios from 'axios';
 import Modal from '../components/modal/signupModal';
 import { useAuth } from '../context/AuthContext';
+import { useUserStore } from '../store/authStore';
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { login: setAuthToken } = useAuth();
+  const { login: setAuthToken, completeSignup } = useAuth();
   const urlParams = new URLSearchParams(window.location.search);
   const stateParam = urlParams.get('state');
   const code = urlParams.get('code');
   const [modalMessage, setModalMessage] = useState<string | null>(null);
   const [action, setAction] = useState<string | null>(null);
+  const setUserId = useUserStore((state) => state.setUserId);
 
   useEffect(() => {
     const handleOAuth = async () => {
@@ -32,51 +34,58 @@ const Auth = () => {
 
         try {
           let response;
-          if (action === 'signup') {
-            response = await axios.post('https://api.melodiary.site/api/users', authData, {
-              withCredentials: true,
-            });
+           if (action === 'signup') {
+            response = await signUp(authData);
           } else if (action === 'login') {
-            response = await axios.post('https://api.melodiary.site/api/users/login', authData, {
-              withCredentials: true,
-            });
+            response = await login(authData); 
           }
+
           if (response) {
             console.log('Successfully received jwt:', response.data);
-            const { accessToken, userId } = response.data;
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('userId', userId);
-            setAuthToken(accessToken, userId);
+            const { access_token, user_id } = response.data;
+            localStorage.setItem('access_token', access_token);
+            localStorage.setItem('user_id', user_id.toString());
             if(action === 'signup'){
-              //navigate('/nickname'); // 리다이렉트
+              completeSignup();
+              navigate(`/nickname`); // 리다이렉트
             } else if (action === 'login') {
+              setAuthToken(access_token, user_id);
               navigate('/home'); 
             }  
           }
         } catch (error) {
-          if (axios.isAxiosError(error) && error.response?.status === 409) {
+          if (axios.isAxiosError(error) && error.response?.status === 409 && action === 'signup') {
             setModalMessage("이미 가입된 정보가 있습니다. \n로그인 화면으로 이동할까요?");
+          } else if (axios.isAxiosError(error) && error.response?.status === 404 && action === 'login') {
+            setModalMessage("가입된 정보가 없습니다. \n회원가입 화면으로 이동할까요?");
           } else {
             console.error('OAuth 실패:', error);
           }
         }
       } else {
         console.error('Missing required parameters: code or state');
-        //navigate('/login'); 
       }
     };
 
     handleOAuth();
-  }, [navigate, stateParam, code]);
+  }, [navigate, stateParam, code, setUserId, setAuthToken, completeSignup]);
   
   const closeModal = () => {
     setModalMessage(null);
-    navigate('/join');
+    if(action === 'signup'){
+      navigate('/join');
+    }else if(action === 'login') {
+      navigate('/login');
+    }
   };
 
   const confirmModal = () => {
     setModalMessage(null);
-    navigate('/login');
+    if(action === 'signup'){
+      navigate('/login');
+    }else if(action === 'login') {
+      navigate('/join');
+    }
   };
 
   return (
@@ -96,6 +105,7 @@ const Auth = () => {
               <IconWrapper><SiNaver/></IconWrapper>
               Naver로 시작하기
             </Button>
+            <LoginLink >이미 계정이 있으신가요? <Link to='/login' className='loginBtn'>로그인</Link></LoginLink>
         </ButtonContainer>
       </ContentWrapper>
       {modalMessage && (
@@ -117,6 +127,7 @@ const JoinWrapper = styled.div`
   background-position: center;
   background-attachment: fixed;   
 `;
+
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -125,6 +136,7 @@ const ContentWrapper = styled.div`
   height:92vh;
   padding-left: 5%;
 `;
+
 const JoinTitle = styled.h1`
   margin-bottom: 0.5rem;    
   font-size: 2rem;
@@ -169,17 +181,28 @@ const Button = styled.button`
   }
   &.naver {
     background-color: #03c75a;
-    color: #fff;
+    color: ${({ theme }) => theme.color.white};
   }
   &.naver:hover {
     background-color: #02b04a;
   }
 `;
+
 const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 50px;
+`;
+
+const LoginLink = styled.div`
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: ${({ theme }) => theme.color.gray777};
+  .loginBtn{
+    color: ${({ theme }) => theme.color.gray777};
+    text-decoration: underline;
+  }
 `;
 
 export default Auth ;
