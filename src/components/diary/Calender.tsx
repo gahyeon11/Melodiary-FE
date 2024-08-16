@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import emojiX from '../../assets/icons/rectangle1.png';
 import future from '../../assets/icons/rectangle2.png';
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-
+import { getCalender } from "../../api/home.api";
+import { useParams } from 'react-router-dom';
 interface Emojis {
   [key: number]: string | JSX.Element;
 }
@@ -16,25 +17,59 @@ const Calendar = () => {
   const [year, setYear] = useState<number>(currentYear);
   const [month, setMonth] = useState<number>(currentMonth);
   const [showSelector, setShowSelector] = useState<boolean>(false);
+  const [emojis, setEmojis] = useState<Emojis>({});
+  const { userId } = useParams();
 
-  const emojis: Emojis = {
-    1: '🐵',
-    2: '🐒',
-    3: '🐵',
-    4: '😎',
-    5: '🔥',
-    6: '🐟',
-    9: '',
-    10: '',
-    12: '',
-    13: '🌸',
-    14: '🍀',
-    15: '',
-    16: '💙',
-    17: '💎',
-    19: '',
-    30: '',
-  };
+  useEffect(() => {
+    const fetchCalendar = async () => {
+      try {
+        if (userId) {
+          let response;
+          if (month < 10) {
+            response = await getCalender(userId, `${year}-0${month + 1}`);
+          } else {
+            response = await getCalender(userId, `${year}-${month + 1}`);
+          }
+
+          if (response && response.data) {
+            const formattedEmojis: Emojis = {};
+            console.log(response);
+            console.log(response.data);
+            response.data.forEach((entry: { date: string; emoji: string }) => {
+              const day = new Date(entry.date).getDate();
+              formattedEmojis[day-1] = entry.emoji;
+            });
+
+            setEmojis(formattedEmojis); // emojis 상태 업데이트
+            
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching calendar data:', error);
+      }
+    };
+
+    fetchCalendar();
+  }, [month, userId, year]);
+
+  // const emojis: Emojis = {
+  //   1: '🐵',
+  //   2: '🐒',
+  //   3: '🐵',
+  //   4: '😎',
+  //   5: '🔥',
+  //   6: '🐟',
+  //   9: '',
+  //   10: '',
+  //   12: '',
+  //   13: '🌸',
+  //   14: '🍀',
+  //   15: '',
+  //   16: '💙',
+  //   17: '💎',
+  //   19: '',
+  //   30: '',
+  // };
 
   const handleYearChange = (direction: number) => {
     setYear((prevYear) => prevYear + direction);
@@ -66,7 +101,7 @@ const Calendar = () => {
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const weeks: JSX.Element[] = [];
     let days: JSX.Element[] = [];
-
+    console.log(emojis);
     for (let i = 0; i < startDay; i++) {
       days.push(<td key={`empty-start-${i}`}></td>);
     }

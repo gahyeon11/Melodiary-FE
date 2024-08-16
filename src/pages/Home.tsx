@@ -9,6 +9,7 @@ import PlayList from "../components/diary/PlayList";
 import { dummyDiaries, dummyLikedUsers, dummyUsers } from "../dummyData";
 import { getProfile } from "../api/auth.api";
 import AddMateButton from "../components/button/AddMateButton";
+
 const Home = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -39,6 +40,8 @@ const Home = () => {
   
     fetchProfile();
   }, [user_id]);
+
+
 
   useEffect(() => {
     if (userId && user_id) {
