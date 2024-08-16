@@ -21,6 +21,19 @@ export const login = async (data: ISignup): Promise<AxiosResponse<{ access_token
   return response;
 };
 
+//로그아웃
+export const logout = async (userId : string): Promise<AxiosResponse<{ access_token: string; user_id: any }>>  => {
+  const accessToken = localStorage.getItem('access_token');
+  const response = await axios.post(`${API_BASE_URL}/users/${userId}/logout`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 포함
+    },
+    withCredentials: true,
+  });
+  return response;
+};
+
+
 //최초 닉네임 등록
 export const registerNickname = async (id: string, nickname: string): Promise<AxiosResponse<any>> => {
   const accessToken = localStorage.getItem('access_token');

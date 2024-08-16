@@ -322,6 +322,7 @@ const DayEmoji = styled.div`
   align-items: center;
   height: 21.5px;
   padding-top: 10px;
+  cursor: pointer;
 `;
 
 const EmojiX = styled.img`

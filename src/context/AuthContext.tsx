@@ -1,5 +1,6 @@
 // AuthContext.tsx
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { logout as deleteAuthToken } from '../api/auth.api';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -22,7 +23,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     const access_token = localStorage.getItem('access_token');
-    const user_id = localStorage.getItem('user_id');
+    
 
     if (access_token) {
       setIsAuthenticated(true);
@@ -36,6 +37,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const logout = () => {
+    const user_id = localStorage.getItem('user_id');
+    if(user_id){
+      deleteAuthToken(user_id);
+    }
     localStorage.removeItem('access_token');
     localStorage.removeItem('user_id');
     setIsAuthenticated(false);

@@ -39,7 +39,7 @@ const Home = () => {
     };
   
     fetchProfile();
-  }, [user_id]);
+  }, [userId]);
 
 
 

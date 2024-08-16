@@ -1,15 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as AddMateIcon } from '../../assets/icons/addMate.svg';
 import { ReactComponent as MateIcon } from '../../assets/icons/Mate.svg';
 import { ReactComponent as RequestMateIcon } from '../../assets/icons/requestMate.svg';
+import { useParams } from 'react-router-dom';
+import { requestMate } from '../../api/requestMate.api';
 
 interface AddMateButtonProps {
   state: 'NM' | 'RM' | 'M'; // 버튼 상태 ('NM', 'RM', 'M')
-  onClick?: () => void;   // 클릭 핸들러, 선택 사항
 }
 
-const AddMateButton = ({ state, onClick }: AddMateButtonProps) => {
+const AddMateButton = ({ state }: AddMateButtonProps) => {
+  const { userId } = useParams();
+  const homeId = userId;
+  const user_id = localStorage.getItem('user_id');
+  const onClickRequestMate = async () => {
+    try {
+      if (user_id && homeId) {
+        const response = await requestMate(user_id, homeId);
+        console.log('친구 신청 성공:', response);
+        // 필요하다면 여기에 추가적인 상태 업데이트 로직을 추가할 수 있습니다.
+      }
+    } catch (error) {
+      console.error('친구 신청 실패:', error);
+    }
+  };
+
+  
   const renderButtonContent = () => {
     switch(state) {
       case 'NM':
@@ -41,7 +58,7 @@ const AddMateButton = ({ state, onClick }: AddMateButtonProps) => {
   if (!renderButtonContent()) return null;
 
   return (
-    <BaseButton state={state} onClick={state === 'NM' ? onClick : undefined}>
+    <BaseButton state={state} onClick={state === 'NM' ? onClickRequestMate : undefined}>
       {renderButtonContent()}
     </BaseButton>
   );
@@ -74,5 +91,4 @@ const BaseButton = styled.button<{ state: 'NM' | 'RM' | 'M' }>`
       background-color: ${theme.color.primaryHover};
     }
   `}
-
 `;
