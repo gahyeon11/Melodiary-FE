@@ -7,6 +7,7 @@ import MusicBar from "../components/musicbar/MusicBar";
 import Calendar from "../components/diary/Calender";
 import PlayList from "../components/diary/PlayList";
 import { dummyDiaries, dummyLikedUsers, dummyUsers } from "../dummyData";
+import { useUserStore } from "../store/authStore";
 
 const Home = () => {
   const { isAuthenticated } = useAuth();

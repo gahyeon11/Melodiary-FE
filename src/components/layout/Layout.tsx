@@ -4,13 +4,18 @@ import Sidebar from '../sidebar/Sidebar';
 import { useState } from 'react';
 import BeforeLoginHeader from '../header/BeforeLoginHeader';
 import { useAuth } from '../../context/AuthContext';
+import { useLocation } from 'react-router-dom';
 
 interface Props {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: Props) => {
-  const {isAuthenticated, logout} = useAuth();
+  const {isAuthenticated} = useAuth();
+  const location = useLocation();
+  
+  // 닉네임 페이지 경로 확인
+  const isNicknamePage = location.pathname === '/nickname'
 
   return (
     <LayoutWrapper>
@@ -26,7 +31,7 @@ const Layout = ({ children }: Props) => {
         </>
       ) : (
         <>
-        <BeforeLoginHeader />
+        <BeforeLoginHeader isNicknamePage={isNicknamePage} />
         <main>
           {children}
         </main>
