@@ -1,7 +1,7 @@
 export interface IMusic {
   title: string;
   artist: string;
-  url: string;
+  music_url: string;
 }
 
 export interface IWeather {
