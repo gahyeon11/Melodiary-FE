@@ -8,34 +8,27 @@ import {
   FaRegCommentDots,
 } from "react-icons/fa";
 import { DiaryItemProps, DiarySummaryProps } from "./DiaryItem";
+import { LikedUser } from "../../models/user.model";
+import { useLikeStatus } from "../../hooks/useLikesStatus";
 
-const DiaryFooter: React.FC<DiaryItemProps> = ({
+interface DiaryFooterProps extends DiaryItemProps {
+  likedUsers: LikedUser[];
+}
+
+const DiaryFooter: React.FC<DiaryFooterProps> = ({
   diary,
   likedUsers,
   isSummary = false,
   isExpanded,
-  likeCount,
-  userHasLiked,
-  setLikeCount,
-  setUserHasLiked,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { userHasLiked, likeCount, handleLikeClick } = useLikeStatus(
+    diary.id,
+    diary.user_profile.user_id, 
+    diary.liked,
+    diary.like_count || 0
+  );
 
-  const handleLikeClick = (event: React.MouseEvent) => {
-    event.stopPropagation(); // 이벤트 버블링 방지
-    if (
-      userHasLiked &&
-      setLikeCount &&
-      setUserHasLiked &&
-      likeCount !== undefined
-    ) {
-      setLikeCount(likeCount - 1);
-      setUserHasLiked(false);
-    } else if (setLikeCount && setUserHasLiked && likeCount !== undefined) {
-      setLikeCount(likeCount + 1);
-      setUserHasLiked(true);
-    }
-  };
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   return (
     <>
@@ -46,8 +39,8 @@ const DiaryFooter: React.FC<DiaryItemProps> = ({
             onMouseEnter={() => setIsModalOpen(true)}
             onMouseLeave={() => setIsModalOpen(false)}
             onClick={(event) => {
-              event.stopPropagation(); // 이벤트 버블링 막기
-              handleLikeClick(event);
+              event.stopPropagation(); 
+              handleLikeClick();
             }}
           >
             {userHasLiked ? <FaHeart size={20} /> : <FaRegHeart size={22} />}{" "}
@@ -64,7 +57,7 @@ const DiaryFooter: React.FC<DiaryItemProps> = ({
           <DiarySpan>
             <span
               className="heart"
-              onClick={handleLikeClick}
+              onClick={handleLikeClick} // 좋아요 클릭 처리
               onMouseEnter={() => setIsModalOpen(true)}
               onMouseLeave={() => setIsModalOpen(false)}
             >
@@ -113,6 +106,7 @@ const DiaryFooter: React.FC<DiaryItemProps> = ({
 };
 
 export default DiaryFooter;
+
 
 const ProfileIconContainer = styled.div`
   display: flex;

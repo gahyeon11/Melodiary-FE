@@ -1,56 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import DiaryHeader from "./DiaryHeader";
 import DiaryContent from "./DiaryContent";
 import DiaryFooter from "./DiaryFooter";
 import { IDiary } from "../../models/diary.model";
-import { motion } from "framer-motion";
-import { dummyLikedUsers } from "../../dummyData";
 import { useLocation, useNavigate } from "react-router-dom";
-
-export interface LikedUser {
-  id: number;
-  nickname: string;
-  profileImgURL: string | null;
-}
+import { IUser, LikedUser } from "../../models/user.model";
 
 export interface DiaryItemProps {
   diary: IDiary;
-  user: {
-    user_id: number;
-    profileImgURL: string | null;
-    nickname: string;
-  };
-  likedUsers: LikedUser[];
+  user: IUser;
+  likedUsers?: LikedUser[];
   isSummary?: boolean;
   isExpanded?: boolean;
   toggleExpand?: () => void;
-  likeCount?: number;
-  userHasLiked?: boolean;
-  setLikeCount?: React.Dispatch<React.SetStateAction<number>>;
-  setUserHasLiked?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DiaryItem: React.FC<DiaryItemProps> = ({
   diary,
   user,
-  likedUsers,
+  likedUsers = [],
   isSummary = false,
   isExpanded = false,
   toggleExpand,
-  likeCount,
-  setLikeCount,
 }) => {
-  const [userHasLiked, setUserHasLiked] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // 좋아요 초기 상태 설정 추가 필요
-    setUserHasLiked(false);
-  }, []);
-
   const isMatesPage = location.pathname.includes("mates");
+
+  const background_color = diary.body.background_color || "default";
 
   const handleDiaryClick = () => {
     if (isSummary) {
@@ -59,39 +38,24 @@ const DiaryItem: React.FC<DiaryItemProps> = ({
   };
 
   return (
-    <DiaryWrapper>
+    <DiaryWrapper
+      background_color={background_color}
+      isExpanded={isExpanded}
+      isSummary={isSummary}
+      isMatesPage={isMatesPage}
+    >
       <DiaryContainer
-        backgroundColor={diary.body.background_color}
+        background_color={background_color}
         isExpanded={isExpanded}
         isSummary={isSummary}
         isMatesPage={isMatesPage}
-        initial={{ left: isSummary ? "18vw" : "50vw", width: "50vw" }}
-        animate={{
-          left:
-            isSummary && isMatesPage
-              ? "14vw"
-              : isSummary
-              ? "18vw"
-              : isExpanded
-              ? "73px"
-              : "50vw",
-          width:
-            isSummary && isMatesPage
-              ? "55vw"
-              : isSummary
-              ? "60vw"
-              : isExpanded
-              ? "calc(100vw - 74px)"
-              : "50vw",
-        }}
-        transition={{ duration: 0.5 }}
         onClick={handleDiaryClick}
       >
         <Diary isSummary={isSummary}>
           <DiaryHeader
             diary={diary}
             user={user}
-            likedUsers={dummyLikedUsers}
+            likedUsers={likedUsers}
             isSummary={isSummary}
             toggleExpand={toggleExpand}
             isExpanded={isExpanded}
@@ -99,20 +63,14 @@ const DiaryItem: React.FC<DiaryItemProps> = ({
           <DiaryContent
             diary={diary}
             isSummary={isSummary}
-            user={user}
-            likedUsers={likedUsers}
             isExpanded={isExpanded}
           />
           <DiaryFooter
             diary={diary}
             user={user}
-            likedUsers={dummyLikedUsers}
+            likedUsers={likedUsers}
             isSummary={isSummary}
             isExpanded={isExpanded}
-            likeCount={likeCount}
-            userHasLiked={userHasLiked}
-            setLikeCount={setLikeCount}
-            setUserHasLiked={setUserHasLiked}
           />
         </Diary>
       </DiaryContainer>
@@ -123,49 +81,40 @@ const DiaryItem: React.FC<DiaryItemProps> = ({
 export default DiaryItem;
 
 export interface DiaryAllProps {
-  backgroundColor: string;
+  background_color: string;
   isExpanded: boolean;
   isSummary: boolean;
   isMatesPage: boolean;
-}
-
-export interface DiaryExpandSummaryProps {
-  isExpanded: boolean;
-  isSummary: boolean;
 }
 
 export interface DiarySummaryProps {
   isSummary: boolean;
 }
 
-export interface DiaryTagProps {
-  tagColor: string;
-  isSummary: boolean;
-}
-
-const DiaryWrapper = styled.div`
+const DiaryWrapper = styled.div<DiaryAllProps>`
   justify-content: center;
   align-items: center;
 `;
 
-const DiaryContainer = styled(motion.div)<DiaryAllProps>`
-  position: ${({ isSummary }) => (isSummary ? "relative" : "fixed")};
-  top: ${({ isSummary }) => (isSummary ? "0" : "64px")};
-  height: ${({ isSummary }) => (isSummary ? "auto" : "100vh")};
+const DiaryContainer = styled.div<DiaryAllProps>`
+  position: relative;
+  top: 0;
+  height: ${({ isExpanded, isSummary }) => 
+    isExpanded ? "100vh" : (isSummary ? "auto" : "100%")
+  };
   overflow-y: ${({ isSummary }) => (isSummary ? "visible" : "auto")};
-  background-color: ${({ theme, backgroundColor }) =>
-    theme.diaryColor[backgroundColor]?.background ||
+  overflow-x: hidden; 
+  background-color: ${({ theme, background_color }) =>
+    theme.diaryColor[background_color]?.background ||
     theme.diaryColor.default.background};
   margin-bottom: ${({ isSummary }) => (isSummary ? "50px" : "0")};
   border-radius: ${({ isSummary }) => (isSummary ? "20px" : "0")};
   border: ${({ isSummary, theme }) =>
     isSummary ? `1px solid ${theme.color.grayDF}` : "none"};
-  width: ${({ isExpanded }) => (isExpanded ? "calc(100vw - 74px)" : "50vw")};
+  width: 100%;
+  max-width: ${({ isExpanded }) => (isExpanded ? "none" : "50vw")};
 `;
 
 const Diary = styled.div<DiarySummaryProps>`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   cursor: ${({ isSummary }) => (isSummary ? "pointer" : "default")};
 `;

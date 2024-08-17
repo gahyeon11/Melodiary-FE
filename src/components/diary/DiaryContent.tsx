@@ -1,73 +1,90 @@
 import React from "react";
 import styled from "styled-components";
-import { DiaryExpandSummaryProps, DiaryItemProps, DiarySummaryProps, DiaryTagProps } from "./DiaryItem";
+import { IDiary } from "../../models/diary.model";
 
-const DiaryContent: React.FC<DiaryItemProps> = ({
+interface DiaryContentProps {
+  diary: IDiary;
+  isSummary?: boolean;
+  isExpanded?: boolean;
+  isMatesPage?: boolean;
+}
+
+const DiaryContent: React.FC<DiaryContentProps> = ({
   diary,
   isSummary = false,
   isExpanded = false,
+  isMatesPage = false
 }) => {
-
-  // content에서 이미지 태그 제거 (요약 버전을 위해서)
-  const stripImagesFromContent = (htmlContent: string) => {
-    return htmlContent.replace(/<img[^>]*>/g, "");
+  const stripHtmlTags = (htmlContent: string) => {
+    const div = document.createElement('div');
+    div.innerHTML = htmlContent;
+    return div.textContent || div.innerText || "";
   };
 
+  const extractFirstImage = (htmlContent: string): string | null => {
+    const div = document.createElement('div');
+    div.innerHTML = htmlContent;
+    const img = div.querySelector('img');
+    return img ? img.src : null;
+  };
+
+  const getSummaryText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + " ...";
+  };
+
+  const tagColor: string = diary.body.background_color || "default";
+
+  const firstImageUrl = extractFirstImage(diary.body.content);
+
+  const summaryText = isSummary && isMatesPage
+    ? getSummaryText(stripHtmlTags(diary.body.content), 200) // 원하는 글자 길이로 설정 가능
+    : stripHtmlTags(diary.body.content);
+
   return (
-    <ContentContainer isSummary={isSummary}>
-      {isSummary && diary.body.img_urls.length > 0 && (
-        <SummaryImage src={diary.body.img_urls[0]} alt={diary.body.title} />
+    <ContentContainer isSummary={isSummary} isMatesPage={isMatesPage}>
+      {isSummary && firstImageUrl && (
+        <SummaryImage src={firstImageUrl} alt={diary.body.title} />
       )}
       <Title>
         {isSummary && (
           <Right>
-            <DiaryTitle isSummary={isSummary}>{diary.body.title}</DiaryTitle>
+            <DiaryTitle isSummary={isSummary} isMatesPage={isMatesPage}>
+              {diary.body.title}
+            </DiaryTitle>
           </Right>
         )}
       </Title>
-      <DiaryTag tagColor={diary.body.background_color} isSummary={isSummary}>
-        <DiaryTagItem
-          tagColor={diary.body.background_color}
-          isSummary={isSummary}
-        >
-          오늘의 이모지 | {diary.body.emoji}
-        </DiaryTagItem>
-        <DiaryTagItem
-          tagColor={diary.body.background_color}
-          isSummary={isSummary}
-        >
+      <DiaryTag tagColor={tagColor} isSummary={isSummary} isMatesPage={isMatesPage}>
+        {diary.body.emoji && (
+          <DiaryTagItem tagColor={tagColor} isSummary={isSummary} isMatesPage={isMatesPage}>
+            오늘의 이모지 | {diary.body.emoji}
+          </DiaryTagItem>
+        )}
+        <DiaryTagItem tagColor={tagColor} isSummary={isSummary} isMatesPage={isMatesPage}>
           기분 | {diary.body.mood}
         </DiaryTagItem>
-        <DiaryTagItem
-          tagColor={diary.body.background_color}
-          isSummary={isSummary}
-        >
-          위치 | {diary.body.weather.location}
-        </DiaryTagItem>
-        <DiaryTagItem
-          tagColor={diary.body.background_color}
-          isSummary={isSummary}
-        >
-          날씨 | {diary.body.weather.icon} {diary.body.weather.avg_temperature}
-          °C
-        </DiaryTagItem>
-        <DiaryTagItem
-          tagColor={diary.body.background_color}
-          isSummary={isSummary}
-        >
-          오늘의 선곡 | {diary.body.music.title} - {diary.body.music.artist}
-        </DiaryTagItem>
+        {diary.body.weather && (
+          <DiaryTagItem tagColor={tagColor} isSummary={isSummary} isMatesPage={isMatesPage}>
+            위치 | {diary.body.weather.location}
+          </DiaryTagItem>
+        )}
+        {diary.body.weather && (
+          <DiaryTagItem tagColor={tagColor} isSummary={isSummary} isMatesPage={isMatesPage}>
+            날씨 | {diary.body.weather.icon} {diary.body.weather.avg_temperature}°C
+          </DiaryTagItem>
+        )}
+        {diary.body.music && (
+          <DiaryTagItem tagColor={tagColor} isSummary={isSummary} isMatesPage={isMatesPage}>
+            오늘의 선곡 | {diary.body.music.title} - {diary.body.music.artist}
+          </DiaryTagItem>
+        )}
       </DiaryTag>
 
-      <DiaryText isExpanded={isExpanded} isSummary={isSummary}>
+      <DiaryText isExpanded={isExpanded} isSummary={isSummary} isMatesPage={isMatesPage}>
         <div
           dangerouslySetInnerHTML={{
-            __html: isSummary
-              ? stripImagesFromContent(diary.body.content)
-                  .split("\n")
-                  .slice(0, 2)
-                  .join("\n") + " ..."
-              : diary.body.content,
+            __html: summaryText,
           }}
         />
       </DiaryText>
@@ -77,12 +94,12 @@ const DiaryContent: React.FC<DiaryItemProps> = ({
 
 export default DiaryContent;
 
-const ContentContainer = styled.div<DiarySummaryProps>`
+const ContentContainer = styled.div<{ isSummary: boolean; isMatesPage: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 100%;
-  padding: ${({ isSummary }) => (isSummary ? "0 5%" : "0 10%")};
+  padding: ${({ isSummary, isMatesPage }) => (isSummary || isMatesPage ? "0 5%" : "0 10%")};
 `;
 
 const Title = styled.div`
@@ -97,28 +114,28 @@ const Right = styled.div`
   justify-content: start;
 `;
 
-const DiaryTitle = styled.h2<DiarySummaryProps>`
+const DiaryTitle = styled.h2<{ isSummary: boolean; isMatesPage: boolean }>`
   margin: 0;
-  margin: ${({ isSummary }) => (isSummary ? "0 0 10px 0" : "10px 0")};
+  margin: ${({ isSummary, isMatesPage }) => (isSummary || isMatesPage ? "0 0 10px 0" : "10px 0")};
   justify-content: start;
   font-size: ${({ theme }) => theme.title.title3};
   font-weight: 600;
   color: ${({ theme }) => theme.color.black};
 `;
 
-const DiaryTag = styled.div<DiaryTagProps>`
+const DiaryTag = styled.div<{ tagColor: string; isSummary: boolean; isMatesPage: boolean }>`
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   width: 100%;
   padding: 10px 0;
-  border-top: ${({ isSummary, theme }) =>
-    isSummary ? "none" : `1px solid ${theme.color.grayDF}`};
-  border-bottom: ${({ isSummary, theme }) =>
-    isSummary ? "none" : `1px solid ${theme.color.grayDF}`};
+  border-top: ${({ isSummary, isMatesPage, theme }) =>
+    isSummary || isMatesPage ? "none" : `1px solid ${theme.color.grayDF}`};
+  border-bottom: ${({ isSummary, isMatesPage, theme }) =>
+    isSummary || isMatesPage ? "none" : `1px solid ${theme.color.grayDF}`};
 `;
 
-const DiaryTagItem = styled.div<DiaryTagProps>`
+const DiaryTagItem = styled.div<{ tagColor: string; isSummary: boolean; isMatesPage: boolean }>`
   display: flex;
   align-items: center;
   padding: 5px 15px;
@@ -129,12 +146,12 @@ const DiaryTagItem = styled.div<DiaryTagProps>`
   font-size: ${({ theme }) => theme.text.text3};
 `;
 
-const DiaryText = styled.div<DiaryExpandSummaryProps>`
+const DiaryText = styled.div<{ isExpanded: boolean; isSummary: boolean; isMatesPage: boolean }>`
   width: 100%;
   max-width: 100%;
-  padding: ${({ isSummary }) => (isSummary ? "10px 0 0 0" : "30px 0 0 0")};
-  margin-bottom: ${({ isExpanded, isSummary }) =>
-    isExpanded || isSummary ? "10px" : "150px"};
+  padding: ${({ isSummary, isMatesPage }) => (isSummary || isMatesPage ? "10px 0 0 0" : "30px 0 0 0")};
+  margin-bottom: ${({ isExpanded, isSummary, isMatesPage }) =>
+    isExpanded || isSummary || isMatesPage ? "10px" : "150px"};
   font-size: ${({ theme }) => theme.text.text1};
   color: ${({ theme }) => theme.color.grayblack};
   white-space: pre-line;
@@ -143,6 +160,6 @@ const DiaryText = styled.div<DiaryExpandSummaryProps>`
 const SummaryImage = styled.img`
   width: 100%;
   max-height: 450px;
-  object-fit: cover;
-  margin-bottom: 10px;
+  /* object-fit: cover; */
+  margin-bottom: 20px;
 `;
