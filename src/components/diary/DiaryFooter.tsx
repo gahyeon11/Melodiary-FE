@@ -8,11 +8,11 @@ import {
   FaRegCommentDots,
 } from "react-icons/fa";
 import { DiaryItemProps, DiarySummaryProps } from "./DiaryItem";
-import { LikedUser } from "../../models/user.model";
 import { useLikeStatus } from "../../hooks/useLikesStatus";
+import { ILikedUser } from "../../models/user.model";
 
 interface DiaryFooterProps extends DiaryItemProps {
-  likedUsers: LikedUser[];
+  likedUsers: ILikedUser[];
 }
 
 const DiaryFooter: React.FC<DiaryFooterProps> = ({
@@ -82,9 +82,9 @@ const DiaryFooter: React.FC<DiaryFooterProps> = ({
               <ul>
                 {likedUsers.map((user) => (
                   <LikeItem key={user.id}>
-                    {user.profileImgURL ? (
+                    {user.profile_img_url ? (
                       <ProfileImage
-                        src={user.profileImgURL}
+                        src={user.profile_img_url}
                         alt={user.nickname}
                       />
                     ) : (

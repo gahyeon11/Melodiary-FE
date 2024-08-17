@@ -5,12 +5,12 @@ import DiaryContent from "./DiaryContent";
 import DiaryFooter from "./DiaryFooter";
 import { IDiary } from "../../models/diary.model";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IUser, LikedUser } from "../../models/user.model";
+import { ILikedUser, IUser } from "../../models/user.model";
 
 export interface DiaryItemProps {
   diary: IDiary;
   user: IUser;
-  likedUsers?: LikedUser[];
+  likedUsers?: ILikedUser[];
   isSummary?: boolean;
   isExpanded?: boolean;
   toggleExpand?: () => void;
