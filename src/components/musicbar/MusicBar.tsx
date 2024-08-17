@@ -22,17 +22,23 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
   const [duration, setDuration] = useState("0:00");
 
   const getVideoId = (url: string) => {
-    const urlObj = new URL(url);
-    if (
-      urlObj.hostname === "www.youtube.com" ||
-      urlObj.hostname === "youtube.com"
-    ) {
-      return new URLSearchParams(urlObj.search).get("v");
-    } else if (urlObj.hostname === "youtu.be") {
-      return urlObj.pathname.slice(1);
+    try {
+      const urlObj = new URL(url);
+      if (
+        urlObj.hostname === "www.youtube.com" ||
+        urlObj.hostname === "youtube.com"
+      ) {
+        return new URLSearchParams(urlObj.search).get("v");
+      } else if (urlObj.hostname === "youtu.be") {
+        return urlObj.pathname.slice(1);
+      }
+    } catch (error) {
+      console.error("Invalid URL:", error);
+      return null;
     }
     return null;
   };
+  
 
   const videoId = getVideoId(youtubeUrl);
   
@@ -150,10 +156,10 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
       isExpanded={isExpanded}
       initial={{ left: "50vw", right: "0", bottom: "0" }}
       animate={{
-        left: isExpanded ? "74px" : "50vw",
+        left: isExpanded ? "74px" : "51vw",
         right: "0",
         bottom: "0",
-        width: isExpanded ? "calc(100vw - 74px)" : "50vw",
+        width: isExpanded ? "calc(100vw - 74px)" : "50%",
       }}
       transition={{ duration: 0.5 }}
     >
