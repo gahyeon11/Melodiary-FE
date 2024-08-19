@@ -8,8 +8,8 @@ import {
   FaRegCommentDots,
 } from "react-icons/fa";
 import { DiaryItemProps, DiarySummaryProps } from "./DiaryItem";
-import { useLikeStatus } from "../../hooks/useLikesStatus";
 import { ILikedUser } from "../../models/user.model";
+import { useLikeStatus } from "../../hooks/useLikeStatus";
 
 interface DiaryFooterProps extends DiaryItemProps {
   likedUsers: ILikedUser[];

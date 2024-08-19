@@ -38,7 +38,6 @@ const Home = () => {
   const { diary, loading: diaryLoading } = useDiary(diaryId);
 
   const [isExpanded, setIsExpanded] = useState(state?.isExpanded ?? false);
-  const [selectedDate, setSelectedDate] = useState("2024-08-15");
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -58,10 +57,6 @@ const Home = () => {
     }
   }, [state?.isExpanded]);
 
-  const handleDateChange = (date: string) => {
-    setSelectedDate(date);
-  };
-
   const handleExpand = () => {
     setIsExpanded(!isExpanded);
   };
@@ -80,7 +75,7 @@ const Home = () => {
       <LeftSection>
         <CalendarSection>
           <CalendarHeader>📅 {displayNickname} 님의 달력</CalendarHeader>
-          <Calendar onDateChange={handleDateChange} />
+          <Calendar />
         </CalendarSection>
         <PlaylistSection>
           <PlaylistHeader>
@@ -93,7 +88,7 @@ const Home = () => {
       <RightSection
           isExpanded={isExpanded}
           background_color={diary?.body.background_color ?? undefined}
-          initial={{ width: "auto" }} 
+          initial={{ width: "50%" }} 
           animate={{ width: isExpanded ? "100%" : "auto" }}
           transition={{ duration: 0.5, ease: "easeInOut" }} 
         >

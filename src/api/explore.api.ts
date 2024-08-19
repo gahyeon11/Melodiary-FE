@@ -1,4 +1,4 @@
-import { IDiary, IExplore } from "../models/diary.model";
+import { IDiary } from "../models/diary.model";
 import { httpClient } from "./http";
 
 export const fetchExploreDiaries = async (): Promise<IDiary[]> => {
