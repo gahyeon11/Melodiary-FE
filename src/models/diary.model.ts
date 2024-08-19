@@ -1,7 +1,8 @@
+
 export interface IMusic {
   title: string;
   artist: string;
-  url: string;
+  music_url: string;
 }
 
 export interface IWeather {
@@ -10,22 +11,25 @@ export interface IWeather {
   avg_temperature: number;
 }
 
-export interface IDiaryBody {
-  title: string;
-  content: string;
-  img_urls: string[];
-  mood: string;
-  emoji: string;
-  privacy: string;
-  music: IMusic;
-  weather: IWeather;
-  background_color: string;
-}
-
 export interface IDiary {
   id: number;
-  user_id: string;
-  like_count: number;
-  created_at: string;
-  body: IDiaryBody;
+  user_profile: {
+    user_id: number;
+    profile_img_url: string;
+    nickname: string;
+  };
+  like_count: number | null;
+  created_at: string | null;
+  body: {
+    title: string;
+    content: string;
+    img_urls: string[] | null;
+    mood: string | null;
+    emoji: string | null;
+    privacy: "public" | "mate" | "private";
+    music: IMusic | null;
+    weather: IWeather | null;
+    background_color: string | null;
+  };
+  liked: boolean;
 }
