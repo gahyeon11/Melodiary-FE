@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios";
 
 const DEFAULT_PORT = process.env.REACT_APP_PORT;
-const accessToken = process.env.REACT_APP_AccessToken;
+//const accessToken = process.env.REACT_APP_AccessToken;
+const accessToken = localStorage.getItem('access_token');
 
 //const BASE_URL = `http://localhost:${DEFAULT_PORT}`;
 // const BASE_URL = `http://localhost:4000`;
