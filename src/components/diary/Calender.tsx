@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import emojiX from '../../assets/icons/rectangle1.png';
 import future from '../../assets/icons/rectangle2.png';
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-
+import { getCalender } from "../../api/home.api";
+import { useParams } from 'react-router-dom';
 interface Emojis {
   [key: number]: string | JSX.Element;
 }
 
-const Calendar = () => {
+interface CalenderProps {
+  onFetchData: (data: any) => void; // 데이터를 전달할 콜백 함수
+  onEmojiClick: (diaryId: number) => void; // 이모지를 클릭할 때 diaryId를 전달할 콜백 함수
+}
+
+const Calendar = ({ onFetchData, onEmojiClick }: CalenderProps) => {
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth();
@@ -16,25 +22,42 @@ const Calendar = () => {
   const [year, setYear] = useState<number>(currentYear);
   const [month, setMonth] = useState<number>(currentMonth);
   const [showSelector, setShowSelector] = useState<boolean>(false);
+  const [emojis, setEmojis] = useState<Emojis>({});
+  const { userId } = useParams();
 
-  const emojis: Emojis = {
-    1: '🐵',
-    2: '🐒',
-    3: '🐵',
-    4: '😎',
-    5: '🔥',
-    6: '🐟',
-    9: '',
-    10: '',
-    12: '',
-    13: '🌸',
-    14: '🍀',
-    15: '',
-    16: '💙',
-    17: '💎',
-    19: '',
-    30: '',
-  };
+  useEffect(() => {
+    const fetchCalendar = async () => {
+      try {
+        if (userId) {
+          let response;
+          if (month < 10) {
+            response = await getCalender(userId, `${year}-0${month + 1}`);
+          } else {
+            response = await getCalender(userId, `${year}-${month + 1}`);
+          }
+
+          onFetchData(response.data);
+
+          if (response && response.data) {
+            const formattedEmojis: Emojis = {};
+            response.data.calendar.forEach((entry: { date: string; emoji: string, diary_id: number }) => {
+              const day = new Date(entry.date).getDate();
+              formattedEmojis[day] = (
+                <span onClick={() => onEmojiClick(entry.diary_id)}>{entry.emoji}</span>
+              );
+            });
+
+            setEmojis(formattedEmojis); // emojis 상태 업데이트
+            
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching calendar data:', error);
+      }
+    };
+
+    fetchCalendar();
+  }, [month, userId, year]);
 
   const handleYearChange = (direction: number) => {
     setYear((prevYear) => prevYear + direction);
@@ -59,7 +82,6 @@ const Calendar = () => {
       return newMonth;
     });
   };
-
 
   const renderCalendar = () => {
     const startDay = new Date(year, month, 1).getDay();
@@ -91,6 +113,7 @@ const Calendar = () => {
         days = [];
       }
     }
+
     return weeks;
   };
 
@@ -287,6 +310,7 @@ const DayEmoji = styled.div`
   align-items: center;
   height: 21.5px;
   padding-top: 10px;
+  cursor: pointer;
 `;
 
 const EmojiX = styled.img`

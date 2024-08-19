@@ -9,6 +9,7 @@ import PlayList from "../components/diary/PlayList";
 import { useDiary } from "../hooks/useDiary";
 import { useUserData } from "../hooks/useUserData";
 import { motion } from "framer-motion";
+import AddMateButton from "../components/button/AddMateButton";
 
 interface LocationState {
   nickname?: string;
@@ -19,10 +20,14 @@ interface LocationState {
 const Home = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { userId } = useParams<{ userId: string }>();
+  const { userId } = useParams();
   const location = useLocation();
-  
-  //검색시 기타 부분에서 state를 받아오기 위해 설정해놓았던 부분입니다! 
+  const user_id = localStorage.getItem('user_id');
+  const [nickname, setNickname] = useState<string | null>(null);
+  const [isOwnProfile, setIsOwnProfile] = useState(true);
+  const [calendarData, setCalendarData] = useState<any>(null);
+
+ //검색시 기타 부분에서 state를 받아오기 위해 설정해놓았던 부분입니다! 
   // Calander api 연결 후 수정하겠습니다.
   const state = location.state as LocationState | undefined;
 
@@ -46,6 +51,12 @@ const Home = () => {
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
+    if (userId && user_id) {
+      setIsOwnProfile(userId === user_id); // userId와 user_id가 같은지 비교
+    }
+  }, [userId, user_id]);
+
+  useEffect(() => {
     if (parsedUserId) {
       setDiaryId(69);
     }
@@ -61,6 +72,16 @@ const Home = () => {
     setIsExpanded(!isExpanded);
   };
 
+  const onFetchData = (data: any) => {
+    setCalendarData(data); // Calender에서 받은 데이터를 Home의 상태로 설정
+    setNickname(data.user_profile.nickname);
+  };
+
+  const onEmojiClick = (diary_id: number) => {
+    //이모지 클릭시 이 함수에서 다이어리 아이디를 받아옴
+    console.log('diary_id:', diary_id);
+  };
+
   //검색시 기타 부분에서 state를 받아오기 위해 설정해놓았던 부분입니다! 
   // Calander api 연결 후 수정하겠습니다.
   const displayNickname = state?.nickname || user?.nickname || parsedUserId;
@@ -74,13 +95,16 @@ const Home = () => {
     <HomeWrapper>
       <LeftSection>
         <CalendarSection>
-          <CalendarHeader>📅 {displayNickname} 님의 달력</CalendarHeader>
-          <Calendar />
+          <CalendarHeader>
+            📅 {nickname} 님의 달력
+            {!isOwnProfile && (
+              <AddMateButton/>
+            )}
+          </CalendarHeader>
+          <Calendar onFetchData={onFetchData} onEmojiClick={onEmojiClick}  />
         </CalendarSection>
         <PlaylistSection>
-          <PlaylistHeader>
-            🎵 {displayNickname} 님의 플레이리스트
-          </PlaylistHeader>
+          <PlaylistHeader>🎵 {nickname} 님의 플레이리스트</PlaylistHeader>
           <PlayList />
         </PlaylistSection>
       </LeftSection>
@@ -123,9 +147,8 @@ export default Home;
 
 const HomeWrapper = styled.div`
   display: flex;
-  position: relative;
   width: 100%;
-  margin-left: 100px;
+  height: 100vh; /* 높이를 화면 전체로 설정 */
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -138,9 +161,9 @@ const LeftSection = styled.div`
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-  min-width: 0;
   padding-top: 10px;
   border-right: 1px solid ${({ theme }) => theme.color.grayDF};
+  height: 100%; 
   z-index: 0;
 `;
 
@@ -158,6 +181,9 @@ const CalendarHeader = styled.div`
   font-size: ${({ theme }) => theme.title.title4};
   font-family: ${({ theme }) => theme.fontFamily.kor};
   text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const PlaylistSection = styled.div`
@@ -182,11 +208,19 @@ interface RightSectionProps {
 }
 
 const Right = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const RightSection = styled(motion.div)<RightSectionProps>`
   display: flex;
   flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
   position: ${({ isExpanded }) =>
     isExpanded ? "absolute" : "relative"}; 
   top: 0;

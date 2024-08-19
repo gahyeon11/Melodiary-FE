@@ -21,10 +21,23 @@ export const login = async (data: ISignup): Promise<AxiosResponse<{ access_token
   return response;
 };
 
+//로그아웃
+export const logout = async (userId : string): Promise<AxiosResponse<{ access_token: string; user_id: any }>>  => {
+  const accessToken = localStorage.getItem('access_token');
+  const response = await axios.post(`${API_BASE_URL}/users/${userId}/logout`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 포함
+    },
+    withCredentials: true,
+  });
+  return response;
+};
+
+
 //최초 닉네임 등록
 export const registerNickname = async (id: string, nickname: string): Promise<AxiosResponse<any>> => {
   const accessToken = localStorage.getItem('access_token');
-  const userId = parseInt(id, 10)
+  const userId = parseInt(id, 10);
   const data: INicknameRequest = {
     nickname,
   };
@@ -32,6 +45,24 @@ export const registerNickname = async (id: string, nickname: string): Promise<Ax
   const response = await axios.post(`${API_BASE_URL}/users/${userId}/nickname`, data, {
     headers: {
       Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 포함
+    },
+    withCredentials: true,
+  });
+
+  return response;
+};
+
+
+export const getProfile = async (id: string): Promise<AxiosResponse<{nickname: string}>> => {
+  const accessToken = localStorage.getItem('access_token');
+  const userId = parseInt(id, 10);
+  if (!accessToken) {
+    throw new Error('Access token is missing');
+  }
+
+  const response = await axios.get(`${API_BASE_URL}/users/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`, 
     },
     withCredentials: true,
   });

@@ -12,9 +12,11 @@ const Join = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/home');
+      const userId =  localStorage.getItem('user_id');
+      navigate(`/home/${userId}`);
     }
   }, [isAuthenticated, navigate]);
+
   return (
     <JoinWrapper>
       <ContentWrapper>
