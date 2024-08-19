@@ -71,11 +71,16 @@ const Home = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const handleFetchData = (data: any) => {
+  const onFetchData = (data: any) => {
     console.log('Fetched Data:', data);
     console.log('Fetched Data:', data.user_profile.nickname);
     setCalendarData(data); // Calender에서 받은 데이터를 Home의 상태로 설정
     setNickname(data.user_profile.nickname);
+  };
+
+  const onEmojiClick = (diary_id: number) => {
+    //이모지 클릭시 이 함수에서 다이어리 아이디를 받아옴
+    console.log('diary_id:', diary_id);
   };
 
   return (
@@ -88,7 +93,7 @@ const Home = () => {
               <AddMateButton state={'NM'}/>
             )}
           </CalendarHeader>
-          <Calendar onFetchData={handleFetchData}  />
+          <Calendar onFetchData={onFetchData} onEmojiClick={onEmojiClick}  />
         </CalendarSection>
         <PlaylistSection>
           <PlaylistHeader>🎵 {nickname} 님의 플레이리스트</PlaylistHeader>

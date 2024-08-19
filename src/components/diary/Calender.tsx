@@ -11,9 +11,10 @@ interface Emojis {
 
 interface CalenderProps {
   onFetchData: (data: any) => void; // 데이터를 전달할 콜백 함수
+  onEmojiClick: (diaryId: number) => void; // 이모지를 클릭할 때 diaryId를 전달할 콜백 함수
 }
 
-const Calendar = ({ onFetchData }: CalenderProps) => {
+const Calendar = ({ onFetchData, onEmojiClick }: CalenderProps) => {
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth();
@@ -41,9 +42,11 @@ const Calendar = ({ onFetchData }: CalenderProps) => {
             const formattedEmojis: Emojis = {};
             console.log(response);
             console.log(response.data.calendar);
-            response.data.calendar.forEach((entry: { date: string; emoji: string }) => {
+            response.data.calendar.forEach((entry: { date: string; emoji: string, diary_id: number }) => {
               const day = new Date(entry.date).getDate();
-              formattedEmojis[day] = entry.emoji;
+              formattedEmojis[day] = (
+                <span onClick={() => onEmojiClick(entry.diary_id)}>{entry.emoji}</span>
+              );
             });
 
             setEmojis(formattedEmojis); // emojis 상태 업데이트
