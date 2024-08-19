@@ -10,37 +10,13 @@ interface IWeather {
   avg_temperature: number;
 }
 
-export interface IMates {
-  background_color: string;
-  content: string;
-  created_at: string;
-  emoji: string;
-  id: number;
-  like_count: number;
-  mood: string;
-  privacy: string;
-  title: string;
-  user_id: number;
-  img_urls: string[] | null;
-}
-
-export interface IExplore {
-  background_color: string;
-  content: string;
-  created_at: string;
-  emoji: string;
-  id: number;
-  like_count: number;
-  mood: string;
-  privacy: string;
-  title: string;
-  user_id: number;
-  img_urls: string[] | null;
-}
-
 export interface IDiary {
   id: number;
-  user_id: number;
+  user_profile: {
+    user_id: number;
+    profile_img_url: string;
+    nickname: string;
+  };
   like_count: number | null;
   created_at: string | null;
   body: {
