@@ -1,4 +1,4 @@
-import { ILikedUser } from '../components/modal/user.model';
+import { ILikedUser } from '../models/user.model';
 import { httpClient } from './http';
 
 export const getLikes = async (diaryId: number): Promise<ILikedUser[]> => {
