@@ -1,25 +1,73 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { INotification } from "../../models/notification.model";
+import { useSearchUser } from "../../hooks/useSearchResult";
 
 interface NotificationDropdownProps {
   notifications: INotification[];
+  loading: boolean;
+  markAsRead: (notificationID: number) => void;
 }
 
 const NotificationDropdown = React.forwardRef<
   HTMLDivElement,
   NotificationDropdownProps
->(({ notifications }, ref) => {
+>(({ notifications, loading, markAsRead }, ref) => {
+  const navigate = useNavigate();
+  const { handleSearch } = useSearchUser();
+
+  const extractNickname = (content: string): string => {
+    const match = content.match(/^(.*?)(?=님이)/);
+    return match ? match[0].trim() : "";
+  };
+
+  const handleNotificationClick = async (notification: INotification) => {
+    markAsRead(notification.notification_id);
+
+    switch (notification.category) {
+      case "diary":
+        navigate(`/diary/${notification.diary_id}`);
+        break;
+      case "mate": {
+        const nickname = extractNickname(notification.content);
+        console.log(nickname);
+        const result = await handleSearch(nickname);
+        if (result) {
+          navigate(`/home/${result.user_id}`, {
+            // 검색시 홈에서의 정보 확인을 위한 부분입니다! Calander API를 고려해서 주석 처리 해두겠습니다
+            // state: { nickname: result.nickname, profileImgUrl: result.profile_img_url }
+          });
+        } else {
+          console.warn("User not found:", nickname);
+        }
+        break;
+      }
+      default:
+        console.warn("Unknown notification category:", notification.category);
+        break;
+    }
+  };
+
+  if (loading) {
+    return <Dropdown ref={ref}>Loading...</Dropdown>;
+  }
+
+  if (notifications.length === 0) {
+    return <Dropdown ref={ref}>No notifications</Dropdown>;
+  }
+
   return (
     <Dropdown ref={ref}>
       <NotificationHeader>업데이트</NotificationHeader>
       <NotificationBody>
         {notifications.map((notification) => (
-          <NotificationItem key={notification.id}>
-            <NotificationContent>
-              <p>{notification.content}</p>
-            </NotificationContent>
-            <Time>{notification.date}</Time>
+          <NotificationItem
+            key={notification.notification_id}
+            onClick={() => handleNotificationClick(notification)}
+          >
+            <NotificationContent>{notification.content}</NotificationContent>
+            <Time>{notification.date.slice(0, 10)}</Time>
           </NotificationItem>
         ))}
       </NotificationBody>
@@ -60,8 +108,10 @@ const NotificationItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  text-align: left;
   padding: 12px 16px;
   border-bottom: 1px solid ${({ theme }) => theme.color.grayDF};
+  cursor: pointer;
   &:last-child {
     border-bottom: none;
   }
