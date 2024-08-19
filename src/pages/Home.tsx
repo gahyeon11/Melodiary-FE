@@ -26,24 +26,6 @@ const Home = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     try {
-  //       if (userId) {
-  //         const response = await getProfile(userId);
-  //         const { nickname } = response.data;
-  //         setNickname(nickname);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching profile:', error);
-  //     }
-  //   };
-  
-  //   fetchProfile();
-  // }, [userId]);
-
-
-
   useEffect(() => {
     if (userId && user_id) {
       setIsOwnProfile(userId === user_id); // userId와 user_id가 같은지 비교
@@ -56,7 +38,6 @@ const Home = () => {
 
   // 다이어리를 해당 userId로 필터링하여 가져옴
   const selectedDiary = dummyDiaries.find(diary => diary.user_id === selectedUserId);
-
   const [isExpanded, setIsExpanded] = useState(state?.isExpanded ?? false);
   const [likeCount, setLikeCount] = useState(selectedDiary?.like_count || 0);
   const [userHasLiked, setUserHasLiked] = useState(false);
@@ -72,8 +53,6 @@ const Home = () => {
   };
 
   const onFetchData = (data: any) => {
-    console.log('Fetched Data:', data);
-    console.log('Fetched Data:', data.user_profile.nickname);
     setCalendarData(data); // Calender에서 받은 데이터를 Home의 상태로 설정
     setNickname(data.user_profile.nickname);
   };
@@ -90,7 +69,7 @@ const Home = () => {
           <CalendarHeader>
             📅 {nickname} 님의 달력
             {!isOwnProfile && (
-              <AddMateButton state={'NM'}/>
+              <AddMateButton/>
             )}
           </CalendarHeader>
           <Calendar onFetchData={onFetchData} onEmojiClick={onEmojiClick}  />

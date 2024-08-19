@@ -7,25 +7,21 @@ import { useParams } from 'react-router-dom';
 import { requestMate, requestMateList, mateList } from '../../api/requestMate.api';
 import axios from 'axios';
 
-interface AddMateButtonProps {
-  state: 'NM' | 'RM' | 'M'; // 버튼 상태 ('NM', 'RM', 'M')
-}
-
-const AddMateButton = ({ state }: AddMateButtonProps) => {
+const AddMateButton = () => {
   const { userId } = useParams();
   const homeId = userId;
   const user_id = localStorage.getItem('user_id');
-  const [buttonState, setButtonState] = useState<'NM' | 'RM' | 'M'>(state);
+  const [buttonState, setButtonState] = useState<'NM' | 'RM' | 'M'>('NM');
 
   const onClickRequestMate = async () => {
     try {
       if (user_id && homeId) {
         const response = await requestMate(user_id, homeId);
-        console.log('친구 신청 성공:', response);
+        //console.log('친구 신청 성공:', response);
         setButtonState('RM');
       }
     } catch (error) {
-      console.error('친구 신청 실패:', error);
+      //console.error('친구 신청 실패:', error);
     }
   };
 
@@ -34,11 +30,8 @@ const AddMateButton = ({ state }: AddMateButtonProps) => {
       try {
         if (user_id) {
           const response = await requestMateList(user_id);
-          console.log(response.data);
           if (response.data && Array.isArray(response.data)) {
-            console.log(response.data);
             response.data.forEach((entry: { user_id: number }) => {
-              console.log(entry.user_id);
               if (entry.user_id === Number(homeId)) {
                 setButtonState('RM');
               }
@@ -58,10 +51,8 @@ const AddMateButton = ({ state }: AddMateButtonProps) => {
       try {
         if (user_id) {
           const response = await mateList(user_id);
-          console.log(response.data);
           if (response.data && Array.isArray(response.data)) {
             response.data.forEach((entry: { user_id: number }) => {
-              console.log(entry.user_id);
               if (entry.user_id === Number(homeId)) {
                 setButtonState('M');
               }
@@ -70,7 +61,6 @@ const AddMateButton = ({ state }: AddMateButtonProps) => {
         }
       } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {
-          //setButtonState('NM');
           console.log("친구 목록에 없음");
       }
       }
@@ -78,8 +68,6 @@ const AddMateButton = ({ state }: AddMateButtonProps) => {
   
     fetchMateList();
   }, [user_id]);
-
-
 
   const renderButtonContent = () => {
     switch(buttonState) {

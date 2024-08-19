@@ -40,8 +40,6 @@ const Calendar = ({ onFetchData, onEmojiClick }: CalenderProps) => {
 
           if (response && response.data) {
             const formattedEmojis: Emojis = {};
-            console.log(response);
-            console.log(response.data.calendar);
             response.data.calendar.forEach((entry: { date: string; emoji: string, diary_id: number }) => {
               const day = new Date(entry.date).getDate();
               formattedEmojis[day] = (
@@ -85,13 +83,12 @@ const Calendar = ({ onFetchData, onEmojiClick }: CalenderProps) => {
     });
   };
 
-
   const renderCalendar = () => {
     const startDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const weeks: JSX.Element[] = [];
     let days: JSX.Element[] = [];
-    console.log(emojis);
+
     for (let i = 0; i < startDay; i++) {
       days.push(<td key={`empty-start-${i}`}></td>);
     }
@@ -116,6 +113,7 @@ const Calendar = ({ onFetchData, onEmojiClick }: CalenderProps) => {
         days = [];
       }
     }
+
     return weeks;
   };
 
