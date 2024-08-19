@@ -88,7 +88,7 @@ const Home = () => {
       <RightSection
           isExpanded={isExpanded}
           background_color={diary?.body.background_color ?? undefined}
-          initial={{ width: "50%" }} 
+          initial={{ width: "auto" }} 
           animate={{ width: isExpanded ? "100%" : "auto" }}
           transition={{ duration: 0.5, ease: "easeInOut" }} 
         >
