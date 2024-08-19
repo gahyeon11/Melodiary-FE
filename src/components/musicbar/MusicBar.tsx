@@ -22,20 +22,25 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
   const [duration, setDuration] = useState("0:00");
 
   const getVideoId = (url: string) => {
-    const urlObj = new URL(url);
-    if (
-      urlObj.hostname === "www.youtube.com" ||
-      urlObj.hostname === "youtube.com"
-    ) {
-      return new URLSearchParams(urlObj.search).get("v");
-    } else if (urlObj.hostname === "youtu.be") {
-      return urlObj.pathname.slice(1);
+    try {
+      const urlObj = new URL(url);
+      if (
+        urlObj.hostname === "www.youtube.com" ||
+        urlObj.hostname === "youtube.com"
+      ) {
+        return new URLSearchParams(urlObj.search).get("v");
+      } else if (urlObj.hostname === "youtu.be") {
+        return urlObj.pathname.slice(1);
+      }
+    } catch (error) {
+      console.error("Invalid URL:", error);
+      return null;
     }
     return null;
   };
 
   const videoId = getVideoId(youtubeUrl);
-  
+
   useEffect(() => {
     const formatTime = (seconds: number) => {
       const minutes = Math.floor(seconds / 60);
@@ -83,7 +88,7 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
         }
         (window as any).onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
       } else {
-        onYouTubeIframeAPIReady(); // 이미 로드된 경우 즉시 실행
+        onYouTubeIframeAPIReady(); // Already loaded
       }
     };
 
@@ -91,11 +96,10 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
 
     return () => {
       if (player) {
-        player.destroy(); // 메모리 누수 방지
+        player.destroy(); // Prevent memory leaks
       }
     };
-  }, [youtubeUrl, videoId]); // 의존성 배열에 youtubeUrl과 videoId 포함
-
+  }, [youtubeUrl, videoId]);
 
   const handlePlayPause = () => {
     if (player) {
@@ -143,68 +147,31 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
       }
     }
   };
-  
 
   return (
-    <MusicBarContainer
-      isExpanded={isExpanded}
-      initial={{ left: "50vw", right: "0", bottom: "0" }}
-      animate={{
-        left: isExpanded ? "74px" : "50vw",
-        right: "0",
-        bottom: "0",
-        width: isExpanded ? "calc(100vw - 74px)" : "50vw",
-      }}
-      transition={{ duration: 0.5 }}
-    >
+    <MusicBarContainer isExpanded={isExpanded}>
       <VideoContainer ref={playerRef} />
       <TrackInfo>
-          <TrackText>
-            <TrackTitle>{title}</TrackTitle>
-            <TrackArtist>{artist}</TrackArtist>
-          </TrackText>
+        <TrackText>
+          <TrackTitle>{title}</TrackTitle>
+          <TrackArtist>{artist}</TrackArtist>
+        </TrackText>
         <ProgressContainer>
-        <button onClick={handlePlayPause}>
-            {isPlaying ? (
-              <IoIosPause size={"24px"} />
-            ) : (
-              <IoIosPlay size={"24px"} />
-            )}
+          <button onClick={handlePlayPause}>
+            {isPlaying ? <IoIosPause size={"24px"} /> : <IoIosPlay size={"24px"} />}
           </button>
           <Time>{currentTime}</Time>
           <ProgressBar value={progress} isExpanded={isExpanded}>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              step={1}
-              value={progress}
-              onChange={handleProgressChange}
-            />
+            <input type="range" min={0} max={100} step={1} value={progress} onChange={handleProgressChange} />
           </ProgressBar>
           <Time>{duration}</Time>
         </ProgressContainer>
         <Controls>
           <VolumeButton onClick={toggleMute}>
-            {isMuted || volume === 0 ? (
-              <FaVolumeMute size={20} />
-            ) : (
-              <FaVolumeUp size={20} />
-            )}
+            {isMuted || volume === 0 ? <FaVolumeMute size={20} /> : <FaVolumeUp size={20} />}
           </VolumeButton>
-          <VolumeControl
-            volume={volume}
-            isMuted={isMuted}
-            isExpanded={isExpanded}
-          >
-            <input
-              type="range"
-              min={0}
-              max={100}
-              step={1}
-              value={isMuted ? 0 : volume}
-              onChange={handleVolumeChange}
-            />
+          <VolumeControl volume={volume} isMuted={isMuted} isExpanded={isExpanded}>
+            <input type="range" min={0} max={100} step={1} value={isMuted ? 0 : volume} onChange={handleVolumeChange} />
           </VolumeControl>
         </Controls>
       </TrackInfo>
@@ -212,20 +179,19 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
   );
 };
 
-export default MusicBar;
-
-interface musicProps {
-  isExpanded: boolean;
-}
-
-const MusicBarContainer = styled(motion.div)<musicProps>`
+const MusicBarContainer = styled(motion.div)<{ isExpanded: boolean }>`
   position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: ${({ isExpanded }) => (isExpanded ? "" : "700px")};
   height: 70px;
   background-color: ${({ theme }) => theme.color.white};
   display: flex;
   align-items: center;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-  overflow-x: auto;
+  z-index: 1000;
+  transition: left 0.5s ease, width 0.5s ease;
+  box-sizing: border-box;
 `;
 
 const VideoContainer = styled.div`
@@ -285,7 +251,7 @@ const ProgressContainer = styled.div`
 `;
 
 const Time = styled.div`
-  font-size: ${({theme})=> theme.text.text2};
+  font-size: ${({ theme }) => theme.text.text2};
   color: ${({ theme }) => theme.color.gray999};
   width: 50px;
   text-align: center;
@@ -319,9 +285,7 @@ const ProgressBar = styled.div<ProgressBarProps & { isExpanded: boolean }>`
     appearance: none;
     width: 10px;
     height: 10px;
-    /* background: #ff3131; */
     background: ${({ theme }) => theme.color.primary};
-
     cursor: pointer;
     border-radius: 50%;
   }
@@ -347,11 +311,7 @@ const VolumeButton = styled.button`
   }
 `;
 
-const VolumeControl = styled.div<{
-  volume: number;
-  isMuted: boolean;
-  isExpanded: boolean;
-}>`
+const VolumeControl = styled.div<{ volume: number; isMuted: boolean; isExpanded: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -383,3 +343,5 @@ const VolumeControl = styled.div<{
     border-radius: 50%;
   }
 `;
+
+export default MusicBar;

@@ -10,7 +10,7 @@ import DiaryPreview from '../components/diary/DiaryPreview';
 import { colors, moods, privacies } from '../constants/writeDiary';
 import { useGeoLocation } from '../hooks/useGeoLocation';
 import { useDiaries } from '../hooks/useDiary';
-import { IDiaryBody } from '../models/diary.model';
+import { IDiary } from '../models/diary.model';
 import { useNavigate } from 'react-router-dom';
 
 const geolocationOptions = {
@@ -40,13 +40,13 @@ const WriteDiary = () => {
 
   // 일기 데이터 작성 및 제출
   const handleSubmit = async () => {
-    const diaryData: IDiaryBody = {
+    const diaryData: IDiary["body"] = {
       title: title || "",
       content: content || "",
       img_urls: [], // 예시로 비워둠. 이미지 URL을 관리할 필요가 있음
       mood: selectedMood || "😍",
       emoji: selectedEmoji || "",
-      privacy: selectedPrivacy || "private",
+      privacy: (selectedPrivacy as "public" | "mate" | "private") || privacies[2],
       music: {
         title: musicTitle || "",
         artist: musicArtist || "",

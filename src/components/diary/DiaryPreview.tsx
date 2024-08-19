@@ -73,7 +73,7 @@ const DiaryPreview = ({
           </ProfileWrapper>
         </Header>
         <Title>{title}</Title>
-        <DiaryContent
+        {/* <DiaryContent
           diary={diary} 
           isSummary={false} 
           isExpanded={true} 
@@ -83,7 +83,7 @@ const DiaryPreview = ({
             nickname: ""
           }} 
           likedUsers={[]} 
-        />
+        /> */}
         <MusicBar
           isExpanded={true}
           title={musicTitle}

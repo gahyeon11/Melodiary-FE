@@ -1,45 +1,39 @@
-import React, { useState } from "react";
-import DiaryItem from "../components/diary/DiaryItem";
-import { dummyDiaries, dummyLikedUsers, dummyUsers } from "../dummyData";
-import MusicBar from "../components/musicbar/MusicBar";
+import React from "react";
 import { useParams } from "react-router-dom";
+import DiaryItem from "../components/diary/DiaryItem";
+import MusicBar from "../components/musicbar/MusicBar";
+import { useDiary } from "../hooks/useDiary";
 
 function Diary() {
-  const { diaryId } = useParams();
+  const { diaryId } = useParams<{ diaryId: string }>(); 
+  const numericDiaryId = diaryId ? Number(diaryId) : null;
   
-  const selectedDiaryId = diaryId ? parseInt(diaryId, 10) : 1;
-  const selectedDiary = dummyDiaries.find((diary) => diary.id === selectedDiaryId);
+  const { diary, loading: diaryLoading, error } = useDiary(numericDiaryId!);
 
-  const selectedUser = selectedDiary 
-    ? dummyUsers.find(user => user.user_id === parseInt(selectedDiary.user_id))
-    : null;
+  if (diaryLoading) {
+    return <p>Loading...</p>;
+  }
 
-  const [likeCount, setLikeCount] = useState(selectedDiary?.like_count || 0);
-  const [userHasLiked, setUserHasLiked] = useState(false);
+  if (error || !diary) {
+    return <p>선택된 아이디의 다이어리 혹은 유저가 없습니다.</p>;
+  }
+
 
   return (
     <div>
-      {selectedDiary && selectedUser ? (
-        <>
-          <DiaryItem
-            diary={selectedDiary}
-            user={selectedUser} 
-            likedUsers={dummyLikedUsers}
-            isExpanded={true} 
-            likeCount={likeCount}
-            userHasLiked={userHasLiked}
-            setLikeCount={setLikeCount}
-            setUserHasLiked={setUserHasLiked}
-          />
-          <MusicBar
-            youtubeUrl={selectedDiary.body.music.url}
-            title={selectedDiary.body.music.title}
-            artist={selectedDiary.body.music.artist}
-            isExpanded={true} 
-          />
-        </>
-      ) : (
-        <p>선택된 아이디의 다이어리 혹은 유저가 없습니다.</p>
+      <DiaryItem
+        diary={diary}
+        user={diary.user_profile}
+        likedUsers={[]}
+        isExpanded={true}
+      />
+      {diary.body.music && (
+        <MusicBar
+          youtubeUrl={diary.body.music.music_url}
+          title={diary.body.music.title}
+          artist={diary.body.music.artist}
+          isExpanded={true}
+        />
       )}
     </div>
   );

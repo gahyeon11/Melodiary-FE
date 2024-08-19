@@ -2,7 +2,6 @@ import axios, { AxiosRequestConfig } from "axios";
 
 const DEFAULT_PORT = process.env.REACT_APP_PORT;
 const BASE_URL = `http://localhost:${DEFAULT_PORT}`;
-
 const DEFAULT_TIMEOUT = 10000 * 60;
 const accessToken = process.env.REACT_APP_ACCESS_TOKEN;
 

@@ -7,10 +7,10 @@ import { motion } from 'framer-motion';
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const userId = localStorage.getItem('user_id');
   //Home으로 이동 시 Link로 이동 하게 되면 확장 상태 조정을 명시적으로 하기가 어려워서 navigation 함수를 이용해서 상태를 명시적으로 설정하도록 하였습니다. 
   const links = [
-    { to: "/home", icon: <FiHome />, state: { isExpanded: false } },
+    { to: `/home/${userId}`, icon: <FiHome />, state: { isExpanded: false } },
     { to: "/explore", icon: <LuLayoutGrid /> },
     { to: "/mates", icon: <FiUsers /> },
     { to: "/mypage", icon: <FiUser /> },

@@ -1,12 +1,13 @@
 // AuthContext.tsx
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (accessToken: string, userId: number) => void;
+  isSignupComplete: boolean;
+  login: (access_token: string, user_id: number) => void;
   logout: () => void;
-  userId: number | null;
+  completeSignup: () => void;
+  setIsSignupComplete: (value: boolean) => void;
 }
 
 interface AuthProviderProps {
@@ -17,34 +18,35 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
-  const [userId, setUserId] = useState<number | null>(null);
+  const [isSignupComplete, setIsSignupComplete] = useState<boolean>(false);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    const userId = localStorage.getItem('userId');
+    const access_token = localStorage.getItem('access_token');
+    const user_id = localStorage.getItem('user_id');
 
-    if (accessToken && userId) {
+    if (access_token) {
       setIsAuthenticated(true);
-      setUserId(Number(userId));
     }
   }, []);
 
-  const login = (accessToken: string, userId: number) => {
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('userId', userId.toString());
+  const login = (access_token: string, user_id: number) => {
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('user_id', user_id.toString());
     setIsAuthenticated(true);
-    setUserId(userId);
   };
 
   const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('userId');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_id');
     setIsAuthenticated(false);
-    setUserId(null);
+  };
+
+  const completeSignup = () => {
+    setIsSignupComplete(true);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, userId }}>
+    <AuthContext.Provider value={{ isAuthenticated, isSignupComplete, login, completeSignup, logout, setIsSignupComplete}}>
       {children}
     </AuthContext.Provider>
   );
@@ -58,15 +60,14 @@ export const useAuth = (): AuthContextType => {
   return context;
 };
 
-// 추가: loader 함수 정의 및 내보내기
 export const tokenLoader = async () => {
-  const accessToken = localStorage.getItem('accessToken');
-  const userId = localStorage.getItem('userId');
+  const access_token = localStorage.getItem('access_token');
+  const user_id = localStorage.getItem('user_id');
 
-  if (accessToken && userId) {
+  if (access_token) {
     return {
       isAuthenticated: true,
-      userId: Number(userId),
+      userId: Number(user_id),
     };
   } else {
     return {

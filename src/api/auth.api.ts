@@ -1,35 +1,40 @@
-import axios from 'axios';
-import { ISignup } from '../models/user.model';
-const port = process.env.REACT_APP_PORT || '3000';
+import axios, { AxiosResponse } from 'axios';
+import { INicknameRequest, ISignup } from '../models/user.model';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-export const handleGoogleOAuthURL = async (code: string): Promise<{ token: string, user: any }> => {
-  const response = await axios.post(`${API_BASE_URL}/auth/oauth/google`, { code });
-  return response.data;
+//회원가입
+export const signUp = async (data: ISignup): Promise<AxiosResponse<{ access_token: string; user_id: any }>> => {
+  let response;
+  response = await axios.post(`${API_BASE_URL}/users`, data, {
+    withCredentials: true,
+  });
+  return response;
+  
 };
 
-export const signUp = async (data: ISignup) => {
-  try {
-    await axios.post('https://api.melodiary.site/api/users', data, {
-      withCredentials: true
-      })
-      .then((response: { data: any }) => {
-        //console.log('Successfully received jwt:', response.data);
-        return response.data;
-      })
-      .catch((error: any) => {
-        console.error('Error:', error);
-      });
-  } catch (error) {
-    console.error("회원가입에 실패했습니다.", error);
-  }
+//로그인
+export const login = async (data: ISignup): Promise<AxiosResponse<{ access_token: string; user_id: any }>>  => {
+  let response;
+  response = await axios.post(`${API_BASE_URL}/users/login`, data, {
+    withCredentials: true,
+  });
+  return response;
 };
 
-export const login = async (data: ISignup)  => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/users/login`, data);
-    return response.data;
-  } catch (error) {
-    console.error("로그인에 실패했습니다.", error);
-  }
+//최초 닉네임 등록
+export const registerNickname = async (id: string, nickname: string): Promise<AxiosResponse<any>> => {
+  const accessToken = localStorage.getItem('access_token');
+  const userId = parseInt(id, 10)
+  const data: INicknameRequest = {
+    nickname,
+  };
+
+  const response = await axios.post(`${API_BASE_URL}/users/${userId}/nickname`, data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 포함
+    },
+    withCredentials: true,
+  });
+
+  return response;
 };

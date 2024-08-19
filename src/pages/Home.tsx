@@ -6,30 +6,50 @@ import DiaryItem from "../components/diary/DiaryItem";
 import MusicBar from "../components/musicbar/MusicBar";
 import Calendar from "../components/diary/Calender";
 import PlayList from "../components/diary/PlayList";
-import { dummyDiaries, dummyLikedUsers, dummyUsers } from "../dummyData";
+import { useDiary } from "../hooks/useDiary";
+import { useUserData } from "../hooks/useUserData";
+import { motion } from "framer-motion";
+
+interface LocationState {
+  nickname?: string;
+  profileImgUrl?: string;
+  isExpanded?: boolean;
+}
 
 const Home = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { userId } = useParams();
-  const { state } = useLocation();
+  const { userId } = useParams<{ userId: string }>();
+  const location = useLocation();
+  
+  //검색시 기타 부분에서 state를 받아오기 위해 설정해놓았던 부분입니다! 
+  // Calander api 연결 후 수정하겠습니다.
+  const state = location.state as LocationState | undefined;
+
+  const parsedUserId = userId ? Number(userId) : 1;
+
+  const [diaryId, setDiaryId] = useState<number>(69);
+  const {
+    user,
+    loading: userLoading,
+    error: userError,
+  } = useUserData(parsedUserId);
+  
+  const { diary, loading: diaryLoading } = useDiary(diaryId);
+
+  const [isExpanded, setIsExpanded] = useState(state?.isExpanded ?? false);
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/');
+      navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
-  // 유저 데이터를 받아오기
-  const selectedUserId = userId || "1"; // 기본 userId 설정
-  const selectedUser = dummyUsers.find(user => user.user_id.toString() === selectedUserId);
-
-  // 다이어리를 해당 userId로 필터링하여 가져옴
-  const selectedDiary = dummyDiaries.find(diary => diary.user_id === selectedUserId);
-
-  const [isExpanded, setIsExpanded] = useState(state?.isExpanded ?? false);
-  const [likeCount, setLikeCount] = useState(selectedDiary?.like_count || 0);
-  const [userHasLiked, setUserHasLiked] = useState(false);
+  useEffect(() => {
+    if (parsedUserId) {
+      setDiaryId(69);
+    }
+  }, [parsedUserId]);
 
   useEffect(() => {
     if (state?.isExpanded !== undefined) {
@@ -41,43 +61,60 @@ const Home = () => {
     setIsExpanded(!isExpanded);
   };
 
+  //검색시 기타 부분에서 state를 받아오기 위해 설정해놓았던 부분입니다! 
+  // Calander api 연결 후 수정하겠습니다.
+  const displayNickname = state?.nickname || user?.nickname || parsedUserId;
+  const profileImageUrl = state?.profileImgUrl || user?.profile_img_url;
+
+  if (userLoading || diaryLoading) {
+    return <Message>Loading...</Message>;
+  }
+
   return (
     <HomeWrapper>
       <LeftSection>
         <CalendarSection>
-          <CalendarHeader>📅 따봉고양이 님의 달력</CalendarHeader>
+          <CalendarHeader>📅 {displayNickname} 님의 달력</CalendarHeader>
           <Calendar />
         </CalendarSection>
         <PlaylistSection>
-          <PlaylistHeader>🎵 따봉고양이 님의 플레이리스트</PlaylistHeader>
+          <PlaylistHeader>
+            🎵 {displayNickname} 님의 플레이리스트
+          </PlaylistHeader>
           <PlayList />
         </PlaylistSection>
       </LeftSection>
-      <RightSection>
-        {selectedDiary && selectedUser ? (
-          <>
-            <DiaryItem
-              diary={selectedDiary}
-              user={selectedUser}
-              likedUsers={dummyLikedUsers}
-              isExpanded={isExpanded}
-              toggleExpand={handleExpand}
-              likeCount={likeCount}
-              userHasLiked={userHasLiked}
-              setLikeCount={setLikeCount}
-              setUserHasLiked={setUserHasLiked}
-            />
-            <MusicBar
-              youtubeUrl={selectedDiary.body.music.url}
-              title={selectedDiary.body.music.title}
-              artist={selectedDiary.body.music.artist}
-              isExpanded={isExpanded}
-            />
-          </>
-        ) : (
-          <Message>날짜를 선택하여 일기를 확인해보세요!</Message>
-        )}
-      </RightSection>
+      <Right>
+      <RightSection
+          isExpanded={isExpanded}
+          background_color={diary?.body.background_color ?? undefined}
+          initial={{ width: "auto" }} 
+          animate={{ width: isExpanded ? "100%" : "auto" }}
+          transition={{ duration: 0.5, ease: "easeInOut" }} 
+        >
+          {diary && user ? (
+            <>
+              <DiaryItem
+                diary={diary}
+                user={user}
+                likedUsers={[]}
+                isExpanded={isExpanded}
+                toggleExpand={handleExpand}
+              />
+              {diary.body.music && (
+                <MusicBar
+                  youtubeUrl={diary.body.music.music_url}
+                  title={diary.body.music.title}
+                  artist={diary.body.music.artist}
+                  isExpanded={isExpanded}
+                />
+              )}
+            </>
+          ) : (
+            <Message>날짜를 선택하여 일기를 확인해보세요!</Message>
+          )}
+        </RightSection>
+      </Right>
     </HomeWrapper>
   );
 };
@@ -86,11 +123,13 @@ export default Home;
 
 const HomeWrapper = styled.div`
   display: flex;
-  width: calc(100vw - 145px);
+  position: relative;
+  width: 100%;
   margin-left: 100px;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow-x: hidden;
 `;
 
 const LeftSection = styled.div`
@@ -102,6 +141,7 @@ const LeftSection = styled.div`
   min-width: 0;
   padding-top: 10px;
   border-right: 1px solid ${({ theme }) => theme.color.grayDF};
+  z-index: 0;
 `;
 
 const CalendarSection = styled.div`
@@ -136,14 +176,28 @@ const PlaylistHeader = styled.div`
   text-align: left;
 `;
 
-const RightSection = styled.div`
+interface RightSectionProps {
+  isExpanded: boolean;
+  background_color?: string | null; 
+}
+
+const Right = styled.div`
+`;
+
+const RightSection = styled(motion.div)<RightSectionProps>`
   display: flex;
-  flex: 1;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  position: ${({ isExpanded }) =>
+    isExpanded ? "absolute" : "relative"}; 
+  top: 0;
+  right: 0;
+  height: 100%;
+  background-color: ${({ theme, background_color }) =>
+    theme.diaryColor[background_color ?? "default"]?.background ||
+    theme.diaryColor.default.background};
+  z-index: 1;
   box-sizing: border-box;
-  min-width: 0;
+  overflow: hidden;
 `;
 
 const Message = styled.div`

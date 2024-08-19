@@ -3,66 +3,96 @@ import styled from "styled-components";
 import { FaUserCircle, FaLongArrowAltRight } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
-import { dummyFriendRequests, dummyMates } from "../../dummyData";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {
+  useAcceptMateRequest,
+  useRejectMateRequest,
+  useReceivedMateRequests,
+  useMatesList,
+} from "../../hooks/useMates";
 
 function MatesSidebar() {
-  const handleAccept = (id: number) => {
-    // 수락 로직 구현 필요
-    console.log(`수락 id: ${id}`);
-  };
+  const user_id = Number(localStorage.getItem("user_id"));
+  const navigate = useNavigate();
 
-  const handleReject = (id: number) => {
-    // 거절 로직 구현 필요
-    console.log(`거절 id: ${id}`);
+  const { receivedRequests, loading: loadingRequests } =
+    useReceivedMateRequests(user_id);
+
+  const { mates, loading: loadingMates } = useMatesList(user_id);
+
+  const { handleAcceptRequest } = useAcceptMateRequest(user_id);
+
+  const { handleRejectRequest } = useRejectMateRequest(user_id);
+
+  if (loadingRequests || loadingMates) {
+    return <p>Loading...</p>;
+  }
+
+  const handleNavigate = (userId: number, nickname: string, profile_img_url: string | null) => {
+    navigate(`/home/${userId}`, {
+      state: { nickname, profile_img_url },
+    });
   };
 
   return (
     <MatesSidebarWrapper>
       <Section>
         <SectionTitle>Mate Request List</SectionTitle>
-        {dummyFriendRequests.map((request) => (
-          <FriendItem key={request.id}>
-            <ProfileLink to={`/home/${request.id}`}>
-              {request.profileImgURL ? (
-                <ProfileImage
-                  src={request.profileImgURL}
-                  alt={`${request.nickname} profile`}
+        {receivedRequests.length > 0 ? (
+          receivedRequests.map((request) => (
+            <FriendItem key={request.user_id}>
+                {request.profile_img_url ? (
+                  <ProfileImage
+                    src={request.profile_img_url}
+                    alt={`${request.nickname} profile`}
+                  />
+                ) : (
+                  <DefaultIcon />
+                )}
+              <Nickname>{request.nickname}</Nickname>
+              <IconButtons>
+                <AcceptIcon
+                  onClick={() => handleAcceptRequest(request.user_id)}
                 />
-              ) : (
-                <DefaultIcon />
-              )}
-            </ProfileLink>
-            <Nickname>{request.nickname}</Nickname>
-            <IconButtons>
-              <AcceptIcon onClick={() => handleAccept(request.id)} />
-              <RejectIcon onClick={() => handleReject(request.id)} />
-            </IconButtons>
-          </FriendItem>
-        ))}
+                <RejectIcon
+                  onClick={() => handleRejectRequest(request.user_id)}
+                />
+                {/* <Arrow
+                  onClick={() => handleNavigate(request.user_id, request.nickname, request.profile_img_url)}
+                >
+                  <FaLongArrowAltRight />
+                </Arrow> */}
+              </IconButtons>
+            </FriendItem>
+          ))
+        ) : (
+          <p></p>
+        )}
       </Section>
       <Section>
         <SectionTitle>Mates</SectionTitle>
-        {dummyMates.map((mate) => (
-          <FriendItemLink to={`/home/${mate.id}`} key={mate.id}>
-            <FriendItem>
-              <ProfileLink to={`/home/${mate.id}`}>
-                {mate.profileImgURL ? (
+        {mates.length > 0 ? (
+          mates.map((mate) => (
+            <FriendItem key={mate.user_id}>
+                {mate.profile_img_url ? (
                   <ProfileImage
-                    src={mate.profileImgURL}
+                    src={mate.profile_img_url}
                     alt={`${mate.nickname} profile`}
                   />
                 ) : (
                   <DefaultIcon />
                 )}
-              </ProfileLink>
               <Nickname>{mate.nickname}</Nickname>
-              <Arrow>
+              <Arrow
+                onClick={() => handleNavigate(mate.user_id, mate.nickname, mate.profile_img_url)}
+              >
                 <FaLongArrowAltRight />
               </Arrow>
             </FriendItem>
-          </FriendItemLink>
-        ))}
+          ))
+        ) : (
+          <p></p>
+        )}
       </Section>
     </MatesSidebarWrapper>
   );
@@ -72,7 +102,6 @@ const MatesSidebarWrapper = styled.div`
   width: 250px;
   padding: 40px;
   border-right: 1px solid ${({ theme }) => theme.color.grayDF};
-  /* border-left: 1px solid ${({ theme }) => theme.color.grayDF}; */
 `;
 
 const Section = styled.div`
@@ -94,21 +123,16 @@ const FriendItem = styled.div`
   margin-bottom: 20px;
 `;
 
-const ProfileLink = styled(Link)`
-  text-decoration: none;
-  color: inherit;
-`;
-
 const ProfileImage = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 29px;
+  height: 29px;
   border-radius: 50%;
   margin-right: 10px;
 `;
 
 const DefaultIcon = styled(FaUserCircle)`
-  width: 24px;
-  height: 24px;
+  width: 29px;
+  height: 29px;
   color: ${({ theme }) => theme.color.gray999};
   margin-right: 10px;
 `;
@@ -145,16 +169,15 @@ const RejectIcon = styled(IoClose)`
 `;
 
 const Arrow = styled.span`
-  margin-left: auto;
+  display: flex;
+  justify-content: end;
+  width: 20px;
+  margin-left: 50px;
+  cursor: pointer;
   color: ${({ theme }) => theme.color.gray777};
   &:hover {
     color: ${({ theme }) => theme.color.grayblack};
   }
-`;
-
-const FriendItemLink = styled(Link)`
-  text-decoration: none;
-  color: inherit;
 `;
 
 export default MatesSidebar;
