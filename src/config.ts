@@ -9,8 +9,9 @@ const createOAuthUrl = (type: AuthType, action: ActionType): string => {
   };
 
   const redirect_uri = 'localhost';
+  // const redirect_uri = 'https://melodiary.site/auth';
   // const redirect_uri = 'https://melo-diary.vercel.app/auth';
-  //const redirect_uri = `https://melo-diary.vercel.app/auth?type=google`;
+  // const redirect_uri = `https://melo-diary.vercel.app/auth?type=google`;
   const state = JSON.stringify({ type, action });
   
   let auth_url = '';

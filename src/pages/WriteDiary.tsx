@@ -11,6 +11,7 @@ import { colors, moods, privacies } from '../constants/writeDiary';
 import { useGeoLocation } from '../hooks/useGeoLocation';
 import { useDiaries } from '../hooks/useDiary';
 import { IDiaryBody } from '../models/diary.model';
+import { useNavigate } from 'react-router-dom';
 
 const geolocationOptions = {
   enableHighAccuracy: true,
@@ -32,6 +33,8 @@ const WriteDiary = () => {
   const [weatherIcon, setWeatherIcon] = useState<string>("");
   const [weatherLocation, setWeatherLocation] = useState<string>(""); // 위치
   const [weatherTemp, setWeatherTemp] = useState<number>(0);
+
+  const navigate = useNavigate();
 
   const { saveDiary, loading, wirteDiaryErr } = useDiaries();
 
@@ -56,8 +59,17 @@ const WriteDiary = () => {
       },
       background_color: selectedBgColor || "default",
     };
-
+    
     await saveDiary(diaryData); // saveDiary 호출
+
+    // if (diaryData) {
+    //   window.alert("일기가 저장되었습니다.");
+    //   navigate("/home");
+    // } else {
+    //   window.alert("모든 항목을 작성해주세요.");
+    //   window.location.reload();
+    // }
+
   };
   
 
@@ -69,25 +81,43 @@ const WriteDiary = () => {
 
   // 날씨
   const { location, error } = useGeoLocation(geolocationOptions);
-  
-  // console.log("위도 : ", location?.latitude);
-  // console.log("경도 : ", location?.longitude);
+  let lat = location?.latitude;
+  let long = location?.longitude;
+  // console.log("위도 : ", lat);
+  // console.log("경도 : ", long);
 
   useEffect(() => {
-    fetch(`https://api.melodiary.site/api/weather?latitude=${location?.latitude}&longitude=${location?.longitude}`, {
-      headers: {
-        'Authorization': `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`
-      }
-    })
-    .then(res => res.json())
-    .then((data) => {
-      setWeatherIcon(data.icon);
-      setWeatherLocation(data.location);
-      setWeatherTemp(data.avg_temperature);
-    })
-    .catch((err) => {
-      console.log("날씨 정보 불러오기 에러 : ", err);
-    })
+    if(lat && long !== undefined) {
+      fetch(`https://api.melodiary.site/api/weather?latitude=${lat}&longitude=${long}`, {
+        headers: {
+          'Authorization': `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`
+        }
+      })
+      .then(res => res.json())
+      .then((data) => {
+        setWeatherIcon(data.icon);
+        setWeatherLocation(data.location);
+        setWeatherTemp(data.avg_temperature);
+      })
+      .catch((err) => {
+        console.log("날씨 정보 불러오기 에러 : ", err);
+      })
+    } else {
+      fetch(`https://api.melodiary.site/api/weather?latitude=37.564214&longitude=127.001699`, {
+        headers: {
+          'Authorization': `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`
+        }
+      })
+      .then(res => res.json())
+      .then((data) => {
+        setWeatherIcon(data.icon);
+        setWeatherLocation("Seoul");
+        setWeatherTemp(data.avg_temperature);
+      })
+      .catch((err) => {
+        console.log("날씨 정보 불러오기 에러 : ", err);
+      })
+    }
   }, [weatherLocation]);
 
   // 드롭다운 여부 (오늘의 이모지, 배경 색상, 기분, 공개 범위, 미리보기)
@@ -302,16 +332,19 @@ const WriteDiary = () => {
             <input
               type="text"
               placeholder="TITLE"
+              value={musicTitle}
               onChange={(e) => setMusicTitle(e.target.value)}
             />
             <input
               type="text"
               placeholder="ARTIST"
+              value={musicArtist}
               onChange={(e) => setMusicArtist(e.target.value)}
             />
             <input
               type="text"
               placeholder="YOUTUBE URL"
+              value={musicUrl}
               onChange={(e) => setMusicUrl(e.target.value)}
             />
           </div>

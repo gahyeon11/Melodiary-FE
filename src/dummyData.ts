@@ -20,7 +20,7 @@ export const dummyDiaries: IDiary[] = [
       emoji: "✨",
       privacy: "public",
       music: {
-        url: "https://www.youtube.com/watch?v=Jkd_CsnaF2k",
+        music_url: "https://www.youtube.com/watch?v=Jkd_CsnaF2k",
         title: "Supernatural",
         artist: "NewJeans",
       },
@@ -54,7 +54,7 @@ export const dummyDiaries: IDiary[] = [
       emoji: "🏠",
       privacy: "mate",
       music: {
-        url: "https://www.youtube.com/watch?v=uNN2lN7M7cA",
+        music_url: "https://www.youtube.com/watch?v=uNN2lN7M7cA",
         title: "Right Now",
         artist: "NewJeans",
       },
@@ -89,7 +89,7 @@ export const dummyDiaries: IDiary[] = [
       emoji: "🏠",
       privacy: "private",
       music: {
-        url: "https://www.youtube.com/watch?v=BfI89YxNzVY",
+        music_url: "https://www.youtube.com/watch?v=BfI89YxNzVY",
         title: "Armageddon",
         artist: "aespa",
       },
@@ -127,7 +127,7 @@ export const dummyDiaries: IDiary[] = [
       emoji: "🏠",
       privacy: "private",
       music: {
-        url: "https://www.youtube.com/watch?v=m2iuZ-uDziM",
+        music_url: "https://www.youtube.com/watch?v=m2iuZ-uDziM",
         title: "Sticky",
         artist: "키스오브라이프",
       },
@@ -164,7 +164,7 @@ export const dummyDiaries: IDiary[] = [
       emoji: "🏠",
       privacy: "private",
       music: {
-        url: "https://www.youtube.com/watch?v=4U031MuTa-s",
+        music_url: "https://www.youtube.com/watch?v=4U031MuTa-s",
         title: "青い珊瑚礁",
         artist: "Newjeans 하니(Hanni)",
       },
