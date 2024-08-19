@@ -8,12 +8,15 @@ import {
   BiHeadphone,
   BiHelpCircle,
   BiSolidChevronDown,
-  BiSearch,
 } from "react-icons/bi";
 import { CiLogout } from "react-icons/ci";
 import { FaUserCircle } from "react-icons/fa";
 import NotificationDropdown from "../notification/NotificationDropdown";
 import { useAuth } from "../../context/AuthContext";
+import SearchBar from "./SearchBar";
+import { useNotifications } from "../../hooks/useNotification";
+import { useUserData } from "../../hooks/useUserData";
+import { useUserStore } from "../../store/authStore";
 
 function Header() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -21,25 +24,29 @@ function Header() {
     useState(false);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const notificationDropdownRef = useRef<HTMLDivElement>(null);
-  const {isAuthenticated, logout} = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+
+  const storedUserId = localStorage.getItem('user_id');
+  const userId = storedUserId ? Number(storedUserId) : null;
+
+  const { notifications, fetchNotifications, markAsRead } = useNotifications(userId || 0);
+  const { user, loading, error } = useUserData(userId!);
 
   const onClickLogout = () => {
     logout();
-    navigate('/');
-  };
-
-  const user = {
-    username: "User",
-    profileImage: null,
+    navigate("/");
   };
 
   const toggleProfileDropdown = () => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
 
-  const toggleNotificationDropdown = () => {
+  const toggleNotificationDropdown = async () => {
     setIsNotificationDropdownOpen(!isNotificationDropdownOpen);
+    if (!isNotificationDropdownOpen) {
+      await fetchNotifications(); 
+    }
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -64,30 +71,16 @@ function Header() {
     };
   }, []);
 
-  const notifications = [
-    //알림 api 연결 전 더미데이터 입니다.
-    {
-      id: 1,
-      content: "김머쓱님이 회원님에게 친구 요청을 보냈습니다.",
-      diaryId: 1,
-      category: "friend",
-      date: "2024-07-26",
-    },
-  ];
-
   return (
     <HeaderWrapper>
-      <Link to="/home">
+      <Link to={`/home/${userId}`}>
         <Logo>
           <BiHeadphone size={24} />
           <h1>MeloDiary</h1>
         </Logo>
       </Link>
       <Container>
-        <SearchContainer>
-          <BiSearch size={20} />
-          <SearchInput type="text" placeholder="Search mate" />
-        </SearchContainer>
+        <SearchBar />
         <ButtonContainer>
           <Link to="/writediary">
             <Button size="medium" schema="primary">
@@ -105,26 +98,28 @@ function Header() {
               <NotificationDropdown
                 ref={notificationDropdownRef}
                 notifications={notifications}
+                loading={loading}
+                markAsRead={markAsRead} 
               />
             )}
           </IconButton>
         </Icons>
         <Profile ref={profileDropdownRef}>
           <Link to="/mypage">
-            {user.profileImage ? (
-              <img src={user.profileImage} alt="profile" />
+            {user?.profile_img_url ? (
+              <img src={user.profile_img_url} alt="profile" />
             ) : (
               <DefaultProfileIcon size={32} />
             )}
           </Link>
-          <span>{user.username}</span>
+          <span>{user?.nickname}</span>
           <IconButton onClick={toggleProfileDropdown}>
             <BiSolidChevronDown size={24} />
           </IconButton>
           {isProfileDropdownOpen && (
             <Dropdown>
               <DropdownItem onClick={onClickLogout}>
-                <CiLogout size={20}/>
+                <CiLogout size={20} />
                 LOGOUT
               </DropdownItem>
             </Dropdown>
@@ -170,30 +165,13 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const SearchContainer = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 8px 100px 8px 20px;
-  margin-right: 20px;
-  border: 1px solid ${({ theme }) => theme.color.grayDF};
-  border-radius: 8px;
-  svg {
-    color: ${({ theme }) => theme.color.gray999};
-  }
-`;
-
-const SearchInput = styled.input`
-  flex-grow: 1;
-  margin-left: 8px;
-  border: none;
-  background: none;
-  outline: none;
-  min-width: 100px;
-`;
-
 const ButtonContainer = styled.div`
   display: flex;
   margin-right: 20px;
+  flex-direction: row;
+  button {
+    white-space: nowrap; 
+  }
 `;
 
 const Icons = styled.div`

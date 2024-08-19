@@ -21,7 +21,7 @@ const Auth = () => {
   const [modalMessage, setModalMessage] = useState<string | null>(null);
   const [action, setAction] = useState<string | null>(null);
   const setUserId = useUserStore((state) => state.setUserId);
-
+  const {isAuthenticated} = useAuth();
   useEffect(() => {
     const handleOAuth = async () => {
       if (stateParam && code) {
@@ -69,6 +69,7 @@ const Auth = () => {
 
     handleOAuth();
   }, [navigate, stateParam, code, setUserId, setAuthToken, completeSignup]);
+
   
   const closeModal = () => {
     setModalMessage(null);

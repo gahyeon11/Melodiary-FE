@@ -1,7 +1,8 @@
 export interface INotification {
-    id: number;
+    notification_id: number;
+    diary_id: number;
     content: string;
-    diaryId?: number;
     category: string;
     date: string;
+
 }

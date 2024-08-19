@@ -31,10 +31,10 @@ const DiaryHeader: React.FC<DiaryItemProps> = ({
         {isSummary ? (
           <DiaryProfile isSummary={isSummary}>
             <Link to={`/home/${user.user_id}`}>
-              {user.profileImgURL ? (
+              {user.profile_img_url ? (
                 <ProfileImage
                   isSummary={isSummary}
-                  src={user.profileImgURL}
+                  src={user.profile_img_url}
                   alt={user.nickname}
                 />
               ) : (
@@ -82,10 +82,10 @@ const DiaryHeader: React.FC<DiaryItemProps> = ({
           </DiaryButton>
           <DiaryProfile isSummary={isSummary}>
             <Link to={`/home/${user.user_id}`}>
-              {user.profileImgURL ? (
+              {user.profile_img_url ? (
                 <ProfileImage
                   isSummary={isSummary}
-                  src={user.profileImgURL}
+                  src={user.profile_img_url}
                   alt={user.nickname}
                 />
               ) : (
