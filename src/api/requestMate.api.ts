@@ -26,3 +26,23 @@ export const requestMate = async (userId : string, mateId: string): Promise<Axio
     });
     return response;
   };
+
+  export const mateList = async (userId : string): Promise<AxiosResponse<any>>  => {
+    try {
+      const accessToken = localStorage.getItem('access_token');
+      const response = await axios.get(`${API_BASE_URL}/users/${userId}/mates`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // Authorization 헤더에 Bearer 토큰 포함
+        },
+        withCredentials: true,
+      });
+      return response;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('Error fetching mate list:', error.response?.status, error.message);
+      } else {
+        console.error('Unexpected error:', error);
+      }
+      throw error;
+    }
+  };

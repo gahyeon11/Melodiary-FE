@@ -18,6 +18,7 @@ const Home = () => {
   const user_id = localStorage.getItem('user_id');
   const [nickname, setNickname] = useState<string | null>(null);
   const [isOwnProfile, setIsOwnProfile] = useState(true);
+  const [calendarData, setCalendarData] = useState<any>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -25,21 +26,21 @@ const Home = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        if (userId) {
-          const response = await getProfile(userId);
-          const { nickname } = response.data;
-          setNickname(nickname);
-        }
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     try {
+  //       if (userId) {
+  //         const response = await getProfile(userId);
+  //         const { nickname } = response.data;
+  //         setNickname(nickname);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching profile:', error);
+  //     }
+  //   };
   
-    fetchProfile();
-  }, [userId]);
+  //   fetchProfile();
+  // }, [userId]);
 
 
 
@@ -70,6 +71,13 @@ const Home = () => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleFetchData = (data: any) => {
+    console.log('Fetched Data:', data);
+    console.log('Fetched Data:', data.user_profile.nickname);
+    setCalendarData(data); // Calender에서 받은 데이터를 Home의 상태로 설정
+    setNickname(data.user_profile.nickname);
+  };
+
   return (
     <HomeWrapper>
       <LeftSection>
@@ -80,7 +88,7 @@ const Home = () => {
               <AddMateButton state={'NM'}/>
             )}
           </CalendarHeader>
-          <Calendar />
+          <Calendar onFetchData={handleFetchData}  />
         </CalendarSection>
         <PlaylistSection>
           <PlaylistHeader>🎵 {nickname} 님의 플레이리스트</PlaylistHeader>

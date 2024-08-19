@@ -9,7 +9,11 @@ interface Emojis {
   [key: number]: string | JSX.Element;
 }
 
-const Calendar = () => {
+interface CalenderProps {
+  onFetchData: (data: any) => void; // 데이터를 전달할 콜백 함수
+}
+
+const Calendar = ({ onFetchData }: CalenderProps) => {
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth();
@@ -31,6 +35,8 @@ const Calendar = () => {
             response = await getCalender(userId, `${year}-${month + 1}`);
           }
 
+          onFetchData(response.data);
+
           if (response && response.data) {
             const formattedEmojis: Emojis = {};
             console.log(response);
@@ -51,25 +57,6 @@ const Calendar = () => {
 
     fetchCalendar();
   }, [month, userId, year]);
-
-  // const emojis: Emojis = {
-  //   1: '🐵',
-  //   2: '🐒',
-  //   3: '🐵',
-  //   4: '😎',
-  //   5: '🔥',
-  //   6: '🐟',
-  //   9: '',
-  //   10: '',
-  //   12: '',
-  //   13: '🌸',
-  //   14: '🍀',
-  //   15: '',
-  //   16: '💙',
-  //   17: '💎',
-  //   19: '',
-  //   30: '',
-  // };
 
   const handleYearChange = (direction: number) => {
     setYear((prevYear) => prevYear + direction);
