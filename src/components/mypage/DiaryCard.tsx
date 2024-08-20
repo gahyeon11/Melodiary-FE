@@ -49,6 +49,8 @@ const DiaryCard = ({
   );
 };
 
+export default DiaryCard;
+
 const DiaryCardWrapper = styled.div<{ bgColor: string }>`
   display: flex;
   flex-direction: column;
@@ -103,5 +105,3 @@ const DiaryContent = styled.div`
   font-family: ${({ theme }) => theme.fontFamily.kor};
   font-size: ${({ theme }) => theme.text.text3};
 `;
-
-export default DiaryCard;
