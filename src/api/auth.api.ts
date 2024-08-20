@@ -6,7 +6,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 //회원가입
 export const signUp = async (data: ISignup): Promise<AxiosResponse<{ access_token: string; refresh_token: string; user_id: any }>> => {
-  const response = await httpClient.post(`${API_BASE_URL}/users`, data, {
+  const response = await httpClient.post(`api/users`, data, {
     withCredentials: true,
   });
   return response;
@@ -15,7 +15,7 @@ export const signUp = async (data: ISignup): Promise<AxiosResponse<{ access_toke
 
 //로그인
 export const login = async (data: ISignup): Promise<AxiosResponse<{ access_token: string; refresh_token: string; user_id: any }>>  => {
-  const response = await httpClient.post(`${API_BASE_URL}/users/login`, data, {
+  const response = await httpClient.post(`/api/users/login`, data, {
     withCredentials: true,
   });
   return response;
@@ -23,7 +23,7 @@ export const login = async (data: ISignup): Promise<AxiosResponse<{ access_token
 
 //로그아웃
 export const logout = async (userId : string): Promise<AxiosResponse<any>>  => {
-  const response = await httpClient.post(`${API_BASE_URL}/users/${userId}/logout`, null, {
+  const response = await httpClient.post(`/api/users/${userId}/logout`, null, {
     withCredentials: true,
   });
   return response;
@@ -33,16 +33,7 @@ export const logout = async (userId : string): Promise<AxiosResponse<any>>  => {
 //최초 닉네임 등록
 export const registerNickname = async (id: string, nickname: string): Promise<AxiosResponse<any>> => {
   const data: INicknameRequest = { nickname };
-  const response = await httpClient.post(`${API_BASE_URL}/users/${id}/nickname`, data, {
-    withCredentials: true,
-  });
-
-  return response;
-};
-
-
-export const getProfile = async (id: string): Promise<AxiosResponse<{nickname: string}>> => {
-  const response = await httpClient.get(`${API_BASE_URL}/users/${id}`, {
+  const response = await httpClient.post(`/api/users/${id}/nickname`, data, {
     withCredentials: true,
   });
 

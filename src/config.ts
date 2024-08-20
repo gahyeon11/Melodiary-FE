@@ -2,11 +2,12 @@ type AuthType = 'google' | 'naver' | 'kakao';
 type ActionType = 'signup' | 'login';
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_CLIENT_ID;
 
 const createOAuthUrl = (type: AuthType, action: ActionType): string => {
   const client_ids = {
     google: GOOGLE_CLIENT_ID,
-    naver: 'YOUR_NAVER_CLIENT_ID',
+    naver: NAVER_CLIENT_ID,
     kakao: 'YOUR_KAKAO_CLIENT_ID'
   };
 
@@ -17,7 +18,7 @@ const createOAuthUrl = (type: AuthType, action: ActionType): string => {
   if (type === 'google') {
     auth_url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${client_ids[type]}&redirect_uri=${redirect_uri}&response_type=code&scope=email&state=${encodeURIComponent(state)}`;
   } else if (type === 'naver') {
-    auth_url = `https://nid.naver.com/oauth2.0/authorize?client_id=${client_ids[type]}&redirect_uri=${redirect_uri}&response_type=code&state=${encodeURIComponent(state)}`;
+    auth_url =`https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${client_ids[type]}&redirect_uri=${encodeURIComponent(redirect_uri)}&state=${encodeURIComponent(state)}`;
   } else if (type === 'kakao') {
     auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${client_ids[type]}&redirect_uri=${redirect_uri}&response_type=code&state=${encodeURIComponent(state)}`;
   }
