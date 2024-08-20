@@ -12,3 +12,14 @@ export const getCalender = async (userId : string , month : string): Promise<Axi
       });
     return response;
   };
+
+  export const getPlayList = async (userId : string, page: number, limit: number) => {
+    const response = await httpClient.get(`/api/users/${userId}/music`, {
+      params: {
+        page: page,
+        limit: limit,
+      },
+        withCredentials: true,
+      });
+    return response.data;
+  };
