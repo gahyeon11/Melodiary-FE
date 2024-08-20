@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-
+import { useAuth } from '../context/AuthContext'; 
 const DEFAULT_PORT = process.env.REACT_APP_PORT;
 //const accessToken = process.env.REACT_APP_AccessToken;
 const accessToken = localStorage.getItem('access_token');
@@ -64,7 +64,7 @@ export const createClient = (config?: AxiosRequestConfig) => {
     },
     async (error) => {
       const originalRequest = error.config;
-      
+      const { logout } = useAuth();
       // 401 에러 발생 시 토큰 재발급 시도
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
@@ -76,6 +76,7 @@ export const createClient = (config?: AxiosRequestConfig) => {
         } catch (refreshError) {
           console.error('Token refresh failed', refreshError);
           // refresh token 재발급 실패 시 처리 (로그아웃 등)
+          logout();
           return Promise.reject(refreshError);
         }
       }
