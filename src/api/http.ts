@@ -1,5 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-
+import { useAuth } from '../context/AuthContext'; 
+import { logoutUtility } from './logoutUtility'; 
+import { useState } from "react";
 const DEFAULT_PORT = process.env.REACT_APP_PORT;
 //const accessToken = process.env.REACT_APP_AccessToken;
 const accessToken = localStorage.getItem('access_token');
@@ -36,7 +38,6 @@ export const createClient = (config?: AxiosRequestConfig) => {
     timeout: DEFAULT_TIMEOUT,
     headers: {
       "content-type": "application/json",
-      'Authorization': `Bearer ${accessToken}`,
       'Cache-Control': 'no-cache'  // 304 응답을 방지하기 위해 추가했습니다!
     },
     withCredentials: true,
@@ -59,23 +60,19 @@ export const createClient = (config?: AxiosRequestConfig) => {
 
   // 응답 인터셉터 추가
   axiosInstance.interceptors.response.use(
-    (response: AxiosResponse) => {
-      return response;
-    },
+    (response: AxiosResponse) => response,
     async (error) => {
       const originalRequest = error.config;
-      
       // 401 에러 발생 시 토큰 재발급 시도
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         try {
           const newAccessToken = await refreshToken();
-          axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
           originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
           return axiosInstance(originalRequest);
         } catch (refreshError) {
           console.error('Token refresh failed', refreshError);
-          // refresh token 재발급 실패 시 처리 (로그아웃 등)
+          logoutUtility();
           return Promise.reject(refreshError);
         }
       }

@@ -85,13 +85,27 @@ const PlayList = () => {
     const endIndex = startIndex + itemsPerPage;
     const itemsToShow = playlist.slice(startIndex, endIndex);
 
-    return itemsToShow.map((item, index) => (
-      <tr key={index}>
-        <td>{item.title}</td>
-        <td>{item.artist}</td>
-        <td>{item.date}</td>
-      </tr>
-    ));
+    if (itemsToShow.length === 0 && currentPage === 1) {
+      // 플레이리스트에 항목이 없는 경우 메시지 표시
+      return (null);
+    } else {
+      // 플레이리스트에 항목이 있을 경우와 빈칸이 있는 경우
+      const emptyItems = Array.from({ length: itemsPerPage - itemsToShow.length }).map((_, index) => (
+        <tr key={`empty-${index}`} style={{ backgroundColor: '#fcfcfc' }}>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+      ));
+
+      return [...itemsToShow.map((item, index) => (
+        <tr key={index}>
+          <td>{item.title}</td>
+          <td>{item.artist}</td>
+          <td>{item.date}</td>
+        </tr>
+      )), ...emptyItems];
+    }
   };
 
   const renderPageNumbers = () => {
@@ -113,16 +127,25 @@ const PlayList = () => {
   return (
     <PlaylistContainer>
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      <Table>
-        <thead className='playListHeader'>
-          <tr>
-            <th>제목</th>
-            <th>가수</th>
-            <th>사용 날짜</th>
-          </tr>
-        </thead>
-        <tbody>{renderPlaylistItems()}</tbody>
-      </Table>
+      <TableContainer>
+        <Table>
+          <thead className='playListHeader'>
+            <tr>
+              <th>제목</th>
+              <th>가수</th>
+              <th>사용 날짜</th>
+            </tr>
+          </thead>
+          <tbody>{renderPlaylistItems()}</tbody>
+        </Table>
+        {playlist.length === 0 && (
+          <EmptyMessageContainer>
+            <EmptyMessage>
+              일기에 음악을 추가해 보세요!
+            </EmptyMessage>
+          </EmptyMessageContainer>
+        )}
+      </TableContainer>
       <Pagination>
         <ArrowButton onClick={handlePreviousPage} disabled={currentPage === 1}>
           <IoIosArrowBack />
@@ -146,14 +169,22 @@ const PlaylistContainer = styled.div`
   text-align: center;
 `;
 
-const Table = styled.table`
+const TableContainer = styled.div`
+  position: relative;
   width: 100%;
   max-width: 700px;
-  border-collapse: separate; 
-  border-spacing: 0; 
+  margin: auto;
+  text-align: center;
   border: 1px solid ${({ theme }) => theme.color.grayDF}; 
   border-radius: 8px;
-  table-layout: fixed; /* 테이블 컬럼 너비 고정 */
+`;
+
+const Table = styled.table`
+  width: 100%;
+  border-collapse: separate; 
+  border-spacing: 0; 
+  table-layout: fixed; 
+  height: calc(40px * 6); 
   .playListHeader th {
     border-bottom: 1px solid ${({ theme }) => theme.color.grayDF};
     font-family: ${({ theme }) => theme.fontFamily.kor};
@@ -163,19 +194,35 @@ const Table = styled.table`
     border: none;
     font-family: ${({ theme }) => theme.fontFamily.kor};
     font-size: 14px;
-    overflow: hidden; /* 텍스트가 너무 길 경우 숨김 처리 */
-    text-overflow: ellipsis; /* 텍스트가 길 경우 말줄임표(...) 처리 */
-    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   th:nth-child(1), td:nth-child(1) {
-    width: 40%; /* 제목 컬럼 너비 고정 */
+    width: 40%; 
   }
   th:nth-child(2), td:nth-child(2) {
-    width: 30%; /* 가수 컬럼 너비 고정 */
+    width: 30%; 
   }
   th:nth-child(3), td:nth-child(3) {
-    width: 30%; /* 사용 날짜 컬럼 너비 고정 */
+    width: 30%; 
   }
+`;
+
+const EmptyMessageContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 0px); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const EmptyMessage = styled.div`
+  font-size: 16px;
+  color: ${({ theme }) => theme.color.gray777};
 `;
 
 const Pagination = styled.div`
