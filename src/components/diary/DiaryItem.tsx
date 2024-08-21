@@ -71,6 +71,7 @@ const DiaryItem: React.FC<DiaryItemProps> = ({
             likedUsers={likedUsers}
             isSummary={isSummary}
             isExpanded={isExpanded}
+            background_color={background_color}
           />
         </Diary>
       </DiaryContainer>
@@ -99,20 +100,20 @@ const DiaryWrapper = styled.div<DiaryAllProps>`
 const DiaryContainer = styled.div<DiaryAllProps>`
   position: relative;
   top: 0;
-  height: ${({ isExpanded, isSummary }) => 
-    isExpanded ? "100vh" : (isSummary ? "auto" : "100%")
-  };
-  overflow-y: ${({ isSummary }) => (isSummary ? "visible" : "auto")};
-  overflow-x: hidden; 
+  height: ${({ isExpanded, isSummary }) =>
+    isExpanded ? "100vh" : isSummary ? "auto" : "auto"};
+  overflow-y: ${({ isExpanded, isSummary }) =>
+    isExpanded ? "auto" : isSummary ? "visible" : "hidden"};
+  overflow-x: hidden;
   background-color: ${({ theme, background_color }) =>
     theme.diaryColor[background_color]?.background ||
     theme.diaryColor.default.background};
-  margin-bottom: ${({ isSummary }) => (isSummary ? "50px" : "0")};
+  margin-bottom: ${({ isExpanded, isSummary }) =>
+    isExpanded ? "0" : isSummary ? "50px" : "0"};
   border-radius: ${({ isSummary }) => (isSummary ? "20px" : "0")};
   border: ${({ isSummary, theme }) =>
     isSummary ? `1px solid ${theme.color.grayDF}` : "none"};
-  width: 100%;
-  max-width: ${({ isExpanded }) => (isExpanded ? "none" : "50vw")};
+  max-width: ${({ isExpanded }) => (isExpanded ? "100vw" : "50vw")};
 `;
 
 const Diary = styled.div<DiarySummaryProps>`
