@@ -151,7 +151,7 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
   return (
     <MusicBarContainer isExpanded={isExpanded}>
       <VideoContainer ref={playerRef} />
-      <TrackInfo>
+      <TrackInfo isExpanded={isExpanded}>
         <TrackText>
           <TrackTitle>{title}</TrackTitle>
           <TrackArtist>{artist}</TrackArtist>
@@ -183,7 +183,7 @@ const MusicBarContainer = styled(motion.div)<{ isExpanded: boolean }>`
   position: fixed;
   bottom: 0;
   width: 100%;
-  max-width: ${({ isExpanded }) => (isExpanded ? "" : "700px")};
+  /* max-width: ${({ isExpanded }) => (isExpanded ? "90vw" : "700px")}; */
   height: 70px;
   background-color: ${({ theme }) => theme.color.white};
   display: flex;
@@ -211,11 +211,13 @@ const VideoContainer = styled.div`
   }
 `;
 
-const TrackInfo = styled.div`
+const TrackInfo = styled.div<{ isExpanded: boolean }>`
   flex: 1;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-right: ${({ isExpanded }) => (isExpanded ? "10%" : "55%")};
+  overflow: hidden;
 `;
 
 const TrackText = styled.div`
@@ -265,9 +267,9 @@ const ProgressBar = styled.div<ProgressBarProps & { isExpanded: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-
+  padding: 0 20px;
   input[type="range"] {
-    width: ${({ isExpanded }) => (isExpanded ? "45vw" : "10vw")};
+    width: ${({ isExpanded }) => (isExpanded ? "20vw" : "8vw")};
     height: 5px;
     -webkit-appearance: none;
     background: linear-gradient(
@@ -296,7 +298,7 @@ const Controls = styled.div`
   justify-content: end;
   align-items: center;
   gap: 10px;
-  margin-right: 2vw;
+  /* margin-right: 20px; */
 `;
 
 const VolumeButton = styled.button`
@@ -318,7 +320,8 @@ const VolumeControl = styled.div<{ volume: number; isMuted: boolean; isExpanded:
 
   input[type="range"] {
     -webkit-appearance: none;
-    width: ${({ isExpanded }) => (isExpanded ? "10vw" : "5vw")};
+    /* max-width: 100px; */
+    width: ${({ isExpanded }) => (isExpanded ? "6vw" : "4vw")};
     height: 5px;
     background: linear-gradient(
       to right,
