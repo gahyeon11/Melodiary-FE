@@ -21,12 +21,7 @@ export const useDiaries = () => {
     }
   };
   
-  return {
-    diaryBody,
-    saveDiary,
-    loading,
-    wirteDiaryErr,
-  };
+  return { diaryBody, saveDiary, loading, wirteDiaryErr };
 };
 
 export const useDiary = (diaryId: number) => {

@@ -12,12 +12,26 @@ import { useGeoLocation } from '../hooks/useGeoLocation';
 import { useDiaries } from '../hooks/useDiary';
 import { IDiary } from '../models/diary.model';
 import { useNavigate } from 'react-router-dom';
+import { useWeather } from '../hooks/useWeather';
 
 const geolocationOptions = {
   enableHighAccuracy: true,
   timeout: 1000 * 30,
   maximumAge: 1000 * 3600 * 24,
-}
+};
+
+export const getPrivacyIcon = (privacyName: string) => {
+  switch (privacyName) {
+    case "public":
+      return <><RiGlobalLine /> 전체 공개</>;
+    case "mate":
+      return <><FiUser /> 친구 공개</>;
+    case "private":
+      return <><FiLock /> 비공개</>;
+    default:
+      return null;
+  }
+};
 
 const WriteDiary = () => {
   // 상태 변수 선언
@@ -30,16 +44,20 @@ const WriteDiary = () => {
   const [musicTitle, setMusicTitle] = useState<string>("");
   const [musicArtist, setMusicArtist] = useState<string>("");
   const [musicUrl, setMusicUrl] = useState<string>("");
+
   const [weatherIcon, setWeatherIcon] = useState<string>("");
-  const [weatherLocation, setWeatherLocation] = useState<string>(""); // 위치
+  const [weatherLocation, setWeatherLocation] = useState<string>("Seoul");
   const [weatherTemp, setWeatherTemp] = useState<number>(0);
 
   const navigate = useNavigate();
 
-  const { saveDiary, loading, wirteDiaryErr } = useDiaries();
+  const { saveDiary, loading } = useDiaries();
+  // const { weatherIcon, weatherLocation, weatherTemp } = useWeather();
 
   // 일기 데이터 작성 및 제출
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     const diaryData: IDiary["body"] = {
       title: title || "",
       content: content || "",
@@ -60,18 +78,22 @@ const WriteDiary = () => {
       background_color: selectedBgColor || "default",
     };
     
-    await saveDiary(diaryData); // saveDiary 호출
+    // 모든 필드가 작성되었는지 확인하는 함수
+    const isDiaryDataValid = Object.values(diaryData).every((value) => {
+      if (typeof value === 'object' && value !== null) {
+        return Object.values(value).every((v) => v !== "" && v !== null && v !== undefined);
+      }
+      return value !== "" && value !== null && value !== undefined;
+    });
 
-    // if (diaryData) {
-    //   window.alert("일기가 저장되었습니다.");
-    //   navigate("/home");
-    // } else {
-    //   window.alert("모든 항목을 작성해주세요.");
-    //   window.location.reload();
-    // }
-
+    if (isDiaryDataValid) {
+      await saveDiary(diaryData);
+      window.alert("일기가 저장되었습니다.");
+      navigate("/home");
+    } else {
+      window.alert("모든 항목을 작성해주세요.");
+    }
   };
-  
 
   // 날짜, 요일
   const week = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
@@ -83,14 +105,14 @@ const WriteDiary = () => {
   const { location, error } = useGeoLocation(geolocationOptions);
   let lat = location?.latitude;
   let long = location?.longitude;
-  // console.log("위도 : ", lat);
-  // console.log("경도 : ", long);
 
   useEffect(() => {
+    const accessToken = localStorage.getItem('access_token');
+
     if(lat && long !== undefined) {
       fetch(`https://api.melodiary.site/api/weather?latitude=${lat}&longitude=${long}`, {
         headers: {
-          'Authorization': `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`
+          'Authorization': `Bearer ${accessToken}`
         }
       })
       .then(res => res.json())
@@ -103,9 +125,10 @@ const WriteDiary = () => {
         console.log("날씨 정보 불러오기 에러 : ", err);
       })
     } else {
+      // 위치 불러오기 실패한 경우 서울로 지정
       fetch(`https://api.melodiary.site/api/weather?latitude=37.564214&longitude=127.001699`, {
         headers: {
-          'Authorization': `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`
+          'Authorization': `Bearer ${accessToken}`
         }
       })
       .then(res => res.json())
@@ -207,19 +230,6 @@ const WriteDiary = () => {
     };
   }, []);
 
-  const getPrivacyIcon = (privacyName: string) => {
-    switch (privacyName) {
-      case "public":
-        return <><RiGlobalLine /> 전체 공개</>;
-      case "mate":
-        return <><FiUser /> 친구 공개</>;
-      case "private":
-        return <><FiLock /> 비공개</>;
-      default:
-        return null;
-    }
-  };
-
   return (
     <WriteDiaryWrapper bgColor={selectedBgColor}>
       {isPreviewOpen && (
@@ -234,9 +244,9 @@ const WriteDiary = () => {
           musicArtist={musicArtist}
           musicUrl={musicUrl}
           formattedDate={formattedDate}
-          location={''} 
-          weatherIcon={''} 
-          avgTemperature={''} 
+          location={weatherLocation} 
+          weatherIcon={weatherIcon} 
+          avgTemperature={weatherTemp} 
           imgUrls={[]}
         />
       )}
@@ -353,7 +363,10 @@ const WriteDiary = () => {
         <Section className="privacy">
           <label>공개범위</label>
           <div className="select-privacy-box" ref={privacyDropdownRef}>
-            <div className="selected-privacy" onClick={tooglePrivacyDropdown}>
+            <div 
+              className="selected-privacy"
+              onClick={tooglePrivacyDropdown}
+            >
               {getPrivacyIcon(selectedPrivacy)}
             </div>
             {isPrivacyDropdown && (
