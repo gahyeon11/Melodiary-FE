@@ -63,22 +63,6 @@ const PlayList = () => {
 
     fetchAllPlaylistData();
   }, [userId]);
-
-  // useEffect(() => {
-  //   // 더미 데이터 생성
-  //   const dummyData: PlaylistItem[] = [
-  //     { title: 'Supernova', artist: 'aespa', date: '2024.07.17' },
-  //     { title: 'How Sweet', artist: 'NewJeans', date: '2024.07.16' },
-  //     { title: 'Small girl (feat. 도경수(D.O.))', artist: '이영지', date: '2024.07.15' },
-  //     { title: 'Supernatural', artist: 'NewJeans', date: '2024.07.14' },
-  //     { title: 'Sticky', artist: 'KISS OF LIFE', date: '2024.07.13' },
-  //     { title: 'Cupid', artist: 'FIFTY FIFTY', date: '2024.07.12' },
-  //     { title: 'Spicy', artist: 'aespa', date: '2024.07.11' },
-  //   ];
-
-  //   setPlaylist(dummyData);
-  // }, []);
-
  
   const handlePageChange = (pageNumber: number) => {
     if (pageNumber !== currentPage && pageNumber > 0 && pageNumber <= totalPages) {
@@ -146,6 +130,7 @@ const PlayList = () => {
 
   return (
     <PlaylistContainer>
+       <TableContainer>
       <Table>
         <thead>
           <tr>
@@ -157,6 +142,14 @@ const PlayList = () => {
         </thead>
         <tbody>{renderPlaylistItems()}</tbody>
       </Table>
+      {playlist.length === 0 && (
+          <EmptyMessageContainer>
+            <EmptyMessage>
+              일기에 음악을 추가해 보세요!
+            </EmptyMessage>
+          </EmptyMessageContainer>
+        )}
+        </TableContainer>
       <Pagination>
         <ArrowButton onClick={handlePreviousPage} disabled={currentPage === 1}>
           <IoIosArrowBack />
@@ -176,17 +169,23 @@ const PlaylistContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin: auto;
+  text-align: center;
+`;
+const TableContainer = styled.div`
+  position: relative;
+  width: 100%;
   max-width: 1000px;
   margin: auto;
+  text-align: center;
 `;
-
 const Table = styled.table`
   width: 100%;
+  height: calc(40px * 6);
   border-collapse: separate; 
   border-spacing: 0; 
   border: none;
   table-layout: fixed; 
-  height: calc(40px * 6); 
   .playListHeader th {
     border-bottom: 1px solid ${({ theme }) => theme.color.gray777};
     font-family: ${({ theme }) => theme.fontFamily.kor};
@@ -214,20 +213,33 @@ const Table = styled.table`
   th:nth-child(3), td:nth-child(3) {
     width: 30%; 
   }
-
   th:nth-child(4), td:nth-child(4) {
     width: 10%; 
   }
-  
   .view-link {
     color: ${({ theme }) => theme.color.gray999};
   }
 `;
 
+const EmptyMessageContainer = styled.div`
+  display: flex;  
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 0px); 
+  top: 0;
+  left: 0;
+  align-items: center;
+  justify-content: center;
+`;
+
+const EmptyMessage = styled.div`
+  font-size: 16px;
+  color: ${({ theme }) => theme.color.gray777};
+`;
+
 const StyledLink = styled(Link)`
   color: ${({ theme }) => theme.color.gray999}; 
   text-decoration: none; 
-  
   position: relative; 
 
   &::after {
