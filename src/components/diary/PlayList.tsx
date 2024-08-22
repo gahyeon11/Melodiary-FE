@@ -32,7 +32,7 @@ const PlayList = () => {
               const formattedPlaylist = data.musics.map((music: any) => ({
                 title: music.title,
                 artist: music.artist,
-                date: new Date(music.created_at).toLocaleDateString(),
+                date: new Date(music.created_at).toISOString().split('T')[0],
               }));
               allMusics = [...allMusics, ...formattedPlaylist];
               page++;

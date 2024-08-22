@@ -16,7 +16,8 @@ const PlayList = () => {
   const [playlist, setPlaylist] = useState<PlaylistItem[]>([]);
   const [totalPages, setTotalPages] = useState<number>(1);
   const itemsPerPage: number = 5;
-  const  userId = localStorage.getItem("user_id");
+  //const  userId = localStorage.getItem("user_id");
+  const  userId = '29';
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -34,7 +35,7 @@ const PlayList = () => {
                 diaryId: music.diary_id,
                 title: music.title,
                 artist: music.artist,
-                date: new Date(music.created_at).toLocaleDateString(),
+                date: new Date(music.created_at).toISOString().split('T')[0],
               }));
               allMusics = [...allMusics, ...formattedPlaylist];
               page++;
