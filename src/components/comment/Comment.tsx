@@ -1,108 +1,140 @@
-import React from "react";
-import styled from "styled-components";
-import { FaPen, FaUserCircle } from "react-icons/fa";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { FaPen, FaUserCircle } from 'react-icons/fa';
+import { useComments } from '../../hooks/useComment';
+import { IComment } from '../../models/comment.model';
+import { fetchComments } from '../../api/comment.api';
 
-// /api/diaries/{diaryID}/comments
-const comments = [
-  {
-    date: "2024-08-01",
-    commentId: 1,
-    content: "잘 읽었습니다 ㅎㅎ",
-    userId: 1,
-  },
-  {
-    date: "2024-08-01",
-    commentId: 2,
-    content: "멋진 글이에요!",
-    userId: 2,
-  },
-  {
-    date: "2024-08-01",
-    commentId: 3,
-    content: "감사합니다!",
-    userId: 3,
-  },
-  {
-    date: "2024-08-01",
-    commentId: 4,
-    content: "잘 보고 갑니다!",
-    userId: 4,
-  },
-];
+interface CommentSectionProps {
+  diaryId: number;
+  diaryUserId: number;
+  backgroundColor?: string;
+  setCommentCount?: (count: number) => void;  // 댓글 수를 업데이트할 콜백 함수 추가
+}
 
-// user정보 : `/api/users/${comment.userId}`
-const users = [
-  {
-    userID: 1,
-    profileImgURL:
-      null,
-    nickname: "musseuk",
-    emailAddress: "musseuk@example.com",
-  },
-  {
-    userID: 2,
-    profileImgURL:
-      "https://i.pinimg.com/236x/db/a4/32/dba4322ad59e8555cfad93442d2c9c3c.jpg",
-    nickname: "Kim",
-    emailAddress: "Kim@example.com",
-  },
-  {
-    userID: 3,
-    profileImgURL:
-      "https://i.pinimg.com/236x/3d/aa/a5/3daaa580c31c86277d13f55594895f8a.jpg",
-    nickname: "Lee",
-    emailAddress: "Lee@example.com",
-  },
-  {
-    userID: 4,
-    profileImgURL:
-      "https://i.pinimg.com/236x/1c/d3/93/1cd393c81aee774ac3e0f586f7413a09.jpg",
-    nickname: "Park",
-    emailAddress: "Park@example.com",
-  },
-];
+const formatDateTime = (dateString: string) => {
+  const date = new Date(dateString);
 
-function CommentSection() {
+  const formattedDate = date.toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).replace(/\./g, '.').replace(/\s/g, '').replace(/\.$/, ''); 
+
+  const formattedTime = date.toLocaleTimeString('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+
+  return `${formattedDate} ${formattedTime}`;
+};
+
+
+const CommentSection: React.FC<CommentSectionProps> = ({ diaryId, diaryUserId, backgroundColor, setCommentCount }) => {
+  const { comments, loading, error, addComment, editComment, removeComment, setComments } = useComments(diaryId);
+  const [newComment, setNewComment] = useState('');
+  const [mentionedUser, setMentionedUser] = useState<{ id: number } | null>(null);
+
+  useEffect(() => {
+    if (setCommentCount) {
+      setCommentCount(comments.length);
+    }
+  }, [comments.length, setCommentCount]);
+
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      const latestComments = await fetchComments(diaryId);
+      if (latestComments.length !== comments.length) {
+        setComments(latestComments);
+        if (setCommentCount) {
+          setCommentCount(latestComments.length);  
+        }
+      }
+    }, 5000); 
+
+    return () => clearInterval(intervalId); 
+  }, [comments.length, diaryId, setCommentCount]);
+
+  const handleAddComment = async () => {
+    await addComment(newComment, mentionedUser?.id);
+    setNewComment('');
+    setMentionedUser(null);
+  };
+
+  const handleMentionClick = (userId: number) => {
+    setMentionedUser({ id: userId });
+    setNewComment(`@${userId} `);
+  };
+
+  const parseCommentText = (text: string = '') => {
+    const mentionRegex = /@\d+/g;
+    const parts = text.split(mentionRegex);
+    const mentions = text.match(mentionRegex) || [];
+  
+    return parts.reduce((acc, part, index) => {
+      acc.push(<span key={`part-${index}`}>{part}</span>);
+      if (mentions[index]) {
+        acc.push(
+          <MentionSpan key={`mention-${index}`} backgroundColor={backgroundColor}>
+            {mentions[index]}
+          </MentionSpan>
+        );
+      }
+      return acc;
+    }, [] as React.ReactNode[]);
+  };
+
+  const currentUserId = parseInt(localStorage.getItem('user_id') || '', 10);
+
+  if (loading) return <div>Loading...</div>;
+
   return (
-    <CommentsContainer >
-      {comments.map((comment) => {
-        const user = users.find((user) => user.userID === comment.userId);
-
-        return (
-          <Comment key={comment.commentId}>
+    <CommentsContainer>
+      {Array.isArray(comments) && comments.length > 0 ? (
+        comments.map((comment: IComment) => (
+          <Comment key={comment.writer_user_profile.user_id}>
             <CommentHeader>
               <User>
-                {user?.profileImgURL ? (
-                  <ProfileImage src={user.profileImgURL} alt="Profile" />
+              {comment.writer_user_profile.profile_img_url ? (
+                  <ProfileImage src={comment.writer_user_profile.profile_img_url} alt="프로필 이미지" />
                 ) : (
                   <DefaultProfileIcon />
                 )}
-                <Username>{user?.nickname || "Unknown User"}</Username>
+                <UserId>{comment.writer_user_profile.nickname}</UserId>
               </User>
-              <CommentDate>{comment.date}</CommentDate>
+              <CommentDate>{formatDateTime(comment.created_at)}</CommentDate>
             </CommentHeader>
-            <CommentText>{comment.content}</CommentText>
-            <Button>
-              <button type="button">댓글달기</button>
-            </Button>
+            <CommentText>{parseCommentText(comment.content)}</CommentText>
+            <Actions>
+              {currentUserId === diaryUserId && (
+                <Button backgroundColor={backgroundColor} onClick={() => removeComment(comment.writer_user_profile.user_id)}>삭제</Button>
+              )}
+              <Button backgroundColor={backgroundColor} onClick={() => handleMentionClick(comment.writer_user_profile.user_id)}>답글 달기</Button>
+            </Actions>
           </Comment>
-        );
-      })}
+        ))
+      ) : (
+        <div></div>
+      )}
       <CommentInputContainer>
-        <CommentInput placeholder="댓글을 입력하세요." />
-        <CommentButton>
+        <CommentInput
+          placeholder="댓글을 입력하세요."
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+        />
+        <CommentButton onClick={handleAddComment}>
           <FaPen />
         </CommentButton>
       </CommentInputContainer>
     </CommentsContainer>
   );
-}
+};
+
 
 const CommentsContainer = styled.div`
   background-color: none;
   border-top: 1px solid ${({ theme }) => theme.color.grayDF};
-  padding: 0 15px;
-  margin-bottom: 80px;
 `;
 
 const Comment = styled.div`
@@ -121,22 +153,23 @@ const User = styled.div`
   gap: 5px;
 `;
 
-const ProfileImage = styled.img`
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-`;
-
 const DefaultProfileIcon = styled(FaUserCircle)`
   width: 28px;
   height: 28px;
   color: ${({ theme }) => theme.color.gray999};
 `;
 
-const Username = styled.div`
+const ProfileImage = styled.img`
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+`;
+
+const UserId = styled.div`
   margin-bottom: 2px;
   font-size: ${({ theme }) => theme.text.text3};
   font-weight: 500;
+  color: ${({ theme }) => theme.color.black};
 `;
 
 const CommentDate = styled.div`
@@ -149,15 +182,27 @@ const CommentText = styled.div`
   font-size: ${({ theme }) => theme.text.text3};
 `;
 
-const Button = styled.div`
-  button {
-    margin: 8px 32px;
-    border: none;
-    background-color: transparent; 
-    color: ${({ theme }) => theme.color.gray777};
-    font-size: ${({ theme }) => theme.text.text3};
-    cursor: pointer;
-  }
+const MentionSpan = styled.span<{ backgroundColor?: string }>`
+  background-color: ${({ backgroundColor, theme }) =>
+    backgroundColor ? theme.diaryColor[backgroundColor]?.tag : theme.color.highlight};
+  color: ${({ theme }) => theme.color.black};
+  padding: 0 4px;
+  border-radius: 4px;
+`;
+
+const Actions = styled.div`
+  display: flex;
+  gap: 10px;
+  margin: 8px 32px;
+`;
+
+const Button = styled.button<{ backgroundColor?: string }>`  
+  border: none;
+  background-color: transparent; 
+  color: ${({ theme }) => theme.color.gray999};
+  font-size: ${({ theme }) => theme.text.text3};
+  cursor: pointer;
+  border-radius: 4px;
 `;
 
 const CommentInputContainer = styled.div`
@@ -189,5 +234,4 @@ const CommentButton = styled.button`
   margin-bottom: 20px;
   cursor: pointer;
 `;
-
 export default CommentSection;

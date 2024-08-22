@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import CommentSection from "../comment/Comment";
 import {
@@ -8,20 +8,20 @@ import {
   FaRegCommentDots,
 } from "react-icons/fa";
 import { DiaryItemProps, DiarySummaryProps } from "./DiaryItem";
-import { ILikedUser } from "../../models/user.model";
 import { useLikeStatus } from "../../hooks/useLikeStatus";
+import { fetchComments } from "../../api/comment.api"; // 댓글을 가져오는 API
 
 interface DiaryFooterProps extends DiaryItemProps {
-  likedUsers: ILikedUser[];
+  background_color: string;
 }
 
 const DiaryFooter: React.FC<DiaryFooterProps> = ({
   diary,
-  likedUsers,
   isSummary = false,
   isExpanded,
+  background_color
 }) => {
-  const { userHasLiked, likeCount, handleLikeClick } = useLikeStatus(
+  const { userHasLiked, likeCount, handleLikeClick, likedUsers } = useLikeStatus(
     diary.id,
     diary.user_profile.user_id, 
     diary.liked,
@@ -29,6 +29,20 @@ const DiaryFooter: React.FC<DiaryFooterProps> = ({
   );
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [commentCount, setCommentCount] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchCommentCount = async () => {
+      try {
+        const comments = await fetchComments(diary.id); // 댓글을 가져오는 API 호출
+        setCommentCount(comments.length); // 댓글 수 설정
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
+
+    fetchCommentCount();
+  }, [diary.id]);
 
   return (
     <>
@@ -47,7 +61,7 @@ const DiaryFooter: React.FC<DiaryFooterProps> = ({
             {likeCount}
           </span>
           <span className="comment">
-            <FaRegCommentDots size={20} /> 4
+            <FaRegCommentDots size={20} /> {commentCount}
           </span>
         </DiarySpan>
       </SummaryFooter>
@@ -65,7 +79,7 @@ const DiaryFooter: React.FC<DiaryFooterProps> = ({
               {likeCount}
             </span>
             <span className="comment">
-              <FaRegCommentDots size={20} /> 4
+              <FaRegCommentDots size={20} /> {commentCount}
             </span>
           </DiarySpan>
           {isModalOpen && (
@@ -98,7 +112,12 @@ const DiaryFooter: React.FC<DiaryFooterProps> = ({
               </ul>
             </LikesModal>
           )}
-          <CommentSection />
+          <CommentSection
+            diaryId={diary.id}
+            diaryUserId={diary.user_profile.user_id}
+            backgroundColor={background_color}
+            setCommentCount={setCommentCount}
+          />
         </DiaryComment>
       )}
     </>

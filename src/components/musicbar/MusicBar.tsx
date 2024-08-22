@@ -20,6 +20,7 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState("0:00");
   const [duration, setDuration] = useState("0:00");
+  const intervalRef = useRef<NodeJS.Timeout | null>(null); 
 
   const getVideoId = (url: string) => {
     try {
@@ -60,12 +61,16 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
           },
           onStateChange: (event: any) => {
             if (event.data === YT.PlayerState.PLAYING) {
-              setInterval(() => {
+              intervalRef.current = setInterval(() => {
                 const currentTime = event.target.getCurrentTime();
                 const duration = event.target.getDuration();
                 setProgress((currentTime / duration) * 100);
                 setCurrentTime(formatTime(currentTime));
               }, 1000);
+            } else {
+              if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+              }
             }
           },
         },
@@ -97,6 +102,9 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
     return () => {
       if (player) {
         player.destroy(); // Prevent memory leaks
+      }
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current); // Clean up interval
       }
     };
   }, [youtubeUrl, videoId]);
@@ -151,7 +159,7 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
   return (
     <MusicBarContainer isExpanded={isExpanded}>
       <VideoContainer ref={playerRef} />
-      <TrackInfo>
+      <TrackInfo isExpanded={isExpanded}>
         <TrackText>
           <TrackTitle>{title}</TrackTitle>
           <TrackArtist>{artist}</TrackArtist>
@@ -182,24 +190,23 @@ const MusicBar = ({ youtubeUrl, title, artist, isExpanded }: MusicBarProps) => {
 const MusicBarContainer = styled(motion.div)<{ isExpanded: boolean }>`
   position: fixed;
   bottom: 0;
-  width: 100%;
-  max-width: ${({ isExpanded }) => (isExpanded ? "" : "700px")};
-  height: 70px;
-  background-color: ${({ theme }) => theme.color.white};
+  z-index: 1000;
   display: flex;
   align-items: center;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  transition: left 0.5s ease, width 0.5s ease;
+  width: 100%;
+  height: 70px;
   box-sizing: border-box;
+  background-color: ${({ theme }) => theme.color.white};
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  transition: left 0.5s ease, width 0.5s ease;
 `;
 
 const VideoContainer = styled.div`
-  width: 120px;
-  height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 120px;
+  height: 70px;
   margin-right: 20px;
 
   iframe {
@@ -211,16 +218,22 @@ const VideoContainer = styled.div`
   }
 `;
 
-const TrackInfo = styled.div`
-  flex: 1;
+const TrackInfo = styled.div<{ isExpanded: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  flex: 1;
+  margin-right: ${({ isExpanded }) => (isExpanded ? "10%" : "55%")};
+  overflow: hidden;
 `;
 
 const TrackText = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 100%;
+  overflow: hidden; 
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const TrackTitle = styled.div`
@@ -237,12 +250,16 @@ const TrackArtist = styled.div`
 const ProgressContainer = styled.div`
   display: flex;
   align-items: center;
+  overflow: hidden; 
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
   button {
+    margin: 4px 2px 0 10px;
     background-color: transparent;
-    color: ${({ theme }) => theme.color.gray777};
     border: none;
-    margin: 4px 2px 0 10px ;
     cursor: pointer;
+    color: ${({ theme }) => theme.color.gray777};
 
     &:hover {
       color: ${({ theme }) => theme.color.grayblack};
@@ -251,10 +268,10 @@ const ProgressContainer = styled.div`
 `;
 
 const Time = styled.div`
-  font-size: ${({ theme }) => theme.text.text2};
-  color: ${({ theme }) => theme.color.gray999};
   width: 50px;
   text-align: center;
+  font-size: ${({ theme }) => theme.text.text2};
+  color: ${({ theme }) => theme.color.gray999};
 `;
 
 interface ProgressBarProps {
@@ -265,29 +282,30 @@ const ProgressBar = styled.div<ProgressBarProps & { isExpanded: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0 20px;
 
   input[type="range"] {
-    width: ${({ isExpanded }) => (isExpanded ? "45vw" : "10vw")};
+    width: ${({ isExpanded }) => (isExpanded ? "20vw" : "8vw")};
     height: 5px;
-    -webkit-appearance: none;
     background: linear-gradient(
       to right,
       ${({ theme }) => theme.color.primary} ${({ value }) => value}%,
       ${({ theme }) => theme.color.grayDF} 0%
     );
     border-radius: 5px;
+    -webkit-appearance: none;
     outline: none;
     cursor: pointer;
   }
 
   input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
     width: 10px;
     height: 10px;
     background: ${({ theme }) => theme.color.primary};
-    cursor: pointer;
     border-radius: 50%;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
   }
 `;
 
@@ -296,15 +314,17 @@ const Controls = styled.div`
   justify-content: end;
   align-items: center;
   gap: 10px;
-  margin-right: 2vw;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 const VolumeButton = styled.button`
+  margin-top: 5px;
   background-color: transparent;
   border: none;
   cursor: pointer;
   color: ${({ theme }) => theme.color.gray777};
-  margin-top: 5px;
 
   &:hover {
     color: ${({ theme }) => theme.color.grayblack};
@@ -317,8 +337,7 @@ const VolumeControl = styled.div<{ volume: number; isMuted: boolean; isExpanded:
   align-items: center;
 
   input[type="range"] {
-    -webkit-appearance: none;
-    width: ${({ isExpanded }) => (isExpanded ? "10vw" : "5vw")};
+    width: ${({ isExpanded }) => (isExpanded ? "6vw" : "4vw")};
     height: 5px;
     background: linear-gradient(
       to right,
@@ -329,19 +348,18 @@ const VolumeControl = styled.div<{ volume: number; isMuted: boolean; isExpanded:
         ${({ isMuted, volume }) => `${isMuted ? 0 : volume}%`}
     );
     border-radius: 5px;
+    -webkit-appearance: none;
     outline: none;
     cursor: pointer;
   }
 
   input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
     width: 10px;
     height: 10px;
     background: ${({ theme }) => theme.color.gray777};
-    cursor: pointer;
     border-radius: 50%;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
   }
 `;
-
-export default MusicBar;

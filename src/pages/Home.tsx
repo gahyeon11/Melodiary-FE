@@ -22,27 +22,17 @@ const Home = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const location = useLocation();
-  const user_id = localStorage.getItem('user_id');
+  const user_id = localStorage.getItem("user_id");
   const [nickname, setNickname] = useState<string | null>(null);
   const [isOwnProfile, setIsOwnProfile] = useState(true);
   const [calendarData, setCalendarData] = useState<any>(null);
 
- //검색시 기타 부분에서 state를 받아오기 위해 설정해놓았던 부분입니다! 
-  // Calander api 연결 후 수정하겠습니다.
   const state = location.state as LocationState | undefined;
-
-  const parsedUserId = userId ? Number(userId) : 1;
-
-  const [diaryId, setDiaryId] = useState<number>(69);
-  const {
-    user,
-    loading: userLoading,
-    error: userError,
-  } = useUserData(parsedUserId);
-  
-  const { diary, loading: diaryLoading } = useDiary(diaryId);
-
   const [isExpanded, setIsExpanded] = useState(state?.isExpanded ?? false);
+
+  const [selectedDiaryId, setSelectedDiaryId] = useState<number | null>(null);
+
+  const { diary, loading: diaryLoading } = useDiary(selectedDiaryId || 0);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -52,15 +42,9 @@ const Home = () => {
 
   useEffect(() => {
     if (userId && user_id) {
-      setIsOwnProfile(userId === user_id); // userId와 user_id가 같은지 비교
+      setIsOwnProfile(userId === user_id);
     }
   }, [userId, user_id]);
-
-  useEffect(() => {
-    if (parsedUserId) {
-      setDiaryId(69);
-    }
-  }, [parsedUserId]);
 
   useEffect(() => {
     if (state?.isExpanded !== undefined) {
@@ -73,35 +57,30 @@ const Home = () => {
   };
 
   const onFetchData = (data: any) => {
-    setCalendarData(data); // Calender에서 받은 데이터를 Home의 상태로 설정
+    setCalendarData(data);
     setNickname(data.user_profile.nickname);
   };
 
   const onEmojiClick = (diary_id: number) => {
-    //이모지 클릭시 이 함수에서 다이어리 아이디를 받아옴
-    console.log('diary_id:', diary_id);
+    setSelectedDiaryId(diary_id);
   };
 
-  //검색시 기타 부분에서 state를 받아오기 위해 설정해놓았던 부분입니다! 
-  // Calander api 연결 후 수정하겠습니다.
-  const displayNickname = state?.nickname || user?.nickname || parsedUserId;
-  const profileImageUrl = state?.profileImgUrl || user?.profile_img_url;
-
-  if (userLoading || diaryLoading) {
+  if (diaryLoading) {
     return <Message>Loading...</Message>;
   }
 
   return (
-    <HomeWrapper>
+    <HomeWrapper
+      isExpanded={isExpanded}
+      background_color={diary?.body.background_color ?? undefined}
+    >
       <LeftSection>
         <CalendarSection>
           <CalendarHeader>
             📅 {nickname} 님의 달력
-            {!isOwnProfile && (
-              <AddMateButton/>
-            )}
+            {!isOwnProfile && <AddMateButton />}
           </CalendarHeader>
-          <Calendar onFetchData={onFetchData} onEmojiClick={onEmojiClick}  />
+          <Calendar onFetchData={onFetchData} onEmojiClick={onEmojiClick} />
         </CalendarSection>
         <PlaylistSection>
           <PlaylistHeader>🎵 {nickname} 님의 플레이리스트</PlaylistHeader>
@@ -109,18 +88,20 @@ const Home = () => {
         </PlaylistSection>
       </LeftSection>
       <Right>
-      <RightSection
+        <RightSection
           isExpanded={isExpanded}
           background_color={diary?.body.background_color ?? undefined}
-          initial={{ width: "auto" }} 
-          animate={{ width: isExpanded ? "100%" : "auto" }}
-          transition={{ duration: 0.5, ease: "easeInOut" }} 
+          initial={{ right: "0" }}
+          animate={{
+            width: isExpanded ? "calc(100% - 70px)" : "",
+          }}
+          transition={{ duration: 0.5, ease: "linear" }}
         >
-          {diary && user ? (
+          {diary ? (
             <>
               <DiaryItem
                 diary={diary}
-                user={user}
+                user={diary.user_profile}
                 likedUsers={[]}
                 isExpanded={isExpanded}
                 toggleExpand={handleExpand}
@@ -135,7 +116,9 @@ const Home = () => {
               )}
             </>
           ) : (
-            <Message>날짜를 선택하여 일기를 확인해보세요!</Message>
+            <Message>
+              <p>날짜를 선택하여 일기를 확인해보세요!</p>
+            </Message>
           )}
         </RightSection>
       </Right>
@@ -145,14 +128,16 @@ const Home = () => {
 
 export default Home;
 
-const HomeWrapper = styled.div`
+const HomeWrapper = styled.div<RightSectionProps>`
   display: flex;
   width: 100%;
-  height: 100vh; /* 높이를 화면 전체로 설정 */
+  height: 100vh;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   overflow-x: hidden;
+  /* padding-bottom: ${({ isExpanded }) => (isExpanded ? "20%" : "0")}; */
+  /* margin-bottom: ${({ isExpanded }) => (isExpanded ? "60px" : "0")}; */
 `;
 
 const LeftSection = styled.div`
@@ -163,7 +148,7 @@ const LeftSection = styled.div`
   box-sizing: border-box;
   padding-top: 10px;
   border-right: 1px solid ${({ theme }) => theme.color.grayDF};
-  height: 100%; 
+  height: 100%;
   z-index: 0;
 `;
 
@@ -204,28 +189,20 @@ const PlaylistHeader = styled.div`
 
 interface RightSectionProps {
   isExpanded: boolean;
-  background_color?: string | null; 
+  background_color?: string | null;
 }
 
 const Right = styled.div`
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `;
 
 const RightSection = styled(motion.div)<RightSectionProps>`
   display: flex;
   flex-direction: column;
   flex: 1;
-  justify-content: center;
-  align-items: center;
-  position: ${({ isExpanded }) =>
-    isExpanded ? "absolute" : "relative"}; 
-  top: 0;
+  position: ${({ isExpanded }) => (isExpanded ? "absolute" : "relative")};
   right: 0;
-  height: 100%;
+  height: ${({ isExpanded }) => (isExpanded ? "" : "100%")};
   background-color: ${({ theme, background_color }) =>
     theme.diaryColor[background_color ?? "default"]?.background ||
     theme.diaryColor.default.background};
@@ -235,8 +212,16 @@ const RightSection = styled(motion.div)<RightSectionProps>`
 `;
 
 const Message = styled.div`
-  font-size: ${({ theme }) => theme.text.text1};
-  color: ${({ theme }) => theme.color.gray777};
-  font-family: ${({ theme }) => theme.fontFamily.kor};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; 
+  width: 100%; 
   text-align: center;
+
+  p {
+    font-size: ${({ theme }) => theme.text.text1};
+    color: ${({ theme }) => theme.color.gray777};
+    font-family: ${({ theme }) => theme.fontFamily.kor};
+  }
 `;

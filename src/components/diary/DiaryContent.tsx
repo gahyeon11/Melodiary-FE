@@ -38,7 +38,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({
   const firstImageUrl = extractFirstImage(diary.body.content);
 
   const summaryText = isSummary && isMatesPage
-    ? getSummaryText(stripHtmlTags(diary.body.content), 200) // 원하는 글자 길이로 설정 가능
+    ? getSummaryText(stripHtmlTags(diary.body.content), 200)
     : stripHtmlTags(diary.body.content);
 
   return (
@@ -84,7 +84,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({
       <DiaryText isExpanded={isExpanded} isSummary={isSummary} isMatesPage={isMatesPage}>
         <div
           dangerouslySetInnerHTML={{
-            __html: summaryText,
+            __html: isSummary ? summaryText : diary.body.content,
           }}
         />
       </DiaryText>
@@ -149,9 +149,7 @@ const DiaryTagItem = styled.div<{ tagColor: string; isSummary: boolean; isMatesP
 const DiaryText = styled.div<{ isExpanded: boolean; isSummary: boolean; isMatesPage: boolean }>`
   width: 100%;
   max-width: 100%;
-  padding: ${({ isSummary, isMatesPage }) => (isSummary || isMatesPage ? "10px 0 0 0" : "30px 0 0 0")};
-  margin-bottom: ${({ isExpanded, isSummary, isMatesPage }) =>
-    isExpanded || isSummary || isMatesPage ? "10px" : "150px"};
+  padding: ${({ isSummary, isMatesPage }) => (isSummary || isMatesPage ? "10px 0 10px 0" : "30px 0 30px 0")};
   font-size: ${({ theme }) => theme.text.text1};
   color: ${({ theme }) => theme.color.grayblack};
   white-space: pre-line;
@@ -160,6 +158,6 @@ const DiaryText = styled.div<{ isExpanded: boolean; isSummary: boolean; isMatesP
 const SummaryImage = styled.img`
   width: 100%;
   max-height: 450px;
-  /* object-fit: cover; */
+  object-fit: cover;
   margin-bottom: 20px;
 `;
