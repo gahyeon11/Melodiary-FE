@@ -363,3 +363,5 @@ const VolumeControl = styled.div<{ volume: number; isMuted: boolean; isExpanded:
     cursor: pointer;
   }
 `;
+
+export default MusicBar;
