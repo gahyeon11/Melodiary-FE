@@ -4,13 +4,15 @@ import { ReactComponent as AddMateIcon } from '../../assets/icons/addMate.svg';
 import { ReactComponent as MateIcon } from '../../assets/icons/Mate.svg';
 import { ReactComponent as RequestMateIcon } from '../../assets/icons/requestMate.svg';
 import { useParams } from 'react-router-dom';
-import { requestMate, requestMateList, mateList } from '../../api/requestMate.api';
+import { requestMate, requestMateList } from '../../api/requestMate.api';
 import axios from 'axios';
+import { useMatesList, useReceivedMateRequests } from '../../hooks/useMates';
 
 const AddMateButton = () => {
   const { userId } = useParams();
   const homeId = userId;
   const user_id = localStorage.getItem('user_id');
+  const { mates } = useMatesList(Number(user_id));
   const [buttonState, setButtonState] = useState<'NM' | 'RM' | 'M'>('NM');
 
   const onClickRequestMate = async () => {
@@ -50,9 +52,8 @@ const AddMateButton = () => {
     const fetchMateList = async () => {
       try {
         if (user_id) {
-          const response = await mateList(user_id);
-          if (response.data && Array.isArray(response.data)) {
-            response.data.forEach((entry: { user_id: number }) => {
+          if (mates && Array.isArray(mates)) {
+            mates.forEach((entry: { user_id: number }) => {
               if (entry.user_id === Number(homeId)) {
                 setButtonState('M');
               }
@@ -67,7 +68,7 @@ const AddMateButton = () => {
     };
   
     fetchMateList();
-  }, [user_id]);
+  }, [user_id, homeId, mates]);
 
   const renderButtonContent = () => {
     switch(buttonState) {

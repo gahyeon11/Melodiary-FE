@@ -42,8 +42,9 @@ const Auth = () => {
 
           if (response) {
             console.log('Successfully received jwt:', response.data);
-            const { access_token, user_id } = response.data;
+            const { access_token, refresh_token, user_id } = response.data;
             localStorage.setItem('access_token', access_token);
+            localStorage.setItem('refresh_token', refresh_token);
             localStorage.setItem('user_id', user_id.toString());
             if(action === 'signup'){
               completeSignup();
