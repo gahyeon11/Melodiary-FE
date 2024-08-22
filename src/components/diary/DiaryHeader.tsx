@@ -20,6 +20,10 @@ const DiaryHeader: React.FC<DiaryItemProps> = ({
   const [isDeleteSuccessAlertVisible, setIsDeleteSuccessAlertVisible] =
     useState(false);
 
+  const userIdFromStorage = localStorage.getItem("user_id"); // localStorage에서 user_id 가져오기
+  const isOwner =
+    userIdFromStorage && Number(userIdFromStorage) === user.user_id;
+
   const handleEdit = () => {
     navigate(`/writeDiary`, { state: { diary } });
   };
@@ -31,7 +35,7 @@ const DiaryHeader: React.FC<DiaryItemProps> = ({
   const confirmDelete = async () => {
     try {
       await deleteDiary(diary.id);
-      setIsDeleteSuccessAlertVisible(true); 
+      setIsDeleteSuccessAlertVisible(true);
     } catch (err) {
       console.error("삭제 오류:", err);
     } finally {
@@ -45,7 +49,7 @@ const DiaryHeader: React.FC<DiaryItemProps> = ({
 
   const handleCloseSuccessAlert = () => {
     setIsDeleteSuccessAlertVisible(false);
-    navigate(0); 
+    navigate(-1);
   };
 
   const renderPrivacyIcon = () => {
@@ -113,14 +117,16 @@ const DiaryHeader: React.FC<DiaryItemProps> = ({
         </Title>
         {!isSummary && (
           <Right>
-            <DiaryButton>
-              <button type="button" onClick={handleEdit}>
-                수정하기
-              </button>
-              <button type="button" onClick={handleDelete} disabled={loading}>
-                삭제하기
-              </button>
-            </DiaryButton>
+            {isOwner && (
+              <DiaryButton>
+                <button type="button" onClick={handleEdit}>
+                  수정하기
+                </button>
+                <button type="button" onClick={handleDelete} disabled={loading}>
+                  삭제하기
+                </button>
+              </DiaryButton>
+            )}
             <DiaryProfile isSummary={isSummary}>
               <Link to={`/home/${user.user_id}`}>
                 {user.profile_img_url ? (
@@ -149,17 +155,17 @@ const DiaryHeader: React.FC<DiaryItemProps> = ({
         <CustomAlert
           message="일기를 삭제하시겠습니까?"
           subMessage="삭제된 일기는 복구할 수 없습니다."
-          onConfirm={confirmDelete} // 확인을 누르면 삭제 수행
-          onCancel={cancelDelete} // 취소를 누르면 삭제 취소
-          showCancelButton={true} // "아니요" 버튼을 표시
+          onConfirm={confirmDelete}
+          onCancel={cancelDelete}
+          showCancelButton={true}
         />
       )}
       {isDeleteSuccessAlertVisible && (
         <CustomAlert
           message="일기가 삭제되었습니다."
           subMessage="새로운 일기를 작성 해보세요!"
-          onConfirm={handleCloseSuccessAlert} // 확인을 누르면 페이지 리로드
-          showCancelButton={false} // "아니요" 버튼을 표시하지 않음
+          onConfirm={handleCloseSuccessAlert}
+          showCancelButton={false}
         />
       )}
     </>
