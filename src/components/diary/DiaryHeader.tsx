@@ -4,8 +4,8 @@ import { BiChevronsLeft, BiChevronsRight } from "react-icons/bi";
 import { FaGlobe, FaLock, FaUserCircle, FaUserFriends } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { DiaryItemProps, DiarySummaryProps } from "./DiaryItem";
-import { useDeleteDiary } from "../../hooks/userDeleteDiary";
 import CustomAlert from "../customAlert/CustomAlert";
+import { useDeleteDiary } from "../../hooks/useDiary";
 
 const DiaryHeader: React.FC<DiaryItemProps> = ({
   diary,
