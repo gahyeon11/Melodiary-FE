@@ -4,6 +4,23 @@ import { IDiary } from '../../models/diary.model';
 
 type DiaryCardProps = Pick<IDiary, 'id' | 'created_at' | 'body'>;
 
+export const handleFormatDate = (created_at: string) => {
+  const date = new Date(created_at);
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long',
+  };
+  return new Intl.DateTimeFormat('ko-KR', options).format(date);
+};
+
+const handleScriptHtml = (htmlContent: string) => {
+  const div = document.createElement("div.content");
+  div.innerHTML = htmlContent;
+  return div.innerText;
+};
+
 const DiaryCard = ({
   id,
   created_at,
@@ -15,22 +32,6 @@ const DiaryCard = ({
     navigate(`/diary/${id}`);
   };
 
-  const handleFormatDate = (created_at: string) => {
-    const date = new Date(created_at);
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      weekday: 'long',
-    };
-    return new Intl.DateTimeFormat('ko-KR', options).format(date);
-  };
-
-  const handleScriptHtml = (htmlContent: string) => {
-    const div = document.createElement("div.content");
-    div.innerHTML = htmlContent;
-    return div.innerText;
-  };
 
   return (
     <DiaryCardWrapper
@@ -56,7 +57,7 @@ const DiaryCardWrapper = styled.div<{ bgColor: string }>`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 13px;
+  gap: 12px;
   width: 100%;
   height: 220px;
   padding: 24px 20px;
