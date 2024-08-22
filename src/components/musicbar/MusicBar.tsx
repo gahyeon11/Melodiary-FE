@@ -223,6 +223,10 @@ const TrackInfo = styled.div<{ isExpanded: boolean }>`
 const TrackText = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 100%;
+  overflow: hidden; /* 넘치는 텍스트를 숨깁니다 */
+  white-space: nowrap; /* 텍스트를 한 줄로 표시합니다 */
+  text-overflow: ellipsis;
 `;
 
 const TrackTitle = styled.div`
