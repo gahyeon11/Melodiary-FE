@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { BiChevronsLeft, BiChevronsRight } from "react-icons/bi";
 import { FaGlobe, FaLock, FaUserCircle, FaUserFriends } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { DiaryItemProps, DiarySummaryProps } from "./DiaryItem";
+import { useDeleteDiary } from "../../hooks/userDeleteDiary";
+import CustomAlert from "../customAlert/CustomAlert";
 
 const DiaryHeader: React.FC<DiaryItemProps> = ({
   diary,
@@ -12,6 +14,40 @@ const DiaryHeader: React.FC<DiaryItemProps> = ({
   toggleExpand,
   isExpanded,
 }) => {
+  const navigate = useNavigate();
+  const { deleteDiary, loading, error } = useDeleteDiary();
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [isDeleteSuccessAlertVisible, setIsDeleteSuccessAlertVisible] =
+    useState(false);
+
+  const handleEdit = () => {
+    navigate(`/writeDiary`, { state: { diary } });
+  };
+
+  const handleDelete = async () => {
+    setIsAlertVisible(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteDiary(diary.id);
+      setIsDeleteSuccessAlertVisible(true); 
+    } catch (err) {
+      console.error("삭제 오류:", err);
+    } finally {
+      setIsAlertVisible(false);
+    }
+  };
+
+  const cancelDelete = () => {
+    setIsAlertVisible(false);
+  };
+
+  const handleCloseSuccessAlert = () => {
+    setIsDeleteSuccessAlertVisible(false);
+    navigate(0); 
+  };
+
   const renderPrivacyIcon = () => {
     switch (diary.body.privacy) {
       case "mate":
@@ -26,84 +62,107 @@ const DiaryHeader: React.FC<DiaryItemProps> = ({
   };
 
   return (
-    <HeaderContainer isSummary={isSummary}>
-      <Title>
-        {isSummary ? (
-          <DiaryProfile isSummary={isSummary}>
-            <Link to={`/home/${user.user_id}`}>
-              {user.profile_img_url ? (
-                <ProfileImage
-                  isSummary={isSummary}
-                  src={user.profile_img_url}
-                  alt={user.nickname}
-                />
-              ) : (
-                <ProfileIconContainer isSummary={isSummary}>
-                  <DefaultProfileIcon isSummary={isSummary} />
-                </ProfileIconContainer>
-              )}
-            </Link>
-            <ProfileText>
-              <p>{user.nickname}</p>
-              <DiaryDate isSummary={isSummary}>{diary.created_at}</DiaryDate>
-            </ProfileText>
-          </DiaryProfile>
-        ) : (
-          <>
-            <PrivacyContainer>
-              {renderPrivacyIcon()}{" "}
-              <PrivacyText>
-                {diary.body.privacy === "mate"
-                  ? "친구공개"
-                  : diary.body.privacy === "public"
-                  ? "전체공개"
-                  : "나만보기"}
-              </PrivacyText>
-            </PrivacyContainer>
-            <DiaryDate isSummary={isSummary}>{diary.created_at}</DiaryDate>
-          </>
-        )}
+    <>
+      <HeaderContainer isSummary={isSummary}>
+        <Title>
+          {isSummary ? (
+            <DiaryProfile isSummary={isSummary}>
+              <Link to={`/home/${user.user_id}`}>
+                {user.profile_img_url ? (
+                  <ProfileImage
+                    isSummary={isSummary}
+                    src={user.profile_img_url}
+                    alt={user.nickname}
+                  />
+                ) : (
+                  <ProfileIconContainer isSummary={isSummary}>
+                    <DefaultProfileIcon isSummary={isSummary} />
+                  </ProfileIconContainer>
+                )}
+              </Link>
+              <ProfileText>
+                <p>{user.nickname}</p>
+                <DiaryDate isSummary={isSummary}>
+                  {diary.created_at?.slice(0, 10)}
+                </DiaryDate>
+              </ProfileText>
+            </DiaryProfile>
+          ) : (
+            <>
+              <PrivacyContainer>
+                {renderPrivacyIcon()}{" "}
+                <PrivacyText>
+                  {diary.body.privacy === "mate"
+                    ? "친구공개"
+                    : diary.body.privacy === "public"
+                    ? "전체공개"
+                    : "나만보기"}
+                </PrivacyText>
+              </PrivacyContainer>
+              <DiaryDate isSummary={isSummary}>
+                {diary.created_at?.slice(0, 10)}
+              </DiaryDate>
+            </>
+          )}
 
+          {!isSummary && (
+            <Right>
+              <DiaryTitle isSummary={isSummary}>{diary.body.title}</DiaryTitle>
+            </Right>
+          )}
+        </Title>
         {!isSummary && (
           <Right>
-            <DiaryTitle isSummary={isSummary}>{diary.body.title}</DiaryTitle>
+            <DiaryButton>
+              <button type="button" onClick={handleEdit}>
+                수정하기
+              </button>
+              <button type="button" onClick={handleDelete} disabled={loading}>
+                삭제하기
+              </button>
+            </DiaryButton>
+            <DiaryProfile isSummary={isSummary}>
+              <Link to={`/home/${user.user_id}`}>
+                {user.profile_img_url ? (
+                  <ProfileImage
+                    isSummary={isSummary}
+                    src={user.profile_img_url}
+                    alt={user.nickname}
+                  />
+                ) : (
+                  <ProfileIconContainer isSummary={isSummary}>
+                    <DefaultProfileIcon isSummary={isSummary} />
+                  </ProfileIconContainer>
+                )}
+              </Link>
+              <p>{user.nickname}</p>
+            </DiaryProfile>
           </Right>
         )}
-      </Title>
-      {!isSummary && (
-        <Right>
-          <DiaryButton>
-            <Link to="/writeDiary">
-              <button type="button">수정하기</button>
-            </Link>
-            <Link to="/writeDiary">
-              <button type="button">삭제하기</button>
-            </Link>
-          </DiaryButton>
-          <DiaryProfile isSummary={isSummary}>
-            <Link to={`/home/${user.user_id}`}>
-              {user.profile_img_url ? (
-                <ProfileImage
-                  isSummary={isSummary}
-                  src={user.profile_img_url}
-                  alt={user.nickname}
-                />
-              ) : (
-                <ProfileIconContainer isSummary={isSummary}>
-                  <DefaultProfileIcon isSummary={isSummary} />
-                </ProfileIconContainer>
-              )}
-            </Link>
-            <p>{user.nickname}</p>
-          </DiaryProfile>
-        </Right>
+        {!isSummary && toggleExpand && (
+          <ToggleButton onClick={toggleExpand}>
+            {isExpanded ? <BiChevronsRight /> : <BiChevronsLeft />}
+          </ToggleButton>
+        )}
+      </HeaderContainer>
+      {isAlertVisible && (
+        <CustomAlert
+          message="일기를 삭제하시겠습니까?"
+          subMessage="삭제된 일기는 복구할 수 없습니다."
+          onConfirm={confirmDelete} // 확인을 누르면 삭제 수행
+          onCancel={cancelDelete} // 취소를 누르면 삭제 취소
+          showCancelButton={true} // "아니요" 버튼을 표시
+        />
       )}
-      {!isSummary && toggleExpand && (
-        <ToggleButton onClick={toggleExpand}>
-          {isExpanded ? <BiChevronsRight /> : <BiChevronsLeft />}
-        </ToggleButton>
+      {isDeleteSuccessAlertVisible && (
+        <CustomAlert
+          message="일기가 삭제되었습니다."
+          subMessage="새로운 일기를 작성 해보세요!"
+          onConfirm={handleCloseSuccessAlert} // 확인을 누르면 페이지 리로드
+          showCancelButton={false} // "아니요" 버튼을 표시하지 않음
+        />
       )}
-    </HeaderContainer>
+    </>
   );
 };
 
