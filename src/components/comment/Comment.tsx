@@ -79,13 +79,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     return () => clearInterval(intervalId);
   }, [comments.length, diaryId, setCommentCount]);
 
-  const handleAddComment = async () => {
+  const handleAddComment = async () => {       //저장 훅 호출
     if (editMode && editingCommentId !== null) {
-      await editComment(editingCommentId, newComment);
+      await editComment(editingCommentId, newComment);   //수정
       setEditingCommentId(null);
       setEditMode(false);
     } else {
-      await addComment(newComment, mentionedUser?.id);
+      await addComment(newComment, mentionedUser?.id);   //저장
     }
     setNewComment("");
     setMentionedUser(null);
@@ -93,7 +93,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
   const startEditing = (comment_id: number, content: string) => {
     setEditingCommentId(comment_id);
-    setNewComment(content);
+    setNewComment(content);  
     setEditMode(true);
   };
 
