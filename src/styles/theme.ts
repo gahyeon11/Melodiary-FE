@@ -56,7 +56,7 @@ export interface Theme {
     [key in ButtonSize]: {
       padding: string;
       fontSize: string;
-      fontWeight: string;
+      fontWeight: number;
       borderRadius: string;
     };
   };
@@ -154,20 +154,20 @@ export const theme: Theme = {
     short: {
       padding: "7px 13px",
       fontSize: "12px",
-      fontWeight: "regular",
+      fontWeight: 400,
       borderRadius: "6px",
     },
     medium: {
       padding: "8px 17px",
       fontSize: "14px",
-      fontWeight: "regular",
-      borderRadius: "10px",
+      fontWeight: 400,
+      borderRadius: "8px",
     },
     long: {
       padding: "13px 150px",
       fontSize: "16px",
-      fontWeight: "bold",
-      borderRadius: "14px",
+      fontWeight: 600,
+      borderRadius: "12px",
     },
   },
   buttonSchema: {

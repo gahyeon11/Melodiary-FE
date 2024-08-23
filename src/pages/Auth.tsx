@@ -12,6 +12,28 @@ import Modal from '../components/modal/signupModal';
 import { useAuth } from '../context/AuthContext';
 import { useUserStore } from '../store/authStore';
 
+
+const NaverConvertURL = (url : string) => {
+  // 'state=' 이후부터 문자열 끝까지 추출
+  const stateParamStart = url.indexOf('state=') + 6;
+  const stateParam = url.slice(stateParamStart);
+  // URL 인코딩을 디코딩
+  const decodedState = decodeURIComponent(stateParam);
+
+  // HTML 엔티티(&quot;)를 실제 따옴표(")로 변환
+  const correctedState = decodedState.replace(/&quot;/g, '"');
+  // JSON 파싱
+  try {
+    const parsedState = JSON.parse(correctedState);
+    return parsedState;
+  } catch (error) {
+    console.error('JSON 파싱 실패:', error);
+    return undefined;
+  }
+};
+
+
+
 const Auth = () => {
   const navigate = useNavigate();
   const { login: setAuthToken, completeSignup } = useAuth();
@@ -21,17 +43,29 @@ const Auth = () => {
   const [modalMessage, setModalMessage] = useState<string | null>(null);
   const [action, setAction] = useState<string | null>(null);
   const setUserId = useUserStore((state) => state.setUserId);
-  const {isAuthenticated} = useAuth();
   useEffect(() => {
     const handleOAuth = async () => {
+      let authData: ISignup;
       if (stateParam && code) {
-        const { type, action } = JSON.parse(stateParam);
-        setAction(action);
-        const authData: ISignup = {
-          service_provider: type,
-          authorization_code: code,
-        };
-
+        if(stateParam === '{'){
+          const currentUrl = window.location.href;
+          const NaverParam = NaverConvertURL(String(currentUrl));
+          const { type, action } = NaverParam;
+          setAction(action);
+          authData = {
+            service_provider: type,
+            authorization_code: code,
+          };
+        }else{
+          const { type, action } = JSON.parse(stateParam);
+          setAction(action);
+          authData = {
+            service_provider: type,
+            authorization_code: code,
+          };
+          console.log(authData);
+        }
+        
         try {
           let response;
            if (action === 'signup') {
@@ -69,7 +103,7 @@ const Auth = () => {
     };
 
     handleOAuth();
-  }, [navigate, stateParam, code, setUserId, setAuthToken, completeSignup]);
+  }, [navigate, stateParam, code, setUserId, setAuthToken, completeSignup, action, urlParams]);
 
   
   const closeModal = () => {

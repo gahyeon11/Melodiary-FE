@@ -85,12 +85,12 @@ const WriteDiary = () => {
   let long = location?.longitude;
   // console.log("위도 : ", lat);
   // console.log("경도 : ", long);
-
+  const access_token = localStorage.getItem("access_token");
   useEffect(() => {
     if(lat && long !== undefined) {
       fetch(`https://api.melodiary.site/api/weather?latitude=${lat}&longitude=${long}`, {
         headers: {
-          'Authorization': `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`
+          'Authorization': `Bearer ${access_token}`
         }
       })
       .then(res => res.json())
@@ -105,7 +105,7 @@ const WriteDiary = () => {
     } else {
       fetch(`https://api.melodiary.site/api/weather?latitude=37.564214&longitude=127.001699`, {
         headers: {
-          'Authorization': `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`
+          'Authorization': `Bearer ${access_token}`
         }
       })
       .then(res => res.json())
