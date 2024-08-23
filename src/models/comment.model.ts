@@ -1,4 +1,5 @@
 export interface IComment {
+  comment_id: number;
   writer_user_profile: {
     user_id: number;
     nickname: string;
@@ -6,7 +7,7 @@ export interface IComment {
   };
   diary_id: number;
   mentioned_user_profile: {
-    user_id: number;
+    user_id: number|null;
     nickname: string;
     profile_img_url: string|null;
   };
