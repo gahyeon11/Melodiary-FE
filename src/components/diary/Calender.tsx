@@ -41,8 +41,9 @@ const Calendar = ({ onFetchData, onEmojiClick }: CalenderProps) => {
           if (response && response.data) {
             const formattedEmojis: Emojis = {};
             response.data.calendar.forEach((entry: { date: string; emoji: string, diary_id: number }) => {
-              const day = new Date(entry.date).getDate();
-              formattedEmojis[day] = (
+              const day = new Date(entry.date);
+              const correctedDay = new Date(day.getTime() + day.getTimezoneOffset() * 60000).getDate();
+              formattedEmojis[correctedDay] = (
                 <span onClick={() => onEmojiClick(entry.diary_id)}>{entry.emoji}</span>
               );
             });
