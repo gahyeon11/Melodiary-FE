@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import styled from 'styled-components';
-import Background from "../assets/images/mypage/mypage-bg.jpg";
 import { FiCamera, FiBook, FiActivity, FiMusic, FiSettings } from "react-icons/fi";
 import { motion } from 'framer-motion';
 import AllDiaries from '../components/mypage/AllDiaries';
@@ -8,7 +7,8 @@ import MoodGraph from '../components/mypage/MoodGraph';
 import Playlist from '../components/mypage/Playlist';
 import Settings from '../components/mypage/Settings';
 import { useMyPage } from '../hooks/useMyPage';
-
+import { uploadProfileImage } from '../api/uploadProfileImage';
+import { FaUserCircle } from "react-icons/fa";
 const MyPage = () => {
   const tabs = [
     { 
@@ -35,35 +35,71 @@ const MyPage = () => {
 
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
   const { userProfile } = useMyPage();
-  const [selectedImage, setSelectedImage] = useState(userProfile?.profile_img_url || Background);
+  const [selectedImage, setSelectedImage] = useState(userProfile?.profile_img_url || '');
+  const [selectedBackground, setSelectedBackground] = useState(userProfile?.profile_background_img_url || '');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const backgroundInputRef = useRef<HTMLInputElement>(null);
 
   const handleCameraClick = () => {
     fileInputRef.current!.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBackgroundClick = () => {
+    if (backgroundInputRef.current) {
+      backgroundInputRef.current.click();
+    }
+  };
+
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>, isBackground: boolean = false) => {
     const file = event.target.files?.[0];
-    console.log(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        console.log(reader.result);
-        setSelectedImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (file && userProfile) {
+      try {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (isBackground) {
+            setSelectedBackground(reader.result as string); // 로컬 미리보기 - 배경 이미지
+          } else {
+            setSelectedImage(reader.result as string); // 로컬 미리보기 - 프로필 이미지
+          }
+        };
+        reader.readAsDataURL(file);
+
+        const filename = isBackground ? `${userProfile.id}/profile/background_image.png` : `${userProfile.id}/profile/profile_image.png`;
+        const imageDetails = [{ file: file, filename: filename }];
+        //const uploadedImageUrls = await uploadProfileImage(imageDetails);
+
+        // console.log('Uploaded image URLs:', uploadedImageUrls);
+
+        // // 서버에서 받은 첫 번째 이미지 URL을 배경 이미지 또는 프로필 이미지로 설정
+        // if (uploadedImageUrls.length > 0) {
+        //   if (isBackground) {
+        //     setSelectedBackground(uploadedImageUrls[0]);
+        //   } else {
+        //     setSelectedImage(uploadedImageUrls[0]);
+        //   }
+        // }
+      } catch (error) {
+        console.error('Error uploading the image:', error);
+      } 
     }
   };
 
   return (
     <MyPageWrapper>
-      <BackgroundImg>
-        {/* 배경사진 변경 */}
-        <div className="background-img"></div>
-        <button className="change-btn">
+      <BackgroundImg >
+      <div className="background-img" style={{ backgroundImage: `url(${selectedBackground})` }}></div>
+        <button className="change-btn" onClick={handleBackgroundClick} >
           <FiCamera />
           <span>배경 변경</span>
         </button>
+        <input
+          type="file"
+          ref={backgroundInputRef}
+          style={{ display: 'none' }}
+          accept="image/*"
+          onChange={(event) => handleFileChange(event, true)}
+        />
       </BackgroundImg>
       <MyPageContents>
         <UserInfo>
@@ -71,7 +107,11 @@ const MyPage = () => {
           <InfoBox>
             {/* 프로필사진 변경 */}
             <ProfileImg>
+            {selectedImage ? (
               <div className="image" style={{ backgroundImage: `url(${selectedImage})` }}></div>
+            ) : (
+              <div className="image"><DefaultProfileIcon size={174} /></div>  
+            )}
               <div className="camera-btn" onClick={handleCameraClick}>
                 <FiCamera />
               </div>
@@ -80,7 +120,7 @@ const MyPage = () => {
                 ref={fileInputRef}
                 style={{ display: 'none' }}
                 accept="image/*"
-                onChange={handleFileChange}
+                onChange={(event) => handleFileChange(event, false)} 
               />
             </ProfileImg>
             <div className="nickname">{userProfile?.nickname}</div>
@@ -137,6 +177,11 @@ const MyPageWrapper = styled.div`
   height: 100%;
   overflow: hidden;
 `;
+const DefaultProfileIcon = styled(FaUserCircle)`
+  width: 174px;
+  height: 174px;
+  color: ${({ theme }) => theme.color.gray999};
+`;
 
 const BackgroundImg = styled.div`
   position: relative;
@@ -145,10 +190,9 @@ const BackgroundImg = styled.div`
   .background-img {
     width: 100%;
     height: 100%;
-    /* 배경사진 미설정 시 */
     background-color: ${({ theme }) => theme.color.grayEEE};
     /* 배경사진 설정 시 */
-    background-image: url(${Background});
+    
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -261,7 +305,6 @@ const ProfileImg = styled.div`
     height: 100%;
     border-radius: 50%;
     background-color: ${({ theme }) => theme.color.white};
-    background-image: url(${Background});
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
