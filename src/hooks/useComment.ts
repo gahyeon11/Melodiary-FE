@@ -16,7 +16,9 @@ export const useComments = (diaryId: number) => {
     const loadComments = async () => {
       try {
         setLoading(true);
-        const data = await fetchComments(diaryId); // 댓글 가져오기
+        let data = await fetchComments(diaryId); 
+        // 오래된 순서로 정렬
+        data = data.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
         setComments(data);
       } catch (error) {
         setError("Failed to load comments.");
@@ -28,37 +30,43 @@ export const useComments = (diaryId: number) => {
     loadComments();
   }, [diaryId]);
 
-  const addComment = async (content: string, mentioned_user_id?: number) => {
+  const addComment = async (
+    content: string,
+    mentioned_user_id?: number | null
+  ) => {
     try {
-      const newComment = await postComment(
-        diaryId,
-        content,
-        mentioned_user_id || null
-      );
-      setComments((prevComments) => [...prevComments, newComment]);
+      const newComment = await postComment(diaryId, content, mentioned_user_id);
+      setComments((prevComments) => {
+        const updatedComments = [...prevComments, newComment];
+        return updatedComments.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+      });
     } catch (error) {
       setError("Failed to add comment.");
     }
   };
 
-  const editComment = async (id: number, content: string) => {
+  const editComment = async (comment_id: number, content: string) => {
     try {
-      const updatedComment = await updateComment(diaryId, id, content);
+      const updatedComment = await updateComment(diaryId, comment_id, content);
       setComments((prevComments) =>
-        prevComments.map((comment) =>
-          comment.writer_user_profile.user_id === id ? updatedComment : comment
-        )
+        prevComments
+          .map((comment) =>
+            comment.comment_id === comment_id ? updatedComment : comment
+          )
+          .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
       );
     } catch (error) {
       setError("Failed to edit comment.");
     }
   };
 
-  const removeComment = async (id: number) => {
+  const removeComment = async (comment_id: number) => {
     try {
-      await deleteComment(diaryId, id);
+      await deleteComment(diaryId, comment_id);
       setComments((prevComments) =>
-        prevComments.filter((comment) => comment.writer_user_profile.user_id !== id)
+        prevComments
+          .filter((comment) => comment.comment_id !== comment_id)
+          .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
       );
     } catch (error) {
       setError("Failed to delete comment.");
