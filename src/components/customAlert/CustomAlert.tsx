@@ -1,21 +1,17 @@
 import React from "react";
 import styled from "styled-components";
+import { FiAlertCircle } from "react-icons/fi";
 import { IoIosAlert } from "react-icons/io";
-
 interface CustomAlertProps {
   message: string;
   subMessage: string;
-  onConfirm: () => void;
-  onCancel?: () => void; 
-  showCancelButton?: boolean;
+  onClose: () => void;
 }
 
 const CustomAlert: React.FC<CustomAlertProps> = ({
   message,
+  onClose,
   subMessage,
-  onConfirm,
-  onCancel,
-  showCancelButton = false,
 }) => {
   return (
     <ModalBackground>
@@ -25,12 +21,7 @@ const CustomAlert: React.FC<CustomAlertProps> = ({
         </IconWrapper>
         <ModalMessage>{message}</ModalMessage>
         <ModalSubMessage>{subMessage}</ModalSubMessage>
-        <ButtonContainer>
-          <ModalButton onClick={onConfirm}>확인</ModalButton>
-          {showCancelButton && onCancel && (
-            <ModalButton onClick={onCancel} cancel>취소</ModalButton>
-          )}
-        </ButtonContainer>
+        <ModalButton onClick={onClose}>확인</ModalButton>
       </ModalContainer>
     </ModalBackground>
   );
@@ -64,7 +55,7 @@ const IconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${({ theme }) => theme.color.primary};
+  color: ${({ theme }) => theme.color.primary};;
   margin-bottom: 10px;
 `;
 
@@ -80,16 +71,9 @@ const ModalSubMessage = styled.p`
   margin-bottom: 20px;
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-`;
-
-const ModalButton = styled.button<{ cancel?: boolean }>`
-  width: 70px;
-  height: 35px;
-  background-color: ${({ theme, cancel }) => (cancel ? theme.color.primary : theme.color.primary)};
+const ModalButton = styled.button`
+  padding: 10px 40px;
+  background-color: ${({ theme }) => theme.color.primary};
   color: white;
   border: none;
   border-radius: 5px;
@@ -97,6 +81,6 @@ const ModalButton = styled.button<{ cancel?: boolean }>`
   font-size: 14px;
 
   &:hover {
-    background-color: ${({ theme, cancel }) => (cancel ? theme.color.primaryHover : theme.color.primaryHover)};
+    background-color: ${({ theme }) => theme.color.primaryHover};
   }
 `;

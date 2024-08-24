@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { fetchWriteDiary, fetchDiaryById, fetchPutDiary, fetchDeleteDiary } from "../api/diary.api";
+import { fetchWriteDiary, fetchDiaryById } from "../api/diary.api";
 import { IDiary } from "../models/diary.model";
-import { useNavigate } from "react-router-dom";
 
 export const useDiaries = () => {
   const [diaryBody, setDiaryBody] = useState<IDiary["body"] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [wirteDiaryErr, setWriteDiaryErr] = useState<string | null>(null);
+
   // 작성한 일기 저장
   const saveDiary = async (data: IDiary["body"]) => {
     setLoading(true);
@@ -21,12 +21,7 @@ export const useDiaries = () => {
     }
   };
   
-  return {
-    diaryBody,
-    saveDiary,
-    loading,
-    wirteDiaryErr,
-  };
+  return { diaryBody, saveDiary, loading, wirteDiaryErr };
 };
 
 export const useDiary = (diaryId: number) => {
@@ -51,42 +46,4 @@ export const useDiary = (diaryId: number) => {
   }, [diaryId]);
 
   return { diary, loading, error }; 
-};
-
-
-export const useUpdateDiary = () => {
-  const [error, setError] = useState<string | null>(null);
-  const [updatedDiary, setUpdatedDiary] = useState<IDiary | null>(null);
-  
-  const updateDiary = async (diaryId: number, data: IDiary["body"]) => {
-    setError(null);
-    try {
-      const response = await fetchPutDiary(diaryId, data);
-      setUpdatedDiary(response);
-    } catch (err) {
-      setError("일기 수정에 실패했습니다.");
-    }
-  };
-
-  return { updateDiary, error, updatedDiary };
-};
-
-
-export const useDeleteDiary = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const deleteDiary = async (diaryId: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      await fetchDeleteDiary(diaryId);
-    } catch (err) {
-      setError("일기 삭제에 실패했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { deleteDiary, loading, error };
 };
