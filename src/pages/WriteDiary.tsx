@@ -1,18 +1,18 @@
-import styled from 'styled-components';
-import DiaryEditor from '../components/diary/DiaryEditor';
+import styled from "styled-components";
+import DiaryEditor from "../components/diary/DiaryEditor";
 import { FiPlusCircle, FiUser, FiLock, FiSearch, FiSend } from "react-icons/fi";
 import { VscSymbolColor } from "react-icons/vsc";
 import { RiGlobalLine } from "react-icons/ri";
-import Button from '../components/button/Button';
-import { useEffect, useRef, useState } from 'react';
-import EmojiPicker from 'emoji-picker-react';
-import DiaryPreview from '../components/diary/DiaryPreview';
-import { colors, moods, privacies } from '../constants/writeDiary';
-import { useGeoLocation } from '../hooks/useGeoLocation';
-import { useDiaries } from '../hooks/useDiary';
-import { IDiary } from '../models/diary.model';
-import { useNavigate } from 'react-router-dom';
-import { useWeather } from '../hooks/useWeather';
+import Button from "../components/button/Button";
+import { useEffect, useRef, useState } from "react";
+import EmojiPicker from "emoji-picker-react";
+import DiaryPreview from "../components/diary/DiaryPreview";
+import { colors, moods, privacies } from "../constants/writeDiary";
+import { useGeoLocation } from "../hooks/useGeoLocation";
+import { useDiaries, useUpdateDiary } from "../hooks/useDiary";
+import { IDiary } from "../models/diary.model";
+import { useLocation, useNavigate } from "react-router-dom";
+import CustomAlert from "../components/customAlert/CustomAlert";
 
 const geolocationOptions = {
   enableHighAccuracy: true,
@@ -34,6 +34,11 @@ export const getPrivacyIcon = (privacyName: string) => {
 };
 
 const WriteDiary = () => {
+  const routerLocation = useLocation();
+  const diaryToEdit = routerLocation.state?.diary;
+  const navigate = useNavigate();
+  const user_id = localStorage.getItem("user_id");
+
   // 상태 변수 선언
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -49,10 +54,33 @@ const WriteDiary = () => {
   const [weatherLocation, setWeatherLocation] = useState<string>("Seoul");
   const [weatherTemp, setWeatherTemp] = useState<number>(0);
 
-  const navigate = useNavigate();
+  // 다이어리 수정 시 초기값
+  useEffect(() => {
+    if (diaryToEdit) {
+      setTitle(diaryToEdit.body.title);
+      setContent(diaryToEdit.body.content);
+      setSelectedEmoji(diaryToEdit.body.emoji);
+      setSelectedBgColor(diaryToEdit.body.background_color);
+      setSelectedMood(diaryToEdit.body.mood);
+      setSelectedPrivacy(diaryToEdit.body.privacy);
+      if (diaryToEdit.body.music) {
+        setMusicTitle(diaryToEdit.body.music.title);
+        setMusicArtist(diaryToEdit.body.music.artist);
+        setMusicUrl(diaryToEdit.body.music.music_url);
+      }
+      if (diaryToEdit.body.weather) {
+        setWeatherIcon(diaryToEdit.body.weather.icon);
+        setWeatherLocation(diaryToEdit.body.weather.location);
+        setWeatherTemp(diaryToEdit.body.weather.avg_temperature);
+      }
+    }
+  }, [diaryToEdit]);
 
-  const { saveDiary, loading } = useDiaries();
-  // const { weatherIcon, weatherLocation, weatherTemp } = useWeather();
+  const { saveDiary, loading, wirteDiaryErr } = useDiaries();
+  const {
+    updateDiary,
+    error: updateError,
+  } = useUpdateDiary();
 
   // 일기 데이터 작성 및 제출
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,7 +92,8 @@ const WriteDiary = () => {
       img_urls: [], // 예시로 비워둠. 이미지 URL을 관리할 필요가 있음
       mood: selectedMood || "😍",
       emoji: selectedEmoji || "",
-      privacy: (selectedPrivacy as "public" | "mate" | "private") || privacies[2],
+      privacy:
+        (selectedPrivacy as "public" | "mate" | "private") || privacies[2],
       music: {
         title: musicTitle || "",
         artist: musicArtist || "",
@@ -77,7 +106,7 @@ const WriteDiary = () => {
       },
       background_color: selectedBgColor || "default",
     };
-    
+
     // 모든 필드가 작성되었는지 확인하는 함수
     const isDiaryDataValid = Object.values(diaryData).every((value) => {
       if (typeof value === 'object' && value !== null) {
@@ -86,20 +115,40 @@ const WriteDiary = () => {
       return value !== "" && value !== null && value !== undefined;
     });
 
-    if (isDiaryDataValid) {
-      await saveDiary(diaryData);
-      window.alert("일기가 저장되었습니다.");
-      navigate("/home");
-    } else {
-      window.alert("모든 항목을 작성해주세요.");
+    try {
+      if (diaryToEdit) {
+        // 다이어리 수정의 경우
+        await updateDiary(diaryToEdit.id, diaryData);
+      } else {
+        // 다이어리 저장의 경우
+        if (isDiaryDataValid) {
+          await saveDiary(diaryData);
+          window.alert("일기가 저장되었습니다.");
+          navigate("/home");
+        } else {
+          window.alert("모든 항목을 작성해주세요.");
+        }
+      }
+    } catch (error) {
+      console.error("일기 저장 중 오류 발생:", error);
     }
   };
 
   // 날짜, 요일
-  const week = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+  const week = [
+    "일요일",
+    "월요일",
+    "화요일",
+    "수요일",
+    "목요일",
+    "금요일",
+    "토요일",
+  ];
   const today = new Date();
   const todayDay = week[today.getDay()];
-  const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일 ${todayDay}`;
+  const formattedDate = `${today.getFullYear()}년 ${
+    today.getMonth() + 1
+  }월 ${today.getDate()}일 ${todayDay}`;
 
   // 날씨
   const { location, error } = useGeoLocation(geolocationOptions);
@@ -107,41 +156,47 @@ const WriteDiary = () => {
   let long = location?.longitude;
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('access_token');
-
-    if(lat && long !== undefined) {
-      fetch(`https://api.melodiary.site/api/weather?latitude=${lat}&longitude=${long}`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      })
-      .then(res => res.json())
-      .then((data) => {
-        setWeatherIcon(data.icon);
-        setWeatherLocation(data.location);
-        setWeatherTemp(data.avg_temperature);
-      })
-      .catch((err) => {
-        console.log("날씨 정보 불러오기 에러 : ", err);
-      })
-    } else {
-      // 위치 불러오기 실패한 경우 서울로 지정
-      fetch(`https://api.melodiary.site/api/weather?latitude=37.564214&longitude=127.001699`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      })
-      .then(res => res.json())
-      .then((data) => {
-        setWeatherIcon(data.icon);
-        setWeatherLocation("Seoul");
-        setWeatherTemp(data.avg_temperature);
-      })
-      .catch((err) => {
-        console.log("날씨 정보 불러오기 에러 : ", err);
-      })
+    //수정일 경우 호출 X
+    if (!diaryToEdit) {
+      if (lat && long !== undefined) {
+        fetch(
+          `https://api.melodiary.site/api/weather?latitude=${lat}&longitude=${long}`,
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
+            },
+          }
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            setWeatherIcon(data.icon);
+            setWeatherLocation(data.location);
+            setWeatherTemp(data.avg_temperature);
+          })
+          .catch((err) => {
+            console.log("날씨 정보 불러오기 에러 : ", err);
+          });
+      } else {
+        fetch(
+          `https://api.melodiary.site/api/weather?latitude=37.564214&longitude=127.001699`,
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.REACT_APP_ACCESS_TOKEN}`,
+            },
+          }
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            setWeatherIcon(data.icon);
+            setWeatherLocation("Seoul");
+            setWeatherTemp(data.avg_temperature);
+          })
+          .catch((err) => {
+            console.log("날씨 정보 불러오기 에러 : ", err);
+          });
+      }
     }
-  }, [weatherLocation]);
+  }, [lat, long, diaryToEdit]);
 
   // 드롭다운 여부 (오늘의 이모지, 배경 색상, 기분, 공개 범위, 미리보기)
   const [isEmojiDropdown, setIsEmojiDropdown] = useState(false);
@@ -190,27 +245,42 @@ const WriteDiary = () => {
 
   // 외부 클릭 시 드롭다운 닫힘 (오늘의 이모지, 배경 색상, 기분, 공개 범위, 미리보기)
   const handleClickEmojiOutside = (e: MouseEvent) => {
-    if(emojiDropdownRef.current && !emojiDropdownRef.current.contains(e.target as Node)) {
+    if (
+      emojiDropdownRef.current &&
+      !emojiDropdownRef.current.contains(e.target as Node)
+    ) {
       setIsEmojiDropdown(false);
     }
   };
   const handleClickBgColorOutside = (e: MouseEvent) => {
-    if(bgColorDropdownRef.current && !bgColorDropdownRef.current.contains(e.target as Node)) {
+    if (
+      bgColorDropdownRef.current &&
+      !bgColorDropdownRef.current.contains(e.target as Node)
+    ) {
       setIsBgColorDropdown(false);
     }
   };
   const handleClickMoodOutside = (e: MouseEvent) => {
-    if(moodDropdownRef.current && !moodDropdownRef.current.contains(e.target as Node)) {
+    if (
+      moodDropdownRef.current &&
+      !moodDropdownRef.current.contains(e.target as Node)
+    ) {
       setIsMoodDropdown(false);
     }
   };
   const handleClickPrivacyOutside = (e: MouseEvent) => {
-    if(privacyDropdownRef.current && !privacyDropdownRef.current.contains(e.target as Node)) {
+    if (
+      privacyDropdownRef.current &&
+      !privacyDropdownRef.current.contains(e.target as Node)
+    ) {
       setIsPrivacyDropdown(false);
     }
   };
   const handleClickPreivewOutside = (e: MouseEvent) => {
-    if(previewOpenRef.current && !previewOpenRef.current.contains(e.target as Node)) {
+    if (
+      previewOpenRef.current &&
+      !previewOpenRef.current.contains(e.target as Node)
+    ) {
       setIsPreviewOpen(false);
     }
   };
@@ -252,9 +322,7 @@ const WriteDiary = () => {
       )}
       <WriteDiaryContents>
         {/* 아이콘 추가, 배경 색상 추가 */}
-        <div className="today-emoji">
-          {selectedEmoji}
-        </div>
+        <div className="today-emoji">{selectedEmoji}</div>
         <IconBg>
           <div className="icon" ref={emojiDropdownRef}>
             <div onClick={toogleEmojiDropdown}>
@@ -268,10 +336,10 @@ const WriteDiary = () => {
                   previewConfig={{
                     showPreview: true,
                     defaultEmoji: "1f92a",
-                    defaultCaption: "Emoji"
+                    defaultCaption: "Emoji",
                   }}
                   onEmojiClick={(e) => {
-                    setSelectedEmoji(e.emoji)
+                    setSelectedEmoji(e.emoji);
                   }}
                 />
               </div>
@@ -299,6 +367,7 @@ const WriteDiary = () => {
         <Title
           type="text"
           placeholder="제목"
+          value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
         {/* 오늘의 기분 */}
@@ -372,8 +441,8 @@ const WriteDiary = () => {
             {isPrivacyDropdown && (
               <ul className="privacy-list">
                 {privacies.map((privacy) => (
-                  <li 
-                    key={privacy} 
+                  <li
+                    key={privacy}
                     onClick={() => selectPrivacyOption(privacy)}
                   >
                     {getPrivacyIcon(privacy)}
@@ -384,25 +453,22 @@ const WriteDiary = () => {
           </div>
         </Section>
         {/* 일기 작성 에디터 */}
-        <DiaryEditor
-          content={content}
-          onChange={setContent}
-        />
+        <DiaryEditor content={content} onChange={setContent} />
         {/* 미리보기, 등록하기 BTN */}
         <SubmitBox ref={previewOpenRef}>
           <Button
-            size="short" 
+            size="short"
             schema="gray"
             type="button"
             onClick={tooglePreviewOpen}
           >
             <FiSearch size={16} /> 미리보기
           </Button>
-          <Button 
-            size="short" 
+          <Button
+            size="short"
             schema="gray"
-            onClick={handleSubmit} // 제출 버튼에 이벤트 핸들러 연결
-            disabled={loading} // 로딩 중에는 버튼 비활성화
+            onClick={handleSubmit} 
+            // disabled={loading}
           >
             <FiSend size={16} />
             {loading ? "저장 중..." : "등록하기"}
@@ -411,7 +477,7 @@ const WriteDiary = () => {
         {error && <p>{error}</p>} {/* 오류 메시지 표시 */}
       </WriteDiaryContents>
     </WriteDiaryWrapper>
-  )
+  );
 };
 
 const WriteDiaryWrapper = styled.div<{ bgColor: string }>`
@@ -421,7 +487,8 @@ const WriteDiaryWrapper = styled.div<{ bgColor: string }>`
   width: 100%;
   height: 100%;
   padding: 80px 10%;
-  background-color: ${({ theme, bgColor }) => theme.diaryColor[bgColor].background};
+  background-color: ${({ theme, bgColor }) =>
+    theme.diaryColor[bgColor].background};
   position: relative;
 
   &:-webkit-scrollbar {
@@ -438,7 +505,8 @@ const WriteDiaryContents = styled.form`
   color: ${({ theme }) => theme.color.gray777};
   font-size: ${({ theme }) => theme.text.text2};
 
-  input, select {
+  input,
+  select {
     background-color: transparent;
     border: none;
     outline: none;
@@ -506,7 +574,7 @@ const IconBg = styled.div`
   /* 일기 배경 색상 */
   .bgColor {
     position: relative;
-    
+
     .bgColor-list {
       position: absolute;
       top: 28px;
@@ -516,11 +584,11 @@ const IconBg = styled.div`
       gap: 8px;
       padding: 12px 16px;
       background-color: ${({ theme }) => theme.color.white};
-      border: 1px solid #E7E7E7;
+      border: 1px solid #e7e7e7;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       z-index: 999;
-  
+
       li {
         width: 24px;
         height: 24px;
@@ -595,7 +663,7 @@ const Section = styled.div`
       gap: 16px;
       padding: 10px 14px;
       background-color: ${({ theme }) => theme.color.white};
-      border: 1px solid #E7E7E7;
+      border: 1px solid #e7e7e7;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       z-index: 999;
@@ -655,7 +723,7 @@ const Section = styled.div`
       width: 124px;
       padding: 12px 16px;
       background-color: ${({ theme }) => theme.color.white};
-      border: 1px solid #E7E7E7;
+      border: 1px solid #e7e7e7;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       z-index: 999;
@@ -668,7 +736,7 @@ const Section = styled.div`
         gap: 6px;
         cursor: pointer;
         transition: all 0.1s ease-in-out;
-        
+
         &:hover {
           color: ${({ theme }) => theme.color.grayblack};
           transition: all 0.1s ease-in-out;
