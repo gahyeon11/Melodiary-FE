@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { ApexOptions } from 'apexcharts';
 import ReactApexChart from 'react-apexcharts';
 import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
 import { useMyPage } from '../../hooks/useMyPage'; 
 import { moods } from '../../constants/writeDiary';
+
+dayjs.locale('ko');
 
 const MoodGraph = () => {
   const { mood, fetchMoodGraphData } = useMyPage();
@@ -67,7 +71,7 @@ const MoodGraph = () => {
     setWeek(weekNumber);
   }, []);
 
-  const options = {
+  const options: ApexOptions = {
     chart: {
       id: 'mood-graph',
       toolbar: {
@@ -78,7 +82,7 @@ const MoodGraph = () => {
       },
     },
     xaxis: {
-      categories: datesArray.map(date => dayjs(date).format('M.D(ddd)')),
+      categories: datesArray.map(date => dayjs(date).format('M.D (ddd)')),
     },
     yaxis: {
       min: 0,
@@ -89,7 +93,8 @@ const MoodGraph = () => {
           return value === 0 ? '' : moods[moods.length - value];
         },
         style: {
-          fontSize: '20px',
+          fontSize: '22px',
+          fontFamily: 'Arial, sans-serif', 
         },
       },
     },
@@ -102,7 +107,7 @@ const MoodGraph = () => {
   };
 
   const series = [{
-    name: 'Mood',
+    name: '기분',
     data: seriesData,
   }];
 
@@ -110,7 +115,7 @@ const MoodGraph = () => {
     <MoodGraphWrapper>
       <SelectorWrapper>
         <select value={year} onChange={(e) => setYear(Number(e.target.value))}>
-          {[year-2, year-1, year, year+1, year+2].map(yearOption => (
+          {[year-2, year-1, year].map(yearOption => (
             <option key={yearOption} value={yearOption}>{yearOption}년</option>
           ))}
         </select>
@@ -146,7 +151,7 @@ const MoodGraphWrapper = styled.div`
   /* height: 100%; */
   height: 433px;
   padding: 20px 40px;
-  border: 1px solid ${({ theme }) => theme.color.gray777};
+  border: 1px solid ${({ theme }) => theme.color.gray999};
   border-radius: 12px;
 `;
 
