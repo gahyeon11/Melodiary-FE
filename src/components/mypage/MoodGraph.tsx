@@ -11,6 +11,10 @@ dayjs.locale('ko');
 
 const MoodGraph = () => {
   const { mood, fetchMoodGraphData } = useMyPage();
+  
+  const years = new Date().getFullYear();
+  const yearsArray = [years-2, years-1, years];
+
   const [year, setYear] = useState<number>(dayjs().year());
   const [month, setMonth] = useState<number>(dayjs().month() + 1);
   const [week, setWeek] = useState<number>(1);
@@ -115,7 +119,7 @@ const MoodGraph = () => {
     <MoodGraphWrapper>
       <SelectorWrapper>
         <select value={year} onChange={(e) => setYear(Number(e.target.value))}>
-          {[year-2, year-1, year].map(yearOption => (
+          {yearsArray.map(yearOption => (
             <option key={yearOption} value={yearOption}>{yearOption}년</option>
           ))}
         </select>
