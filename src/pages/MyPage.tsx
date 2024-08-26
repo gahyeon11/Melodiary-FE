@@ -9,6 +9,7 @@ import Settings from '../components/mypage/Settings';
 import { useMyPage } from '../hooks/useMyPage';
 import { uploadProfileImage } from '../api/uploadProfileImage';
 import { FaUserCircle } from "react-icons/fa";
+import { useUserData } from '../hooks/useUserData';
 const MyPage = () => {
   const tabs = [
     { 
@@ -35,8 +36,9 @@ const MyPage = () => {
 
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
   const { userProfile } = useMyPage();
-  const [selectedImage, setSelectedImage] = useState(userProfile?.profile_img_url || '');
-  const [selectedBackground, setSelectedBackground] = useState(userProfile?.profile_background_img_url || '');
+  const [selectedImage, setSelectedImage] = useState(userProfile?.profile_img_url);
+  const [selectedBackground, setSelectedBackground] = useState(userProfile?.profile_background_img_url);
+  console.log(userProfile);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const backgroundInputRef = useRef<HTMLInputElement>(null);
 

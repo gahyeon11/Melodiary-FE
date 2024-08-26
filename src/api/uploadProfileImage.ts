@@ -14,14 +14,27 @@ export const uploadProfileImage = async (images: { file: File; filename: string 
       },
     });
     
-    return response.data.image_urls; // 서버에서 반환된 이미지 URL 배열
+    return response.data.image_urls; 
   } catch (error) {
     console.error('Error uploading images', error);
-    throw error; // 오류 발생 시 호출한 쪽에서 처리할 수 있도록 예외를 던집니다.
+    throw error; 
   }
 };
 
-export const saveProfileImage = () => {
+export const saveProfileImage = async ( imageUrl: string) => {
+  const userId = localStorage.getItem("user_id");
+  try {
+    const response = await httpClient.put(`/api/users/${userId}/profile-image`, {
+      profile_image_url: imageUrl,
+    });
 
+    if (response.status === 200) {
+      console.log('Profile image successfully saved.');
+    } else {
+      console.error('Failed to save profile image:', response.status, response.statusText);
+    }
+  } catch (error) {
+    console.error('Error saving profile image:', error);
+  }
 
 };
