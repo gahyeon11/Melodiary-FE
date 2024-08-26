@@ -3,7 +3,7 @@ import { httpClient } from './http';
 export const uploadProfileImage = async (images: { file: File; filename: string }[]) => {
   const formData = new FormData();
   images.forEach(image => {
-    formData.append('files', image.file); // 이미지 파일 추가
+    formData.append('images', image.file); // 이미지 파일 추가
     formData.append('filenames', image.filename); // 이미지 파일명 추가
   });
 
@@ -25,7 +25,7 @@ export const saveProfileImage = async ( imageUrl: string) => {
   const userId = localStorage.getItem("user_id");
   try {
     const response = await httpClient.put(`/api/users/${userId}/profile-image`, {
-      profile_image_url: imageUrl,
+      img_url: imageUrl,
     });
 
     if (response.status === 200) {
@@ -35,6 +35,24 @@ export const saveProfileImage = async ( imageUrl: string) => {
     }
   } catch (error) {
     console.error('Error saving profile image:', error);
+  }
+
+};
+
+export const saveBackgroundImage = async ( imageUrl: string) => {
+  const userId = localStorage.getItem("user_id");
+  try {
+    const response = await httpClient.put(`/api/users/${userId}/background-image`, {
+      img_url: imageUrl,
+    });
+
+    if (response.status === 200) {
+      console.log('background image successfully saved.');
+    } else {
+      console.error('Failed to save background image:', response.status, response.statusText);
+    }
+  } catch (error) {
+    console.error('Error saving background image:', error);
   }
 
 };
