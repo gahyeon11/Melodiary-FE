@@ -4,33 +4,44 @@ import DiaryItem from "../components/diary/DiaryItem";
 import MatesSidebar from "../components/sidebar/MatesSidebar";
 import { useMatesData } from "../hooks/useMatesData";
 import { IDiary } from "../models/diary.model";
+import ErrorBoundary from "../components/error/ErrorBoundary";
 
 function Mates() {
-  const userId = 27;
-  const { diaries, loading, error, setDiaries } = useMatesData(userId);
+  const userId = localStorage.getItem("user_id");
+  const numericUserId = userId ? parseInt(userId, 10) : 0; // undefined일 경우 0으로 설정
+
+  const { diaries, loading, error, setDiaries } = useMatesData(numericUserId);
+
+  if (numericUserId === 0) {
+    return <div>Error: No valid user ID found. Please log in.</div>;
+  }
 
   if (loading) {
     return <div>Loading...</div>;
   }
-
+  
   if (error) {
-    return <div>Error: {error.message}</div>;
+    throw new Error("네트워크 오류 발생: " + error.message);
   }
 
   return (
     <MatesWrapper>
       <MatesSidebar />
       <MatesFeed>
-        {diaries.map((diary) => (
-          <DiaryItemWrapper key={diary.id}>
-            <DiaryItem
-              diary={diary} 
-              user={diary.user_profile} 
-              likedUsers={[]}
-              isSummary={true}
-            />
-          </DiaryItemWrapper>
-        ))}
+        {diaries.length === 0 ? (
+          <div>No diaries available</div>
+        ) : (
+          diaries.map((diary) => (
+            <DiaryItemWrapper key={diary.id}>
+              <DiaryItem
+                diary={diary}
+                user={diary.user_profile}
+                likedUsers={[]}
+                isSummary={true}
+              />
+            </DiaryItemWrapper>
+          ))
+        )}
       </MatesFeed>
     </MatesWrapper>
   );

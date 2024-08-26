@@ -11,9 +11,9 @@ function Explore() {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    throw new Error("네트워크 오류 발생: " + error.message);
   }
-
+  
   return (
     <ExploreWrapper>
       {diaries.map((diary) => (
