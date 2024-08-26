@@ -9,7 +9,6 @@ import Settings from '../components/mypage/Settings';
 import { useMyPage } from '../hooks/useMyPage';
 import { saveBackgroundImage, saveProfileImage, uploadProfileImage } from '../api/uploadProfileImage';
 import { FaUserCircle } from "react-icons/fa";
-import { useUserData } from '../hooks/useUserData';
 const MyPage = () => {
   const tabs = [
     { 
@@ -74,20 +73,15 @@ const MyPage = () => {
           }
         };
         reader.readAsDataURL(file);
-
         const filename = isBackground ? `${userProfile.id}/profile/background_image.png` : `${userProfile.id}/profile/profile_image.png`;
         const imageDetails = [{ file: file, filename: filename }];
         const uploadedImageUrls = await uploadProfileImage(imageDetails);
 
-        console.log('Uploaded image URLs:', uploadedImageUrls);
-
         // 서버에서 받은 첫 번째 이미지 URL을 배경 이미지 또는 프로필 이미지로 설정
         if (uploadedImageUrls.length > 0) {
           if (isBackground) {
-            //setSelectedBackground(uploadedImageUrls[0]);
             saveBackgroundImage(uploadedImageUrls[0]);
           } else {
-            //setSelectedImage(uploadedImageUrls[0]);
             saveProfileImage(uploadedImageUrls[0]);
           }
         }
