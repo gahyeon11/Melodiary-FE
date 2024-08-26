@@ -57,7 +57,7 @@ const ErrorContainer = styled.div`
 const ErrorMessage = styled.div`
   text-align: center;
   /* color: #721c24; */
-  color: ${({theme})=> theme.color.primary};
+  color: ${({theme})=> theme.color.grayblack};
 
   h1 {
     font-size: 2.5rem;
