@@ -19,6 +19,13 @@ export interface IMate {
   profile_img_url: string | null;
 }
 
+export interface IRequestMate {
+  user_id: number;
+  nickname: string;
+  profile_img_url: null;
+  request_id: number;
+}
+
 export interface ILikedUser {
   id: number;
   nickname: string;
@@ -26,5 +33,5 @@ export interface ILikedUser {
 }
 
 export interface INicknameRequest {
-    nickname: string;
+  nickname: string;
 }
