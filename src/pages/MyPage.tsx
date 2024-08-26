@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styled from 'styled-components';
 import Background from "../assets/images/mypage/mypage-bg.jpg";
 import { FiCamera, FiBook, FiActivity, FiMusic, FiSettings } from "react-icons/fi";
@@ -35,6 +35,25 @@ const MyPage = () => {
 
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
   const { userProfile } = useMyPage();
+  const [selectedImage, setSelectedImage] = useState(userProfile?.profile_img_url || Background);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleCameraClick = () => {
+    fileInputRef.current!.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    console.log(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        console.log(reader.result);
+        setSelectedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <MyPageWrapper>
@@ -52,7 +71,17 @@ const MyPage = () => {
           <InfoBox>
             {/* 프로필사진 변경 */}
             <ProfileImg>
-              <div className="image"></div>
+              <div className="image" style={{ backgroundImage: `url(${selectedImage})` }}></div>
+              <div className="camera-btn" onClick={handleCameraClick}>
+                <FiCamera />
+              </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                accept="image/*"
+                onChange={handleFileChange}
+              />
             </ProfileImg>
             <div className="nickname">{userProfile?.nickname}</div>
             <div className="email">{userProfile?.email_address}</div>
@@ -231,15 +260,41 @@ const ProfileImg = styled.div`
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    /* 배경사진 미설정 시 */
-    background-color: ${({ theme }) => theme.color.grayEEE};
-    /* 배경사진 설정 시 */
+    background-color: ${({ theme }) => theme.color.white};
     background-image: url(${Background});
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
   }
+
+  /* 카메라 버튼 추가 */
+  .camera-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background-color: ${({ theme }) => theme.color.gray999};
+    border: 2px solid ${({ theme }) => theme.color.grayEEE};
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: ${({ theme }) => theme.color.grayDF};
+    }
+
+    svg {
+      font-size: 20px;
+      color: ${({ theme }) => theme.color.white};
+    }
+  }
 `;
+
 
 const UserFeed = styled.div`
   display: flex;

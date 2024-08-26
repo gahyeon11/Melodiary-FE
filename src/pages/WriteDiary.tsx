@@ -127,7 +127,7 @@ const WriteDiary = () => {
   let long = location?.longitude;
   // console.log("위도 : ", lat);
   // console.log("경도 : ", long);
-
+  const access_token = localStorage.getItem("access_token");
   useEffect(() => {
     //수정일 경우 호출 X
     if (!diaryToEdit) {
