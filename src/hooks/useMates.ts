@@ -15,9 +15,10 @@ export const useReceivedMateRequests = (user_id: number) => {
     const fetchRequests = async () => {
       try {
         const requestsData = await fetchReceivedMateRequests(user_id);
-        console.log("Received Requests:", requestsData);
+        // console.log("Received Requests:", requestsData);
         setReceivedRequests(requestsData);
       } catch (error) {
+        
       } finally {
         setLoading(false);
       }
@@ -32,17 +33,19 @@ export const useReceivedMateRequests = (user_id: number) => {
   };
 };
 
+
 export const useMatesList = (user_id: number) => {
   const [mates, setMates] = useState<IMate[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const fetchMates = async () => {
       try {
         const matesData = await fetchMatesList(user_id);
-        console.log("Mates Data:", matesData);
         setMates(matesData);
       } catch (error) {
+        setError(error as Error);
       } finally {
         setLoading(false);
       }
@@ -54,9 +57,10 @@ export const useMatesList = (user_id: number) => {
   return {
     mates,
     loading,
+    error,
   };
 };
-// 친구 요청 수락 훅
+
 export const useAcceptMateRequest = (user_id: number) => {
   const [receivedRequests, setReceivedRequests] = useState<IMate[]>([]);
 
