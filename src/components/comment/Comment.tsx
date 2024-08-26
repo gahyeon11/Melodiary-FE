@@ -59,6 +59,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editMode, setEditMode] = useState(false);
 
+  const currentUserId = parseInt(localStorage.getItem("user_id") || "", 10);
+
   useEffect(() => {
     if (setCommentCount) {
       setCommentCount(comments.length);
@@ -79,21 +81,37 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     return () => clearInterval(intervalId);
   }, [comments.length, diaryId, setCommentCount]);
 
-  const handleAddComment = async () => {       //저장 훅 호출
+  const handleAddComment = async () => {
     if (editMode && editingCommentId !== null) {
-      await editComment(editingCommentId, newComment);   //수정
+      await editComment(editingCommentId, newComment);
+
+      const latestComments = await fetchComments(diaryId);
+      const sortedComments = latestComments.sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+      setComments(sortedComments);
+
       setEditingCommentId(null);
       setEditMode(false);
     } else {
-      await addComment(newComment, mentionedUser?.id);   //저장
+      await addComment(newComment, mentionedUser?.id);
+
+      const latestComments = await fetchComments(diaryId);
+      const sortedComments = latestComments.sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+      setComments(sortedComments);
     }
+
     setNewComment("");
     setMentionedUser(null);
   };
 
   const startEditing = (comment_id: number, content: string) => {
     setEditingCommentId(comment_id);
-    setNewComment(content);  
+    setNewComment(content);
     setEditMode(true);
   };
 
@@ -102,19 +120,16 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     setNewComment(`@${nickName} `);
   };
 
-  const parseCommentText = (text: string = "") => {
-    const mentionRegex = /@\d+/g;
+  const parseCommentText = (text: string = '') => {
+    const mentionRegex = /@[\uAC00-\uD7A3a-zA-Z]+/g;
     const parts = text.split(mentionRegex);
     const mentions = text.match(mentionRegex) || [];
-
+  
     return parts.reduce((acc, part, index) => {
       acc.push(<span key={`part-${index}`}>{part}</span>);
       if (mentions[index]) {
         acc.push(
-          <MentionSpan
-            key={`mention-${index}`}
-            backgroundColor={backgroundColor}
-          >
+          <MentionSpan key={`mention-${index}`} backgroundColor={backgroundColor}>
             {mentions[index]}
           </MentionSpan>
         );
@@ -123,65 +138,61 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     }, [] as React.ReactNode[]);
   };
 
-  const currentUserId = parseInt(localStorage.getItem("user_id") || "", 10);
-
   if (loading) return <div>Loading...</div>;
 
   return (
     <CommentsContainer>
       {Array.isArray(comments) && comments.length > 0 ? (
-        comments.map((comment: IComment) => {
-          return (
-            <Comment key={comment.comment_id}>
-              <CommentHeader>
-                <User>
-                  {comment.writer_user_profile?.profile_img_url ? (
-                    <ProfileImage
-                      src={comment.writer_user_profile.profile_img_url}
-                      alt="프로필 이미지"
-                    />
-                  ) : (
-                    <DefaultProfileIcon />
-                  )}
-                  <UserId>{comment.writer_user_profile?.nickname}</UserId>
-                </User>
-                <CommentDate>{formatDateTime(comment?.created_at)}</CommentDate>
-              </CommentHeader>
-              <CommentText>{parseCommentText(comment?.content)}</CommentText>
-              <Actions>
-                {currentUserId === diaryUserId && (
-                  <Button
-                    backgroundColor={backgroundColor}
-                    onClick={() => removeComment(comment.comment_id)}
-                  >
-                    삭제
-                  </Button>
+        comments.map((comment: IComment) => (
+          <Comment key={comment.comment_id}>
+            <CommentHeader>
+              <User>
+                {comment.writer_user_profile?.profile_img_url ? (
+                  <ProfileImage
+                    src={comment.writer_user_profile.profile_img_url}
+                    alt="프로필 이미지"
+                  />
+                ) : (
+                  <DefaultProfileIcon />
                 )}
-                {currentUserId === comment.writer_user_profile?.user_id && (
-                  <Button
-                    backgroundColor={backgroundColor}
-                    onClick={() =>
-                      startEditing(comment.comment_id, comment.content)
-                    }
-                  >
-                    수정하기
-                  </Button>
-                )}
+                <UserId>{comment.writer_user_profile?.nickname}</UserId>
+              </User>
+              <CommentDate>{formatDateTime(comment?.created_at)}</CommentDate>
+            </CommentHeader>
+            <CommentText>{parseCommentText(comment.content)}</CommentText>
+            <Actions>
+              {currentUserId === diaryUserId && (
+                <Button
+                  backgroundColor={backgroundColor}
+                  onClick={() => removeComment(comment.comment_id)}
+                >
+                  삭제
+                </Button>
+              )}
+              {currentUserId === comment.writer_user_profile?.user_id && (
                 <Button
                   backgroundColor={backgroundColor}
                   onClick={() =>
-                    handleMentionClick(
-                      comment.writer_user_profile.user_id,
-                      comment.writer_user_profile.nickname
-                    )
+                    startEditing(comment.comment_id, comment.content)
                   }
                 >
-                  답글 달기
+                  수정하기
                 </Button>
-              </Actions>
-            </Comment>
-          );
-        })
+              )}
+              <Button
+                backgroundColor={backgroundColor}
+                onClick={() =>
+                  handleMentionClick(
+                    comment.writer_user_profile.user_id,
+                    comment.writer_user_profile.nickname
+                  )
+                }
+              >
+                답글 달기
+              </Button>
+            </Actions>
+          </Comment>
+        ))
       ) : (
         <div></div>
       )}
@@ -259,7 +270,7 @@ const MentionSpan = styled.span<{ backgroundColor?: string }>`
   background-color: ${({ backgroundColor, theme }) =>
     backgroundColor
       ? theme.diaryColor[backgroundColor]?.tag
-      : theme.color.white};
+      : theme.color.grayDF};
   color: ${({ theme }) => theme.color.black};
   padding: 0 4px;
   border-radius: 4px;
