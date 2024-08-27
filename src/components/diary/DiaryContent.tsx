@@ -53,7 +53,7 @@ const DiaryContent: React.FC<DiaryContentProps> = ({
     : stripHtmlTags(diary.body.content);
 
   const sliderSettings = {
-    dots: imageUrls.length > 1, // Only show dots if there are multiple images
+    dots: imageUrls.length > 1, 
     infinite: true,
     speed: 500,
     slidesToShow: 1,
@@ -66,10 +66,10 @@ const DiaryContent: React.FC<DiaryContentProps> = ({
     ),
     dotsClass: "slick-dots custom-dots",
     adaptiveHeight: true,
-    centerMode: false, // Ensure only one image is shown
-    centerPadding: '0px', // No additional padding
+    centerMode: false, 
+    centerPadding: '0px', 
     beforeChange: (current: number, next: number) => {
-      setCurrentSlideIndex(next); // Update the state to the next slide index
+      setCurrentSlideIndex(next); 
     },
   };
 
@@ -202,7 +202,7 @@ const DiaryText = styled.div<{ isExpanded: boolean; isSummary: boolean; isMatesP
 
 const SummaryImage = styled.img`
   width: 100%;
-  height: 450px;  // Fixed height to ensure uniformity
+  height: 450px; 
   object-fit: cover;
 `;
 
@@ -210,45 +210,45 @@ const SlideImageWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;  // Hide anything outside the container
-  width: 100%;  // Make sure the image takes up the full width
+  overflow: hidden;  
+  width: 100%;  
 `;
 
 const SliderContainer = styled.div`
-  width: 100%;  // Ensure it takes up the full width of the parent container
+  width: 100%;  
   margin-bottom: 20px;
   
   .slick-list {
-    overflow: hidden;  // Hide adjacent slides
+    overflow: hidden;  
   }
 
   .slick-slide {
-    opacity: 0;  // Hide all slides initially
+    opacity: 0; 
     transition: opacity 0.5s ease;
   }
 
   .slick-active {
-    opacity: 1;  // Show the active slide
+    opacity: 1;  
   }
 
   .slick-slider {
-    max-width: 100%;  // Restrict the slider to the parent width
+    max-width: 100%; 
   }
 
   .slick-track {
     display: flex;
-    align-items: center;  // Center the slides vertically if needed
+    align-items: center;  
   }
 
   .slick-slide img {
-    width: 100%;  // Ensure images take up the full width of each slide
-    height: 450px;  // Ensure uniform height across all images
-    object-fit: cover;  // Maintain image aspect ratio
+    width: 100%;  
+    height: 450px;  
+    object-fit: cover;  
   }
 
   .slick-dots.custom-dots {
     bottom: -20px;
-    display: flex !important;  // Ensure dots are displayed in a row
+    display: flex !important;
     justify-content: center;
 
     li {
