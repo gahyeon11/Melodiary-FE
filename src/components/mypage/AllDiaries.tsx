@@ -6,7 +6,7 @@ const AllDiaries = () => {
   const { userDiaries } = useMyPage();
 
   if (!userDiaries || userDiaries.length === 0) {
-    return <div>Loading...</div>;
+    return <NoDiaries>작성된 일기가 없습니다.</NoDiaries>;
   }
 
   return (
@@ -26,6 +26,11 @@ const AllDiaries = () => {
 };
 
 export default AllDiaries;
+
+const NoDiaries = styled.div`
+  color: ${({ theme }) => theme.color.gray777};
+  height: calc(100vh - 524px);
+`;
 
 const AllDiariesWrapper = styled.div`
   width: 1014px;
