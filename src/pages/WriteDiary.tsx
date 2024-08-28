@@ -153,7 +153,7 @@ const WriteDiary = () => {
         if (isDiaryDataValid) {
           await saveDiary(diaryData);
           window.alert("일기가 저장되었습니다.");
-          // navigate("/home");
+          navigate("/home");
         } else {
           window.alert("모든 항목을 작성해주세요.");
         }
