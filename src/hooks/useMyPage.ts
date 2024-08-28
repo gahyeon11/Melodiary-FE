@@ -4,6 +4,11 @@ import { IDiary } from "../models/diary.model";
 import { IUserProfile, IMoodData, IMood } from "../models/mypage.model";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const useMyPage = () => {
   const [userProfile, setUserProfile] = useState<IUserProfile>();
@@ -103,18 +108,19 @@ export const useMyPage = () => {
   const fetchMoodGraphData = async (year: number, month: number) => {
     try {
       const moodGraphData: IMood = await fetchMoodGraph(`${year}-${String(month).padStart(2, '0')}`);
-
+  
       // 날짜별로 moods 정리
       const groupedMoods: { [key: string]: IMoodData[] } = {};
-
+  
       moodGraphData.moods.forEach((mood: IMoodData) => {
-        const dateKey = dayjs(mood.date).format('YYYY-MM-DD');
+        // 시간대를 KST로 명시적으로 해석
+        const dateKey = dayjs.tz(mood.date, 'Asia/Seoul').format('YYYY-MM-DD');
         if (!groupedMoods[dateKey]) {
           groupedMoods[dateKey] = [];
         }
         groupedMoods[dateKey].push(mood);
       });
-
+  
       setMood(moodGraphData);
     } catch (err) {
       console.log(err);
