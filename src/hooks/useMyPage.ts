@@ -12,6 +12,7 @@ export const useMyPage = () => {
   const [hasCheckedNickname, setHasCheckedNickname] = useState<boolean>(false); 
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteSuccess, setDeleteSuccess] = useState<boolean | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const [mood, setMood] = useState<IMood | null>(null);
 
@@ -24,8 +25,10 @@ export const useMyPage = () => {
     try {
       const userProfileData = await fetchUserProfile(userId);
       setUserProfile(userProfileData);
-    } catch (err) {
+    } catch (err: any) {
       console.log(err);
+      setError(new Error("Failed to fetch user profile: " + err.message));
+
     }
   };
 
@@ -34,8 +37,9 @@ export const useMyPage = () => {
     try {
       const userDiaryData = await fetchAllDiaries();
       setUserDiaries(userDiaryData);
-    } catch (err) {
+    } catch (err: any) {
       console.log(err);
+      setError(new Error("Failed to fetch user profile: " + err.message));
     }
   };
 
@@ -123,6 +127,7 @@ export const useMyPage = () => {
     fetchDeleteUserAccount,
     fetchMoodGraphData,
     isDeleting,
-    deleteSuccess
+    deleteSuccess,
+    error 
   };
 };

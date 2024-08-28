@@ -5,6 +5,7 @@ import MatesSidebar from "../components/sidebar/MatesSidebar";
 import { useMatesData } from "../hooks/useMatesData";
 import { IDiary } from "../models/diary.model";
 import { useDeleteMate } from "../hooks/useMates";
+import ErrorBoundary from "../components/error/ErrorBoundary";
 
 function Mates() {
   const userId = localStorage.getItem("user_id");
@@ -23,9 +24,9 @@ function Mates() {
   if (loading) {
     return <div>Loading...</div>;
   }
-
+  
   if (error) {
-    return <div>Error: {error.message}</div>;
+    throw new Error("네트워크 오류 발생: " + error.message);
   }
 
   return (

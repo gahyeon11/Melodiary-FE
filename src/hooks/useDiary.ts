@@ -41,7 +41,6 @@ export const useDiary = (diaryId: number) => {
         setDiary(diaryData);
       } catch (error) {
         console.error('Failed to fetch diary', error);
-        setError(error as Error);
       } finally {
         setLoading(false);
       }
