@@ -148,6 +148,8 @@ const WriteDiary = () => {
       if (diaryToEdit) {
         // 다이어리 수정의 경우
         await updateDiary(diaryToEdit.id, diaryData);
+        window.alert("일기가 수정되었습니다.");
+        navigate("/home");
       } else {
         // 다이어리 저장의 경우
         if (isDiaryDataValid) {
