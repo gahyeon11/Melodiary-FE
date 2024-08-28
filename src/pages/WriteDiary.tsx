@@ -137,12 +137,12 @@ const WriteDiary = () => {
     }
 
     // 모든 필드가 작성되었는지 확인하는 함수
-    // const isDiaryDataValid = Object.values(diaryData).every((value) => {
-    //   if (typeof value === 'object' && value !== null) {
-    //     return Object.values(value).every((v) => v !== "" && v !== null && v !== undefined);
-    //   }
-    //   return value !== "" && value !== null && value !== undefined;
-    // });
+    const isDiaryDataValid = Object.values(diaryData).every((value) => {
+      if (typeof value === 'object' && value !== null) {
+        return Object.values(value).every((v) => v !== "" && v !== null && v !== undefined);
+      }
+      return value !== "" && value !== null && value !== undefined;
+    });
 
     try {
       if (diaryToEdit) {
@@ -150,13 +150,13 @@ const WriteDiary = () => {
         await updateDiary(diaryToEdit.id, diaryData);
       } else {
         // 다이어리 저장의 경우
-        await saveDiary(diaryData);
-        window.alert("일기가 저장되었습니다.");
-        navigate("/home");
-        // if (isDiaryDataValid) {
-        // } else {
-        //   window.alert("모든 항목을 작성해주세요.");
-        // }
+        if (isDiaryDataValid) {
+          await saveDiary(diaryData);
+          window.alert("일기가 저장되었습니다.");
+          // navigate("/home");
+        } else {
+          window.alert("모든 항목을 작성해주세요.");
+        }
       }
     } catch (error) {
       console.error("일기 저장 중 오류 발생:", error);
