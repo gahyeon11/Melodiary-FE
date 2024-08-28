@@ -108,7 +108,7 @@ const DiaryContainer = styled.div<DiaryAllProps>`
   position: relative;
   top: 0;
   height: ${({ isExpanded, isSummary }) =>
-    isExpanded ? "auto" : isSummary ? "auto" : "auto"};
+    isExpanded ? "100%" : isSummary ? "auto" : "auto"};
   overflow-y: ${({ isExpanded, isSummary }) =>
     isExpanded ? "auto" : isSummary ? "visible" : "hidden"};
   overflow-x: hidden;
