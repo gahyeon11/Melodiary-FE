@@ -4,7 +4,8 @@ import background from '../assets/images/background.png';
 import { FcGoogle } from "react-icons/fc";
 import { SiNaver } from "react-icons/si";
 import { RiKakaoTalkFill } from "react-icons/ri";
-import { GOOGLE_LOGIN_URL, KAKAO_LOGIN_URL, NAVER_LOGIN_URL } from '../config';
+import { GOOGLE_LOGIN_URL, KAKAO_LOGIN_URL, NAVER_LOGIN_URL, FACEBOOK_LOGIN_URL } from '../config';
+import { FaFacebook } from "react-icons/fa"; 
 import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
 const Login = () => {
@@ -38,6 +39,12 @@ const Login = () => {
             <Button className="naver">
               <IconWrapper><SiNaver/></IconWrapper>
               Naver로 시작하기
+            </Button>
+          </a>
+          <a href={FACEBOOK_LOGIN_URL}>
+            <Button className="facebook">
+              <IconWrapper><FaFacebook /></IconWrapper> 
+              Facebook으로 시작하기
             </Button>
           </a>
           <LoginLink >아직 계정이 없으신가요? <Link to='/join' className='loginBtn'>회원가입</Link></LoginLink>
@@ -111,6 +118,13 @@ const Button = styled.button`
   }
   &.naver:hover {
     background-color: #02b04a;
+  }
+  &.facebook { /* Facebook 버튼 스타일 추가 */
+    background-color: #3b5998;
+    color: ${({ theme }) => theme.color.white};
+  }
+  &.facebook:hover {
+    background-color: #355089;
   }
 `;
 
