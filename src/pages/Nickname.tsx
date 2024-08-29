@@ -44,6 +44,7 @@ const NickName = () => {
         localStorage.setItem("firstVisitAfterNickname", "true");
 
         navigate(`/home/${userId}`);
+        window.location.reload(); 
       } 
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
