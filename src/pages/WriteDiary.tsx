@@ -12,7 +12,6 @@ import { useGeoLocation } from "../hooks/useGeoLocation";
 import { useDiaries, useUpdateDiary } from "../hooks/useDiary";
 import { IDiary } from "../models/diary.model";
 import { useLocation, useNavigate } from "react-router-dom";
-import CustomAlert from "../components/customAlert/CustomAlert";
 
 const geolocationOptions = {
   enableHighAccuracy: true,
@@ -37,6 +36,9 @@ const WriteDiary = () => {
   const routerLocation = useLocation();
   const diaryToEdit = routerLocation.state?.diary;
   const navigate = useNavigate();
+  const user_id = localStorage.getItem('user_id');
+  const { saveDiary, loading } = useDiaries();
+  const { updateDiary, error: updateError } = useUpdateDiary();
 
   // 상태 변수 선언
   const [title, setTitle] = useState<string>("");
@@ -73,12 +75,6 @@ const WriteDiary = () => {
       }
     }
   }, [diaryToEdit]);
-
-  const { saveDiary, loading, wirteDiaryErr } = useDiaries();
-  const {
-    updateDiary,
-    error: updateError,
-  } = useUpdateDiary();
 
   // 일기 데이터 작성 및 제출
   const handleSubmit = async (e: React.FormEvent) => {
@@ -149,13 +145,13 @@ const WriteDiary = () => {
         // 다이어리 수정의 경우
         await updateDiary(diaryToEdit.id, diaryData);
         window.alert("일기가 수정되었습니다.");
-        navigate("/home");
+        navigate(`/diary/${diaryToEdit.id}`);
       } else {
         // 다이어리 저장의 경우
         if (isDiaryDataValid) {
           await saveDiary(diaryData);
           window.alert("일기가 저장되었습니다.");
-          navigate("/home");
+          navigate(`/home/${user_id}`);
         } else {
           window.alert("모든 항목을 작성해주세요.");
         }
