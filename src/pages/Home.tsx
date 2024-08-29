@@ -202,6 +202,7 @@ interface RightSectionProps {
 
 const Right = styled.div`
   flex: 1;
+  /* height: 100%; */
 `;
 
 const RightSection = styled(motion.div)<RightSectionProps>`
