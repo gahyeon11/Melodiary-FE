@@ -11,7 +11,6 @@ interface DiaryEditorProps {
   onChange: (value: string) => void;
 }
 
-
 const DiaryEditor = ({ content, onChange }: DiaryEditorProps) => {
   const quillRef = useRef<ReactQuill | null>(null);
 
@@ -24,13 +23,6 @@ const DiaryEditor = ({ content, onChange }: DiaryEditorProps) => {
         formats={formats}
         modules={modules}
       />
-      {/* <input 
-        ref={contentRef}
-        type='file'
-        style={{ display: 'none' }}
-        accept='image/*'
-        // onChange={(e) => }
-      /> */}
     </DiaryEditorWrapper>
   );
 };
